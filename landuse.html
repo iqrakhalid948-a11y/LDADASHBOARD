@@ -1,0 +1,2023 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GIS Dashboard - CSV Linked with JSON by ID</title>
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+    crossorigin=""
+  />
+  <style>
+    :root {
+      --navy-950: #081a2f;
+      --navy-900: #0e2744;
+      --navy-800: #14365a;
+      --navy-700: #1d4976;
+      --navy-600: #285b90;
+      --steel-700: #334155;
+      --steel-600: #475569;
+      --steel-500: #64748b;
+      --steel-300: #cbd5e1;
+      --steel-200: #e2e8f0;
+      --steel-100: #f1f5f9;
+      --surface: #ffffff;
+      --surface-soft: #f8fafc;
+      --text: #0f172a;
+      --success-bg: #dcfce7;
+      --success-text: #166534;
+      --warning-bg: #fef3c7;
+      --warning-text: #92400e;
+      --danger-bg: #fee2e2;
+      --danger-text: #991b1b;
+      --shadow-sm: 0 2px 8px rgba(15, 23, 42, 0.06);
+      --shadow-md: 0 10px 24px rgba(15, 23, 42, 0.08);
+      --shadow-lg: 0 18px 40px rgba(8, 26, 47, 0.12);
+      --radius-lg: 22px;
+      --transition: 0.22s ease;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: "Segoe UI", Arial, sans-serif;
+    }
+
+    body {
+      background: linear-gradient(180deg, #f4f7fb 0%, #eef3f8 100%);
+      color: var(--text);
+      padding: 24px;
+    }
+
+    .container {
+      max-width: 1600px;
+      margin: 0 auto;
+      display: grid;
+      gap: 22px;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--steel-200);
+      border-radius: var(--radius-lg);
+      padding: 20px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .header {
+      background: linear-gradient(135deg, var(--navy-950), var(--navy-900) 55%, var(--navy-800));
+      color: #ffffff;
+      border: none;
+      box-shadow: var(--shadow-lg);
+      display: grid;
+      gap: 20px;
+    }
+
+    .title-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 18px;
+      flex-wrap: wrap;
+    }
+
+    .title h1 {
+      font-size: 34px;
+      font-weight: 700;
+      letter-spacing: 0.2px;
+      margin-bottom: 8px;
+    }
+
+    .title p {
+      color: rgba(255, 255, 255, 0.82);
+      font-size: 14px;
+      line-height: 1.5;
+      max-width: 760px;
+    }
+
+    .header-badge {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      color: #ffffff;
+      padding: 10px 14px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 600;
+      white-space: nowrap;
+      backdrop-filter: blur(6px);
+    }
+
+    .filters {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+      gap: 12px;
+    }
+
+    .filter-group label {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      color: rgba(255, 255, 255, 0.88);
+      margin-bottom: 6px;
+      letter-spacing: 0.2px;
+    }
+
+    .filter-group select,
+    .filter-group input,
+    .filter-group button {
+      width: 100%;
+      padding: 11px 12px;
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.96);
+      color: var(--text);
+      font-size: 14px;
+      outline: none;
+      transition: var(--transition);
+    }
+
+    .filter-group select:focus,
+    .filter-group input:focus {
+      border-color: #93c5fd;
+      box-shadow: 0 0 0 3px rgba(147, 197, 253, 0.18);
+    }
+
+    .filter-group input::placeholder {
+      color: #94a3b8;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 16px;
+    }
+
+    .stat-card {
+      position: relative;
+      overflow: hidden;
+      color: #ffffff;
+      border: none;
+      box-shadow: var(--shadow-md);
+    }
+
+    .stat-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0));
+      pointer-events: none;
+    }
+
+    .stat-card::after {
+      content: "";
+      position: absolute;
+      width: 130px;
+      height: 130px;
+      border-radius: 50%;
+      right: -28px;
+      top: -30px;
+      background: rgba(255,255,255,0.08);
+    }
+
+    .stat-card:nth-child(1) { background: linear-gradient(135deg, #102b4e, #1d4976); }
+    .stat-card:nth-child(2) { background: linear-gradient(135deg, #14365a, #285b90); }
+    .stat-card:nth-child(3) { background: linear-gradient(135deg, #12324f, #315b84); }
+    .stat-card:nth-child(4) { background: linear-gradient(135deg, #1c3654, #3e638d); }
+    .stat-card:nth-child(5) { background: linear-gradient(135deg, #243b53, #486581); }
+
+    .stat-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      position: relative;
+      z-index: 1;
+      margin-bottom: 8px;
+    }
+
+    .stat-icon {
+      width: 46px;
+      height: 46px;
+      border-radius: 14px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      background: rgba(255,255,255,0.14);
+      border: 1px solid rgba(255,255,255,0.2);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.08);
+      flex-shrink: 0;
+    }
+
+    .stat-label {
+      font-size: 13px;
+      color: rgba(255,255,255,0.82);
+      margin-bottom: 12px;
+      position: relative;
+      z-index: 1;
+      font-weight: 600;
+      letter-spacing: 0.2px;
+    }
+
+    .stat-value {
+      font-size: 34px;
+      font-weight: 700;
+      position: relative;
+      z-index: 1;
+      line-height: 1;
+      margin-bottom: 10px;
+    }
+
+    .stat-meta {
+      position: relative;
+      z-index: 1;
+      font-size: 12px;
+      color: rgba(255,255,255,0.74);
+    }
+
+    .main-grid {
+      display: grid;
+      grid-template-columns: 3fr 1fr;
+      gap: 22px;
+      align-items: start;
+    }
+
+    .map-panel {
+      min-height: 780px;
+    }
+
+    .panel-header,
+    .table-header,
+    .map-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+      margin-bottom: 18px;
+    }
+
+    .panel-title h2,
+    .map-header h2 {
+      font-size: 22px;
+      color: var(--navy-900);
+      margin-bottom: 4px;
+    }
+
+    .muted {
+      color: var(--steel-500);
+      font-size: 14px;
+      line-height: 1.45;
+    }
+
+    .btn-group {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: 10px 14px;
+      border: 1px solid var(--steel-300);
+      background: var(--surface);
+      border-radius: 12px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--steel-700);
+      transition: var(--transition);
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-sm);
+      border-color: #bfd2e8;
+      background: #fbfdff;
+    }
+
+    .btn-primary {
+      background: var(--navy-900);
+      color: #ffffff;
+      border-color: var(--navy-900);
+    }
+
+    .btn-primary:hover {
+      background: var(--navy-800);
+      border-color: var(--navy-800);
+    }
+
+    .btn-secondary {
+      background: #ffffff;
+      color: var(--navy-900);
+      border-color: rgba(255,255,255,0.16);
+      font-weight: 700;
+    }
+
+    .btn-secondary:hover {
+      background: #f8fafc;
+    }
+
+    .map-box {
+      height: 700px;
+      border: 1px solid #cfe0f0;
+      border-radius: 24px;
+      background: linear-gradient(180deg, #eef5fb 0%, #e6eef7 100%);
+      position: relative;
+      overflow: hidden;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.8);
+    }
+
+    #map {
+      width: 100%;
+      height: 100%;
+      border-radius: 24px;
+      z-index: 1;
+    }
+
+    .map-overlay {
+      position: absolute;
+      top: 18px;
+      left: 18px;
+      right: 18px;
+      z-index: 500;
+      display: flex;
+      justify-content: flex-start;
+      gap: 14px;
+      pointer-events: none;
+    }
+
+    .map-overlay-card {
+      pointer-events: auto;
+      background: rgba(255,255,255,0.92);
+      border: 1px solid rgba(203, 213, 225, 0.9);
+      box-shadow: var(--shadow-md);
+      border-radius: 16px;
+      padding: 12px 14px;
+      max-width: 460px;
+      backdrop-filter: blur(10px);
+    }
+
+    .map-overlay-card h3 {
+      font-size: 15px;
+      color: var(--navy-900);
+      margin-bottom: 6px;
+    }
+
+    .map-overlay-card p {
+      font-size: 12px;
+      line-height: 1.5;
+      color: var(--steel-600);
+    }
+
+    .side-stack {
+      display: grid;
+      gap: 22px;
+    }
+
+    .legend-list {
+      display: grid;
+      gap: 10px;
+      margin-top: 16px;
+      max-height: 420px;
+      overflow: auto;
+      padding-right: 4px;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--surface-soft);
+      border-radius: 14px;
+      padding: 13px 14px;
+      border: 1px solid var(--steel-200);
+      transition: var(--transition);
+      gap: 12px;
+    }
+
+    .legend-item:hover {
+      background: #fbfdff;
+      border-color: #cfdae6;
+    }
+
+    .legend-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+    }
+
+    .legend-left span:last-child {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      color: var(--steel-700);
+      font-weight: 600;
+      font-size: 14px;
+    }
+
+    .symbol {
+      width: 18px;
+      height: 18px;
+      display: inline-block;
+      border: 1px solid #1f2937;
+      border-radius: 2px;
+      box-shadow: 0 0 0 4px rgba(255,255,255,0.9);
+      flex-shrink: 0;
+      background-size: 12px 12px, 12px 12px, auto;
+      background-position: center center;
+      background-repeat: repeat;
+    }
+
+    .legend-value {
+      color: var(--navy-900);
+      font-weight: 700;
+      font-size: 14px;
+      margin-left: 12px;
+      flex-shrink: 0;
+    }
+
+    .mini-card {
+      background: linear-gradient(180deg, #ffffff 0%, #f8fbfe 100%);
+    }
+
+    .insight-list {
+      display: grid;
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    .insight-item {
+      padding: 12px 13px;
+      border-radius: 12px;
+      border: 1px solid var(--steel-200);
+      background: var(--surface-soft);
+      color: var(--steel-700);
+      font-size: 14px;
+      line-height: 1.55;
+    }
+
+    .table-card {
+      overflow: hidden;
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+      border: 1px solid var(--steel-200);
+      border-radius: 16px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+      background: #ffffff;
+    }
+
+    th,
+    td {
+      text-align: left;
+      padding: 13px 12px;
+      border-bottom: 1px solid var(--steel-200);
+      white-space: nowrap;
+    }
+
+    th {
+      color: var(--navy-900);
+      font-size: 13px;
+      background: linear-gradient(180deg, #edf4fb 0%, #e4edf7 100%);
+      font-weight: 700;
+      letter-spacing: 0.2px;
+    }
+
+    tbody tr:hover {
+      background: #fbfdff;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      border: 1px solid transparent;
+      max-width: 220px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .active {
+      background: var(--success-bg);
+      color: var(--success-text);
+    }
+
+    .converted {
+      background: var(--danger-bg);
+      color: var(--danger-text);
+    }
+
+    .pending {
+      background: var(--warning-bg);
+      color: var(--warning-text);
+    }
+
+    .leaflet-control-layers {
+      border-radius: 12px !important;
+      overflow: hidden;
+      box-shadow: var(--shadow-md) !important;
+      border: 1px solid var(--steel-200) !important;
+    }
+
+    .leaflet-popup-content-wrapper,
+    .leaflet-popup-tip {
+      box-shadow: var(--shadow-md);
+    }
+
+    .status-bar {
+      font-size: 13px;
+      padding: 12px 14px;
+      border-radius: 12px;
+      border: 1px solid var(--steel-200);
+      background: #f8fbfe;
+      color: var(--steel-700);
+      line-height: 1.5;
+    }
+
+    .footer-note {
+      margin-top: 14px;
+      font-size: 12px;
+      color: var(--steel-500);
+    }
+
+    @media (max-width: 1100px) {
+      .main-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .map-panel {
+        min-height: auto;
+      }
+    }
+
+    @media (max-width: 768px) {
+      body {
+        padding: 16px;
+      }
+
+      .container {
+        gap: 16px;
+      }
+
+      .card {
+        padding: 16px;
+        border-radius: 18px;
+      }
+
+      .title h1 {
+        font-size: 28px;
+      }
+
+      .map-box {
+        height: 520px;
+        border-radius: 18px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <section class="card header">
+      <div class="title-row">
+        <div class="title">
+          <h1>Data Analytics</h1>
+        </div>
+      </div>
+
+      <div class="filters">
+        <div class="filter-group">
+          <label for="directorate">Directorate</label>
+          <select id="directorate"><option value="All">All Directorate</option></select>
+        </div>
+        <div class="filter-group">
+          <label for="scheme">Scheme</label>
+          <select id="scheme"><option value="All">All Scheme</option></select>
+        </div>
+        <div class="filter-group">
+          <label for="phase">Phase</label>
+          <select id="phase"><option value="All">All Phase</option></select>
+        </div>
+        <div class="filter-group">
+          <label for="block">Block</label>
+          <select id="block"><option value="All">All Block</option></select>
+        </div>
+        <div class="filter-group">
+          <label for="plot">Plot</label>
+          <select id="plot"><option value="All">All Plot</option></select>
+        </div>
+        <div class="filter-group">
+          <label for="landuse">Landuse</label>
+          <select id="landuse"><option value="All">All Landuse</option></select>
+        </div>
+        <div class="filter-group filter-search-group">
+          <label for="searchInput">Search</label>
+          <input id="searchInput" type="text" placeholder="Search ID, plot, block, scheme..." />
+        </div>
+        <div class="filter-group">
+          <label>&nbsp;</label>
+          <button class="btn btn-secondary" type="button" onclick="clearFilters()">Clear Filters</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="stats-grid">
+      <div class="card stat-card">
+        <div class="stat-top">
+          <div class="stat-label">Total Schemes</div>
+          <div class="stat-icon">🗂️</div>
+        </div>
+        <div class="stat-value" id="totalSchemes">0</div>
+        <div class="stat-meta">Distinct scheme records in current selection</div>
+      </div>
+      <div class="card stat-card">
+        <div class="stat-top">
+          <div class="stat-label">Total Plots</div>
+          <div class="stat-icon">📍</div>
+        </div>
+        <div class="stat-value" id="totalPlots">0</div>
+        <div class="stat-meta">Plot numbers are fetched from the JSON layer</div>
+      </div>
+      <div class="card stat-card">
+        <div class="stat-top">
+          <div class="stat-label">Total Blocks</div>
+          <div class="stat-icon">🏘️</div>
+        </div>
+        <div class="stat-value" id="totalBlocks">0</div>
+        <div class="stat-meta">Unique blocks represented in the dataset</div>
+      </div>
+      <div class="card stat-card">
+        <div class="stat-top">
+          <div class="stat-label">Converted Commercial</div>
+          <div class="stat-icon">🏢</div>
+        </div>
+        <div class="stat-value" id="totalConverted">0</div>
+        <div class="stat-meta">Converted commercial plots in current selection</div>
+      </div>
+      <div class="card stat-card">
+        <div class="stat-top">
+          <div class="stat-label">Total Illegal</div>
+          <div class="stat-icon">⚠️</div>
+        </div>
+        <div class="stat-value" id="totalIllegal">0</div>
+        <div class="stat-meta">Illegal commercial zone + illegal institutional zone</div>
+      </div>
+    </section>
+
+    <section class="main-grid">
+      <div class="card map-panel">
+        <div class="map-header">
+          <div>
+            <h2>Spatial Plot View</h2>
+          </div>
+          <div class="btn-group">
+            <button class="btn" onclick="setBaseLayer('OpenStreetMap')">OpenStreetMap</button>
+            <button class="btn" onclick="setBaseLayer('Street')">Street</button>
+            <button class="btn" onclick="setBaseLayer('Satellite')">Satellite</button>
+            <button class="btn btn-primary" onclick="exportMapAsPDF()">Export Map PDF</button>
+          </div>
+        </div>
+
+        <div class="map-box">
+          <div id="map"></div>
+        </div>
+      </div>
+
+      <div class="side-stack">
+        <div class="card mini-card">
+          <div class="panel-header">
+            <div class="panel-title">
+              <h2>Landuse Legend</h2>
+              <p class="muted">Category totals based on current filters</p>
+            </div>
+          </div>
+          <div class="legend-list" id="legendList"></div>
+        </div>
+
+        <div class="card mini-card">
+          <div class="panel-header">
+            <div class="panel-title">
+              <h2>Data Status</h2>
+            </div>
+          </div>
+          <div class="status-bar" id="statusBar">Loading CSV and JSON files...</div>
+        </div>
+
+        <div class="card mini-card">
+          <div class="panel-header">
+            <div class="panel-title">
+              <h2>Quick Insights</h2>
+              <p class="muted">Operational notes for decision support</p>
+            </div>
+          </div>
+          <div class="insight-list" id="insightList">
+            <div class="insight-item">Records will appear after the CSV and JSON files load successfully.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="card table-card">
+      <div class="table-header">
+        <div class="panel-title">
+          <h2>Filtered Records</h2>
+          <p class="muted">Detailed records from CSV, spatially linked to GeoJSON features by ID.</p>
+        </div>
+        <button class="btn btn-primary" onclick="exportTable()">Export CSV</button>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Directorate</th>
+              <th>Scheme</th>
+              <th>Phase</th>
+              <th>Block</th>
+              <th>Plot</th>
+              <th>Reclassification Status</th>
+              <th>Landuse</th>
+              <th>Current Use</th>
+            </tr>
+          </thead>
+          <tbody id="recordsBody"></tbody>
+        </table>
+      </div>
+    </section>
+  </div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+  <script>
+    let map;
+    let plotLayer;
+    let baseLayers = {};
+    let currentBaseLayer;
+    let mergedData = [];
+
+    const filterIds = ['directorate', 'scheme', 'phase', 'block', 'plot', 'landuse'];
+    const searchFields = ['id', 'directorate', 'scheme', 'phase', 'block', 'plot', 'reclassificationStatus', 'landuse', 'currentUse'];
+
+    const LANDUSE_STYLES = {
+      'Industrial': { fill: '#b0128b', stroke: '#2f2431', pattern: 'solid' },
+      'Illegal Industrial Zone': { fill: '#ffffff', stroke: '#ec2fb3', pattern: 'diag-pink' },
+      'Graveyard': { fill: '#8fee1b', stroke: '#5a8f00', pattern: 'solid' },
+      'Existing Abadi': { fill: '#ffffff', stroke: '#8f8f8f', pattern: 'diag-gray' },
+      'Partial Payment Recieved': { fill: '#ffffff', stroke: '#36a893', pattern: 'diag-teal' },
+      'Court Case': { fill: '#8d0e14', stroke: '#4b0205', pattern: 'solid' },
+      'Public Utility Use': { fill: '#fff200', stroke: '#ff2c2c', pattern: 'solid' },
+      'Under Process': { fill: '#0a3f9a', stroke: '#082a66', pattern: 'cross-white-blue' },
+      'Under Process (Challan Issued)': { fill: '#ffffff', stroke: '#4e5563', pattern: 'diag-charcoal' },
+      'Designated Commercial': { fill: '#82b4ff', stroke: '#557cb7', pattern: 'solid' },
+      'Park': { fill: '#ffffff', stroke: '#8ccc67', pattern: 'park-icons' },
+      'Learning Alliance': { fill: '#22d7c8', stroke: '#0d8f85', pattern: 'solid' },
+      'Residential': { fill: '#df9c00', stroke: '#7c5700', pattern: 'solid' },
+      'Illegal Commercial Zone': { fill: '#ffffff', stroke: '#ff2c2c', pattern: 'diag-red' },
+      'Illegal Institutional Zone': { fill: '#ff1b1b', stroke: '#7a0000', pattern: 'cross-white-red' },
+      'Illegal Residential Zone': { fill: '#ff1717', stroke: '#8f0000', pattern: 'solid' },
+      'Converted Commercial': { fill: '#002f8f', stroke: '#00174d', pattern: 'solid' },
+      'Commercial Corridors': { fill: '#002f8f', stroke: '#00174d', pattern: 'solid' },
+      'Public Sector Instititional': { fill: '#fff200', stroke: '#ff2c2c', pattern: 'solid' },
+      'Under Construction Building': { fill: '#ffe1a3', stroke: '#d2ae63', pattern: 'solid' },
+      'No-use': { fill: '#d9d9d9', stroke: '#8f8f8f', pattern: 'solid' },
+      'Institutional': { fill: '#ffe1a3', stroke: '#d2ae63', pattern: 'solid' },
+      'Other': { fill: '#94a3b8', stroke: '#475569', pattern: 'solid' }
+    };
+
+    const LEGEND_ITEMS = [
+      { key: 'Residential', label: 'Residential' },
+      { key: 'Converted Commercial', label: 'Converted Commercial' },
+      { key: 'Illegal Commercial Zone', label: 'Illegal Commercial Zone' },
+      { key: 'Illegal Institutional Zone', label: 'Illegal Institutional Zone' },
+      { key: 'Illegal Industrial Zone', label: 'Illegal Industrial Zone' },
+      { key: 'Illegal Residential Zone', label: 'Illegal Residential Zone' },
+      { key: 'Industrial', label: 'Industrial' },
+      { key: 'Designated Commercial', label: 'Designated Commercial' },
+      { key: 'Commercial Corridors', label: 'Commercial Corridors' },
+      { key: 'Institutional', label: 'Institutional' },
+      { key: 'Public Sector Instititional', label: 'Public Sector Instititional' },
+      { key: 'Public Utility Use', label: 'Public Utility Use' },
+      { key: 'Park', label: 'Park' },
+      { key: 'Learning Alliance', label: 'Learning Alliance' },
+      { key: 'Existing Abadi', label: 'Existing Abadi' },
+      { key: 'Under Process', label: 'Under Process Commercialization' },
+      { key: 'Under Process (Challan Issued)', label: 'Under Process (Challan Issued)' },
+      { key: 'Partial Payment Recieved', label: 'Partial Payment Recieved' },
+      { key: 'Under Construction Building', label: 'Under Construction Building' },
+      { key: 'Court Case', label: 'Court Case' },
+      { key: 'Graveyard', label: 'Graveyard' },
+      { key: 'No-use', label: 'No-use' }
+    ];
+
+    function normalizeValue(value) {
+      if (value === null || value === undefined) return '';
+      return String(value).trim();
+    }
+
+    function escapeHtml(value) {
+      return String(value ?? '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+
+    function getImageCandidates(id) {
+      const safeId = normalizeValue(id);
+      if (!safeId) return [];
+
+      // Pictures are uploaded individually in the same folder/root as this HTML file.
+      // Example GitHub structure:
+      // landuse.html
+      // plot_data.csv
+      // plots.json
+      // 2923.jpg
+      // 2924.png
+      return [
+        `${safeId}.jpg`,
+        `${safeId}.jpeg`,
+        `${safeId}.png`,
+        `${safeId}.webp`,
+        `${safeId}.gif`,
+        `${safeId}.JPG`,
+        `${safeId}.JPEG`,
+        `${safeId}.PNG`,
+        `${safeId}.WEBP`,
+        `${safeId}.GIF`
+      ];
+    }
+
+    function getPopupImageHtml(id) {
+      const candidates = getImageCandidates(id);
+      if (!candidates.length) return '';
+
+      const firstImage = candidates[0];
+      const encodedCandidates = encodeURIComponent(JSON.stringify(candidates));
+      const safeAlt = escapeHtml(`Plot image ${id}`);
+
+      return `
+        <div style="margin-top:12px; padding-top:10px; border-top:1px solid #e2e8f0;">
+          <strong style="color:#0e2744; display:block; margin-bottom:8px;">Picture Preview</strong>
+          <a href="${escapeHtml(firstImage)}" target="_blank" rel="noopener noreferrer" style="display:block; text-decoration:none;">
+            <img
+              src="${escapeHtml(firstImage)}"
+              alt="${safeAlt}"
+              data-candidates="${encodedCandidates}"
+              data-index="0"
+              onerror="try{const c=JSON.parse(decodeURIComponent(this.dataset.candidates||'%5B%5D'));let i=parseInt(this.dataset.index||'0',10)+1;if(i<c.length){this.dataset.index=i;this.src=c[i];if(this.parentElement)this.parentElement.href=c[i];}else{this.style.display='none';const n=this.nextElementSibling;if(n)n.style.display='block';if(this.parentElement)this.parentElement.style.display='none';}}catch(e){this.style.display='none';const n=this.nextElementSibling;if(n)n.style.display='block';if(this.parentElement)this.parentElement.style.display='none';}"
+              style="width:100%; max-height:170px; object-fit:cover; border-radius:10px; border:1px solid #cbd5e1; background:#f8fafc;"
+            />
+            <span style="display:none; padding:12px; border:1px dashed #cbd5e1; border-radius:10px; color:#64748b; font-size:12px; background:#f8fafc;">No picture found for ID ${escapeHtml(id)} in the same folder/root.</span>
+          </a>
+        </div>
+      `;
+    }
+
+    function getFeatureCenter(feature) {
+      try {
+        const layer = L.geoJSON(feature);
+        return layer.getBounds().getCenter();
+      } catch (error) {
+        const lat = Number(feature?.properties?.latitude);
+        const lng = Number(feature?.properties?.longitude);
+        if (Number.isFinite(lat) && Number.isFinite(lng)) {
+          return L.latLng(lat, lng);
+        }
+        return L.latLng(31.5204, 74.3587);
+      }
+    }
+
+    function getPlotNumberFromFeature(feature) {
+      const props = feature?.properties || {};
+      const possibleKeys = ['PlotNo', 'Plot_No', 'Plot No', 'Plot', 'PLOT', 'PlotNo_1'];
+      for (const key of possibleKeys) {
+        const value = normalizeValue(props[key]);
+        if (value && value !== '0' && value !== '#N/A') return value;
+      }
+      return '';
+    }
+
+    function buildStatusClass(text) {
+      const value = normalizeValue(text).toLowerCase();
+      if (value.includes('illegal') || value.includes('converted')) return 'converted';
+      if (value.includes('under process') || value.includes('pending') || value.includes('challan')) return 'pending';
+      return 'active';
+    }
+
+    function setStatus(message, isError = false) {
+      const bar = document.getElementById('statusBar');
+      bar.textContent = message;
+      bar.style.background = isError ? '#fee2e2' : '#f8fbfe';
+      bar.style.color = isError ? '#991b1b' : '#334155';
+      bar.style.borderColor = isError ? '#fecaca' : '#e2e8f0';
+    }
+
+    function getLanduseStyle(landuse) {
+      return LANDUSE_STYLES[normalizeValue(landuse)] || LANDUSE_STYLES.Other;
+    }
+
+    function loadCsvFile(url) {
+      return new Promise((resolve, reject) => {
+        Papa.parse(url, {
+          download: true,
+          header: true,
+          skipEmptyLines: true,
+          complete: results => resolve(results.data),
+          error: error => reject(error)
+        });
+      });
+    }
+
+
+    async function loadOptionalCsvFile(url) {
+      try {
+        return await loadCsvFile(url);
+      } catch (error) {
+        console.warn(`Optional CSV not loaded: ${url}`, error);
+        return [];
+      }
+    }
+
+    function normalizeLetterPath(value) {
+      const raw = normalizeValue(value);
+      if (!raw) return '';
+      if (/^https?:\/\//i.test(raw) || /^file:\/\//i.test(raw) || raw.startsWith('/') || raw.startsWith('./') || raw.startsWith('../')) {
+        return raw;
+      }
+      if (/^[A-Za-z]:[\\/]/.test(raw)) {
+        return 'file:///' + raw.replaceAll('\\', '/');
+      }
+      return raw.replaceAll('\\', '/');
+    }
+
+    function getLetterValue(row) {
+      if (!row || typeof row !== 'object') return '';
+      const keys = ['Letter', 'letter', 'Commercial Letter', 'CommercialLetter', 'Commercial_Letter', 'Link', 'URL', 'Url', 'Path'];
+      for (const key of keys) {
+        if (row[key] != null && String(row[key]).trim()) return String(row[key]).trim();
+      }
+      return '';
+    }
+
+    function isCommercialPlot(item) {
+      const text = `${normalizeValue(item.landuse)} ${normalizeValue(item.reclassificationStatus)} ${normalizeValue(item.currentUse)}`.toLowerCase();
+      return text.includes('commercial');
+    }
+
+    function createPattern(patternId, config, defs) {
+      const svgNS = 'http://www.w3.org/2000/svg';
+      const pattern = document.createElementNS(svgNS, 'pattern');
+      pattern.setAttribute('id', patternId);
+      pattern.setAttribute('patternUnits', 'userSpaceOnUse');
+      pattern.setAttribute('width', '10');
+      pattern.setAttribute('height', '10');
+
+      const bg = document.createElementNS(svgNS, 'rect');
+      bg.setAttribute('width', '10');
+      bg.setAttribute('height', '10');
+      bg.setAttribute('fill', config.fill || '#ffffff');
+      pattern.appendChild(bg);
+
+      const addLine = (x1, y1, x2, y2, color, width = 2) => {
+        const line = document.createElementNS(svgNS, 'line');
+        line.setAttribute('x1', x1);
+        line.setAttribute('y1', y1);
+        line.setAttribute('x2', x2);
+        line.setAttribute('y2', y2);
+        line.setAttribute('stroke', color);
+        line.setAttribute('stroke-width', width);
+        line.setAttribute('stroke-linecap', 'square');
+        pattern.appendChild(line);
+      };
+
+      const addCircle = (cx, cy, r, fill) => {
+        const circle = document.createElementNS(svgNS, 'circle');
+        circle.setAttribute('cx', cx);
+        circle.setAttribute('cy', cy);
+        circle.setAttribute('r', r);
+        circle.setAttribute('fill', fill);
+        pattern.appendChild(circle);
+      };
+
+      const addRect = (x, y, width, height, fill, stroke = 'none', strokeWidth = 0) => {
+        const rect = document.createElementNS(svgNS, 'rect');
+        rect.setAttribute('x', x);
+        rect.setAttribute('y', y);
+        rect.setAttribute('width', width);
+        rect.setAttribute('height', height);
+        rect.setAttribute('fill', fill);
+        rect.setAttribute('stroke', stroke);
+        rect.setAttribute('stroke-width', strokeWidth);
+        pattern.appendChild(rect);
+      };
+
+      switch (config.pattern) {
+        case 'diag-pink':
+          addLine(-2, 10, 10, -2, '#ec2fb3', 2);
+          addLine(2, 12, 12, 2, '#ec2fb3', 2);
+          addLine(6, 16, 16, 6, '#ec2fb3', 2);
+          break;
+        case 'diag-gray':
+          addLine(-2, 10, 10, -2, '#8f8f8f', 1.8);
+          addLine(2, 12, 12, 2, '#8f8f8f', 1.8);
+          addLine(6, 16, 16, 6, '#8f8f8f', 1.8);
+          break;
+        case 'diag-teal':
+          addLine(-2, 10, 10, -2, '#36a893', 1.8);
+          addLine(2, 12, 12, 2, '#36a893', 1.8);
+          addLine(6, 16, 16, 6, '#36a893', 1.8);
+          break;
+        case 'cross-white-blue':
+          addLine(-2, 10, 10, -2, '#ffffff', 2.1);
+          addLine(2, 12, 12, 2, '#ffffff', 2.1);
+          addLine(6, 16, 16, 6, '#ffffff', 2.1);
+          addLine(-2, 0, 10, 12, '#ffffff', 2.1);
+          addLine(2, -2, 12, 8, '#ffffff', 2.1);
+          addLine(6, -6, 16, 4, '#ffffff', 2.1);
+          break;
+        case 'diag-charcoal':
+          addLine(-2, 10, 10, -2, '#4e5563', 2);
+          addLine(2, 12, 12, 2, '#4e5563', 2);
+          addLine(6, 16, 16, 6, '#4e5563', 2);
+          break;
+        case 'park-icons':
+          addCircle(2, 2, 1.1, '#8ccc67');
+          addCircle(8, 2, 1.1, '#8ccc67');
+          addCircle(5, 5, 1.1, '#8ccc67');
+          addCircle(2, 8, 1.1, '#8ccc67');
+          addCircle(8, 8, 1.1, '#8ccc67');
+          addLine(1, 5, 3, 5, '#8ccc67', 0.8);
+          addLine(2, 4, 2, 6, '#8ccc67', 0.8);
+          addLine(7, 5, 9, 5, '#8ccc67', 0.8);
+          addLine(8, 4, 8, 6, '#8ccc67', 0.8);
+          addLine(4, 5, 6, 5, '#8ccc67', 0.8);
+          addLine(5, 4, 5, 6, '#8ccc67', 0.8);
+          break;
+        case 'diag-red':
+          addLine(-2, 10, 10, -2, '#ff2c2c', 2);
+          addLine(2, 12, 12, 2, '#ff2c2c', 2);
+          addLine(6, 16, 16, 6, '#ff2c2c', 2);
+          break;
+        case 'cross-white-red':
+          addLine(-2, 10, 10, -2, '#ffffff', 2.1);
+          addLine(2, 12, 12, 2, '#ffffff', 2.1);
+          addLine(6, 16, 16, 6, '#ffffff', 2.1);
+          addLine(-2, 0, 10, 12, '#ffffff', 2.1);
+          addLine(2, -2, 12, 8, '#ffffff', 2.1);
+          addLine(6, -6, 16, 4, '#ffffff', 2.1);
+          break;
+      }
+
+      defs.appendChild(pattern);
+    }
+
+    function ensureSvgPatterns() {
+      const svg = map.getPanes().overlayPane.querySelector('svg');
+      if (!svg) return;
+
+      let defs = svg.querySelector('defs[data-landuse-patterns="true"]');
+      if (defs) return;
+
+      defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
+      defs.setAttribute('data-landuse-patterns', 'true');
+      svg.insertBefore(defs, svg.firstChild);
+
+      const uniqueStyles = Object.entries(LANDUSE_STYLES);
+      uniqueStyles.forEach(([name, config]) => {
+        if (config.pattern && config.pattern !== 'solid') {
+          const id = `pattern-${name.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
+          createPattern(id, config, defs);
+        }
+      });
+    }
+
+    function applyPatternToLayer(layer, landuse) {
+      const style = getLanduseStyle(landuse);
+      const path = layer.getElement && layer.getElement();
+      if (!path) return;
+
+      path.setAttribute('stroke', style.stroke || '#1f2937');
+      path.setAttribute('stroke-width', '1.4');
+      path.setAttribute('fill-opacity', '0.95');
+
+      if (style.pattern && style.pattern !== 'solid') {
+        const patternId = `pattern-${normalizeValue(landuse).toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
+        path.setAttribute('fill', `url(#${patternId})`);
+      } else {
+        path.setAttribute('fill', style.fill || '#94a3b8');
+      }
+    }
+
+    function getLegendSwatchStyle(landuse) {
+      const style = getLanduseStyle(landuse);
+      const fill = style.fill || '#94a3b8';
+      const stroke = style.stroke || '#1f2937';
+      const css = [`border-color:${stroke}`, `background-color:${fill}`];
+
+      if (style.pattern === 'diag-pink') {
+        css.push(`background-image: repeating-linear-gradient(135deg, #ffffff 0 4px, #ec2fb3 4px 6px, #ffffff 6px 10px)`);
+      } else if (style.pattern === 'diag-gray') {
+        css.push(`background-image: repeating-linear-gradient(135deg, #ffffff 0 4px, #8f8f8f 4px 6px, #ffffff 6px 10px)`);
+      } else if (style.pattern === 'diag-teal') {
+        css.push(`background-image: repeating-linear-gradient(135deg, #ffffff 0 4px, #36a893 4px 6px, #ffffff 6px 10px)`);
+      } else if (style.pattern === 'cross-white-blue') {
+        css.push(`background-image: repeating-linear-gradient(135deg, rgba(10,63,154,0) 0 4px, #ffffff 4px 6px, rgba(10,63,154,0) 6px 10px), repeating-linear-gradient(45deg, rgba(10,63,154,0) 0 4px, #ffffff 4px 6px, rgba(10,63,154,0) 6px 10px)`);
+      } else if (style.pattern === 'diag-charcoal') {
+        css.push(`background-image: repeating-linear-gradient(135deg, #ffffff 0 4px, #4e5563 4px 6px, #ffffff 6px 10px)`);
+      } else if (style.pattern === 'park-icons') {
+        css.push(`background-image: radial-gradient(circle at 25% 25%, #8ccc67 0 2px, transparent 2.1px), radial-gradient(circle at 75% 25%, #8ccc67 0 2px, transparent 2.1px), radial-gradient(circle at 50% 50%, #8ccc67 0 2px, transparent 2.1px), radial-gradient(circle at 25% 75%, #8ccc67 0 2px, transparent 2.1px), radial-gradient(circle at 75% 75%, #8ccc67 0 2px, transparent 2.1px)`);
+      } else if (style.pattern === 'diag-red') {
+        css.push(`background-image: repeating-linear-gradient(135deg, #ffffff 0 4px, #ff2c2c 4px 6px, #ffffff 6px 10px)`);
+      } else if (style.pattern === 'cross-white-red') {
+        css.push(`background-image: repeating-linear-gradient(135deg, rgba(255,27,27,0) 0 4px, #ffffff 4px 6px, rgba(255,27,27,0) 6px 10px), repeating-linear-gradient(45deg, rgba(255,27,27,0) 0 4px, #ffffff 4px 6px, rgba(255,27,27,0) 6px 10px)`);
+      }
+
+      return css.join(';');
+    }
+
+    async function loadData() {
+      try {
+        setStatus('Loading plot_data.csv, optional letter links, and plots.json ...');
+        const [csvRows, letterRows, geoJson] = await Promise.all([
+          loadCsvFile('plot_data.csv'),
+          loadOptionalCsvFile('commercial_letters.csv'),
+          fetch('plots.json').then(response => {
+            if (!response.ok) throw new Error('plots.json could not be loaded');
+            return response.json();
+          })
+        ]);
+
+        const cleanedRows = csvRows.map(row => ({
+          id: Number(normalizeValue(row.ID)),
+          directorate: normalizeValue(row.Directorate),
+          scheme: normalizeValue(row.Scheme),
+          phase: normalizeValue(row.Phase),
+          block: normalizeValue(row.Block),
+          plot: normalizeValue(row.Plot),
+          reclassificationStatus: normalizeValue(row['Reclassication Status'] || row['Reclassification Status']),
+          landuse: normalizeValue(row.Landuse),
+          currentUse: normalizeValue(row['Current Use']),
+          commercialLetter: normalizeLetterPath(getLetterValue(row))
+        })).filter(row => Number.isFinite(row.id));
+
+        const letterMap = new Map(
+          letterRows
+            .map(row => ({
+              id: Number(normalizeValue(row.ID)),
+              letter: normalizeLetterPath(getLetterValue(row))
+            }))
+            .filter(row => Number.isFinite(row.id) && row.letter)
+            .map(row => [row.id, row.letter])
+        );
+
+        const csvMap = new Map(cleanedRows.map(row => [row.id, row]));
+
+        mergedData = geoJson.features
+          .map(feature => {
+            const featureId = Number(feature?.properties?.ID);
+            const csvRow = csvMap.get(featureId);
+            if (!csvRow) return null;
+
+            const center = getFeatureCenter(feature);
+            const landuse = csvRow.landuse || normalizeValue(feature?.properties?.Landuse) || 'Other';
+            const currentUse = csvRow.currentUse || normalizeValue(feature?.properties?.Current_Us);
+            const commercialLetter = csvRow.commercialLetter || letterMap.get(featureId) || '';
+
+            return {
+              id: featureId,
+              directorate: csvRow.directorate,
+              scheme: csvRow.scheme,
+              phase: csvRow.phase,
+              block: csvRow.block,
+              plot: getPlotNumberFromFeature(feature) || csvRow.plot,
+              reclassificationStatus: csvRow.reclassificationStatus,
+              landuse,
+              currentUse,
+              commercialLetter,
+              lat: center.lat,
+              lng: center.lng,
+              feature,
+              properties: feature.properties || {}
+            };
+          })
+          .filter(Boolean);
+
+        initMap();
+        populateFilters();
+        applyFilters();
+        updateInsights();
+        const linkedCount = mergedData.filter(item => item.commercialLetter).length;
+        setStatus(`Loaded ${mergedData.length.toLocaleString()} matched records. Commercial letters linked by ID: ${linkedCount.toLocaleString()}.`);
+      } catch (error) {
+        console.error(error);
+        setStatus('Could not load files. Put the HTML, plot_data.csv, and plots.json in the same folder and run through a local server.', true);
+        document.getElementById('recordsBody').innerHTML = '<tr><td colspan="9" style="text-align:center; padding:24px; color:#991b1b;">Could not load plot_data.csv or plots.json.</td></tr>';
+      }
+    }
+
+    function initMap() {
+      if (map) {
+        map.remove();
+      }
+
+      map = L.map('map', {
+        center: [31.5204, 74.3587],
+        zoom: 13,
+        zoomControl: true
+      });
+
+      baseLayers = {
+        'OpenStreetMap': L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          maxZoom: 19,
+          crossOrigin: 'anonymous',
+          attribution: '&copy; OpenStreetMap contributors'
+        }),
+        'Street': L.tileLayer('https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png', {
+          maxZoom: 19,
+          crossOrigin: 'anonymous',
+          attribution: '&copy; OpenStreetMap contributors, HOT'
+        }),
+        'Satellite': L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+          maxZoom: 19,
+          crossOrigin: 'anonymous',
+          attribution: 'Tiles &copy; Esri'
+        })
+      };
+
+      currentBaseLayer = baseLayers['OpenStreetMap'];
+      currentBaseLayer.addTo(map);
+      L.control.layers(baseLayers, {}, { position: 'topright', collapsed: false }).addTo(map);
+      plotLayer = L.layerGroup().addTo(map);
+      L.control.scale({ imperial: false, position: 'bottomleft' }).addTo(map);
+
+      map.whenReady(() => {
+        ensureSvgPatterns();
+      });
+    }
+
+    function setBaseLayer(name) {
+      if (!baseLayers[name] || currentBaseLayer === baseLayers[name]) return;
+      map.removeLayer(currentBaseLayer);
+      currentBaseLayer = baseLayers[name];
+      currentBaseLayer.addTo(map);
+    }
+
+    function getUniqueSortedValues(key) {
+      return [...new Set(mergedData.map(item => normalizeValue(item[key])).filter(Boolean))]
+        .sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
+    }
+
+    function populateSelect(selectId, values, label) {
+      const select = document.getElementById(selectId);
+      const currentValue = select.value;
+      select.innerHTML = `<option value="All">All ${label}</option>`;
+      values.forEach(value => {
+        const option = document.createElement('option');
+        option.value = value;
+        option.textContent = value;
+        select.appendChild(option);
+      });
+      if ([...select.options].some(opt => opt.value === currentValue)) {
+        select.value = currentValue;
+      }
+    }
+
+    function getFilteredValues(data, key) {
+      return [...new Set(data.map(item => normalizeValue(item[key])).filter(Boolean))]
+        .sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
+    }
+
+    function filterForDependencies(data, selections) {
+      return data.filter(item => {
+        if (selections.directorate !== 'All' && item.directorate !== selections.directorate) return false;
+        if (selections.scheme !== 'All' && item.scheme !== selections.scheme) return false;
+        if (selections.phase !== 'All' && item.phase !== selections.phase) return false;
+        if (selections.block !== 'All' && item.block !== selections.block) return false;
+        if (selections.plot !== 'All' && item.plot !== selections.plot) return false;
+        return true;
+      });
+    }
+
+    function populateFilters() {
+      const selections = {
+        directorate: document.getElementById('directorate').value || 'All',
+        scheme: document.getElementById('scheme').value || 'All',
+        phase: document.getElementById('phase').value || 'All',
+        block: document.getElementById('block').value || 'All',
+        plot: document.getElementById('plot').value || 'All',
+        landuse: document.getElementById('landuse').value || 'All'
+      };
+
+      populateSelect('directorate', getUniqueSortedValues('directorate'), 'Directorate');
+
+      const schemeData = filterForDependencies(mergedData, { ...selections, scheme: 'All', phase: 'All', block: 'All', plot: 'All' });
+      populateSelect('scheme', getFilteredValues(schemeData, 'scheme'), 'Scheme');
+
+      const phaseData = filterForDependencies(mergedData, { ...selections, phase: 'All', block: 'All', plot: 'All' });
+      populateSelect('phase', getFilteredValues(phaseData, 'phase'), 'Phase');
+
+      const blockData = filterForDependencies(mergedData, { ...selections, block: 'All', plot: 'All' });
+      populateSelect('block', getFilteredValues(blockData, 'block'), 'Block');
+
+      const plotData = filterForDependencies(mergedData, { ...selections, plot: 'All' });
+      populateSelect('plot', getFilteredValues(plotData, 'plot'), 'Plot');
+
+      const landuseData = filterForDependencies(mergedData, selections);
+      populateSelect('landuse', getFilteredValues(landuseData, 'landuse'), 'Landuse');
+
+      filterIds.forEach(id => {
+        document.getElementById(id).removeEventListener('change', handleFilterChange);
+        document.getElementById(id).addEventListener('change', handleFilterChange);
+      });
+
+      const searchInput = document.getElementById('searchInput');
+      searchInput.removeEventListener('input', applyFilters);
+      searchInput.addEventListener('input', applyFilters);
+    }
+
+    function handleFilterChange() {
+      populateFilters();
+      applyFilters();
+    }
+
+    function clearFilters() {
+      filterIds.forEach(id => {
+        document.getElementById(id).value = 'All';
+      });
+      document.getElementById('searchInput').value = '';
+      populateFilters();
+      applyFilters();
+    }
+
+    function getFilteredData() {
+      const searchTerm = normalizeValue(document.getElementById('searchInput').value).toLowerCase();
+
+      return mergedData.filter(item => {
+        const matchesDropdowns = filterIds.every(id => {
+          const selected = document.getElementById(id).value;
+          return selected === 'All' || normalizeValue(item[id]) === selected;
+        });
+
+        if (!matchesDropdowns) return false;
+        if (!searchTerm) return true;
+
+        return searchFields.some(field => normalizeValue(item[field]).toLowerCase().includes(searchTerm));
+      });
+    }
+
+    function getAppliedFilterParts() {
+      const labels = {
+        directorate: 'Directorate',
+        scheme: 'Scheme',
+        phase: 'Phase',
+        block: 'Block',
+        plot: 'Plot',
+        landuse: 'Landuse'
+      };
+
+      return filterIds
+        .map(id => ({ id, value: document.getElementById(id).value }))
+        .filter(item => item.value && item.value !== 'All')
+        .map(item => `${labels[item.id]}: ${item.value}`);
+    }
+
+    function getExportTitle() {
+      const scheme = document.getElementById('scheme').value;
+      const phase = document.getElementById('phase').value;
+      const block = document.getElementById('block').value;
+      const plot = document.getElementById('plot').value;
+      const landuse = document.getElementById('landuse').value;
+      const parts = [];
+
+      if (plot !== 'All') parts.push(`Plot ${plot}`);
+      else if (block !== 'All') parts.push(block);
+      else if (phase !== 'All') parts.push(phase);
+
+      if (scheme !== 'All') parts.push(scheme);
+      else {
+        const directorate = document.getElementById('directorate').value;
+        if (directorate !== 'All') parts.push(directorate);
+      }
+
+      let title = parts.length ? `Landuse map of ${parts.join(', ')}` : 'Landuse map';
+      if (landuse !== 'All') title += ` - ${landuse}`;
+      return title;
+    }
+
+    function applyFilters() {
+      const filtered = getFilteredData();
+      updateStats(filtered);
+      updateLegend(filtered);
+      updateTable(filtered);
+      updateMap(filtered);
+    }
+
+    function updateStats(filtered) {
+      const totalSchemes = new Set(filtered.map(item => item.scheme).filter(Boolean)).size;
+      const totalPlots = filtered.length;
+      const totalBlocks = new Set(filtered.map(item => item.block).filter(Boolean)).size;
+      const totalConverted = filtered.filter(item => normalizeValue(item.landuse).toLowerCase() === 'converted commercial').length;
+      const totalIllegal = filtered.filter(item => {
+        const landuse = normalizeValue(item.landuse).toLowerCase();
+        return landuse === 'illegal commercial zone' || landuse === 'illegal institutional zone';
+      }).length;
+
+      document.getElementById('totalSchemes').textContent = totalSchemes.toLocaleString();
+      document.getElementById('totalPlots').textContent = totalPlots.toLocaleString();
+      document.getElementById('totalBlocks').textContent = totalBlocks.toLocaleString();
+      document.getElementById('totalConverted').textContent = totalConverted.toLocaleString();
+      document.getElementById('totalIllegal').textContent = totalIllegal.toLocaleString();
+    }
+
+    function updateLegend(filtered) {
+      const legendList = document.getElementById('legendList');
+      legendList.innerHTML = '';
+
+      const counts = {};
+      filtered.forEach(item => {
+        const key = item.landuse || 'Other';
+        counts[key] = (counts[key] || 0) + 1;
+      });
+
+      const legendKeys = new Set(LEGEND_ITEMS.map(item => item.key));
+      const extraKeys = Object.keys(counts)
+        .filter(key => !legendKeys.has(key))
+        .sort((a, b) => a.localeCompare(b));
+
+      const finalItems = [
+        ...LEGEND_ITEMS,
+        ...extraKeys.map(key => ({ key, label: key }))
+      ];
+
+      finalItems.forEach(item => {
+        const total = counts[item.key] || 0;
+        const row = document.createElement('div');
+        row.className = 'legend-item';
+        row.innerHTML = `
+          <div class="legend-left">
+            <span class="symbol" style="${getLegendSwatchStyle(item.key)}"></span>
+            <span>${escapeHtml(item.label)}</span>
+          </div>
+          <span class="legend-value">${total.toLocaleString()}</span>
+        `;
+        legendList.appendChild(row);
+      });
+    }
+
+    function updateInsights() {
+      const total = mergedData.length;
+      const converted = mergedData.filter(item => (item.landuse || '').toLowerCase().includes('converted')).length;
+      const illegal = mergedData.filter(item => {
+        const landuse = normalizeValue(item.landuse).toLowerCase();
+        return landuse === 'illegal commercial zone' || landuse === 'illegal institutional zone';
+      }).length;
+      const underProcess = mergedData.filter(item => {
+        const text = `${item.landuse} ${item.reclassificationStatus}`.toLowerCase();
+        return text.includes('under process') || text.includes('challan');
+      }).length;
+
+      document.getElementById('insightList').innerHTML = `
+        <div class="insight-item">Total linked records: <strong>${total.toLocaleString()}</strong>.</div>
+        <div class="insight-item">Converted commercial plots in linked data: <strong>${converted.toLocaleString()}</strong>.</div>
+        <div class="insight-item">Total illegal plots (illegal commercial zone + illegal institutional zone): <strong>${illegal.toLocaleString()}</strong>.</div>
+        <div class="insight-item">Under-process or challan-related plots: <strong>${underProcess.toLocaleString()}</strong>.</div>
+      `;
+    }
+
+    function updateTable(filtered) {
+      const body = document.getElementById('recordsBody');
+      body.innerHTML = '';
+
+      if (filtered.length === 0) {
+        body.innerHTML = '<tr><td colspan="9" style="text-align:center; padding:24px; color:#64748b;">No records found for the selected filters.</td></tr>';
+        return;
+      }
+
+      filtered.forEach(item => {
+        const tr = document.createElement('tr');
+        const statusClass = buildStatusClass(item.landuse || item.reclassificationStatus);
+        tr.innerHTML = `
+          <td>${item.id}</td>
+          <td>${escapeHtml(item.directorate)}</td>
+          <td>${escapeHtml(item.scheme)}</td>
+          <td>${escapeHtml(item.phase)}</td>
+          <td>${escapeHtml(item.block)}</td>
+          <td>${escapeHtml(item.plot)}</td>
+          <td><span class="badge ${statusClass}">${escapeHtml(item.reclassificationStatus || '-')}</span></td>
+          <td>${escapeHtml(item.landuse || '-')}</td>
+          <td>${escapeHtml(item.currentUse || '-')}</td>
+        `;
+        body.appendChild(tr);
+      });
+    }
+
+    function getPopupHtml(item) {
+      const style = getLanduseStyle(item.landuse);
+      const popupImageHtml = getPopupImageHtml(item.id);
+      const canViewLetter = isCommercialPlot(item) && !!item.commercialLetter;
+      const letterRow = canViewLetter
+        ? `<div style="margin-top:12px; padding-top:10px; border-top:1px solid #e2e8f0; display:flex; justify-content:space-between; align-items:center; gap:10px;">
+             <strong style="color:#0e2744;">Commercial Letter</strong>
+             <a href="${escapeHtml(item.commercialLetter)}" target="_blank" rel="noopener noreferrer" style="display:inline-flex; align-items:center; justify-content:center; padding:7px 14px; border-radius:10px; background:#0e2744; color:#ffffff; text-decoration:none; font-weight:600;">View</a>
+           </div>`
+        : '';
+      return `
+        <div style="min-width:270px; font-family:Segoe UI, Arial, sans-serif; line-height:1.55;">
+          <div style="font-size:16px; font-weight:700; color:#0e2744; margin-bottom:8px;">Plot ${escapeHtml(item.plot || '-')}</div>
+          <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px;">
+            <span style="display:inline-block; width:14px; height:14px; border:1px solid ${escapeHtml(style.stroke)}; background:${escapeHtml(style.fill)};"></span>
+            <strong>${escapeHtml(item.landuse || 'Other')}</strong>
+          </div>
+          <div><strong>ID:</strong> ${item.id}</div>
+          <div><strong>Directorate:</strong> ${escapeHtml(item.directorate || '-')}</div>
+          <div><strong>Scheme:</strong> ${escapeHtml(item.scheme || '-')}</div>
+          <div><strong>Phase:</strong> ${escapeHtml(item.phase || '-')}</div>
+          <div><strong>Block:</strong> ${escapeHtml(item.block || '-')}</div>
+          <div><strong>Reclassification Status:</strong> ${escapeHtml(item.reclassificationStatus || '-')}</div>
+          <div><strong>Current Use:</strong> ${escapeHtml(item.currentUse || '-')}</div>
+          ${popupImageHtml}
+          ${letterRow}
+        </div>
+      `;
+    }
+
+    function updateMap(filtered) {
+      if (!plotLayer || !map) return;
+      plotLayer.clearLayers();
+      if (filtered.length === 0) return;
+
+      ensureSvgPatterns();
+      const bounds = [];
+
+      filtered.forEach(item => {
+        const style = getLanduseStyle(item.landuse);
+        const polygon = L.geoJSON(item.feature, {
+          style: {
+            color: style.stroke || '#1f2937',
+            weight: 1.4,
+            fillColor: style.fill || '#94a3b8',
+            fillOpacity: 0.95
+          },
+          onEachFeature: function(feature, layer) {
+            layer.bindPopup(getPopupHtml(item));
+            layer.on('add', () => applyPatternToLayer(layer, item.landuse));
+          }
+        });
+
+        polygon.addTo(plotLayer);
+
+        polygon.eachLayer(layer => {
+          applyPatternToLayer(layer, item.landuse);
+          if (layer.getBounds) {
+            bounds.push(layer.getBounds());
+          }
+        });
+      });
+
+      const validBounds = bounds.filter(Boolean);
+      if (validBounds.length === 1) {
+        map.fitBounds(validBounds[0], { padding: [30, 30] });
+      } else if (validBounds.length > 1) {
+        const groupBounds = validBounds.reduce((acc, b) => acc.extend(b), validBounds[0]);
+        map.fitBounds(groupBounds, { padding: [30, 30] });
+      }
+    }
+
+    function exportTable() {
+      const filtered = getFilteredData();
+      const headers = ['ID', 'Directorate', 'Scheme', 'Phase', 'Block', 'Plot', 'Reclassication Status', 'Landuse', 'Current Use'];
+      const rows = filtered.map(item => [
+        item.id,
+        item.directorate,
+        item.scheme,
+        item.phase,
+        item.block,
+        item.plot,
+        item.reclassificationStatus,
+        item.landuse,
+        item.currentUse
+      ]);
+
+      const csv = [headers, ...rows].map(row => row.map(value => {
+        const text = String(value ?? '');
+        return /[",\n]/.test(text) ? '"' + text.replace(/"/g, '""') + '"' : text;
+      }).join(',')).join('\n');
+
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = 'gis_filtered_records.csv';
+      link.click();
+      URL.revokeObjectURL(link.href);
+    }
+
+
+    function getFeatureRings(feature) {
+      const geom = feature && feature.geometry;
+      if (!geom) return [];
+      if (geom.type === 'Polygon') return geom.coordinates || [];
+      if (geom.type === 'MultiPolygon') return (geom.coordinates || []).flat();
+      return [];
+    }
+
+    function getGlobalFeatureBounds(data) {
+      let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+      data.forEach(item => {
+        getFeatureRings(item.feature).forEach(ring => {
+          ring.forEach(coord => {
+            const x = Number(coord[0]);
+            const y = Number(coord[1]);
+            if (!Number.isFinite(x) || !Number.isFinite(y)) return;
+            minX = Math.min(minX, x);
+            minY = Math.min(minY, y);
+            maxX = Math.max(maxX, x);
+            maxY = Math.max(maxY, y);
+          });
+        });
+      });
+      return { minX, minY, maxX, maxY };
+    }
+
+    function buildInsetSvg(allData, filteredData) {
+      if (!allData.length) return '';
+      const width = 240;
+      const height = 210;
+      const pad = 12;
+      const box = getGlobalFeatureBounds(allData);
+      const dx = Math.max((box.maxX - box.minX), 0.000001);
+      const dy = Math.max((box.maxY - box.minY), 0.000001);
+      const scale = Math.min((width - pad * 2) / dx, (height - pad * 2) / dy);
+      const xOffset = (width - dx * scale) / 2;
+      const yOffset = (height - dy * scale) / 2;
+
+      function project(coord) {
+        const x = xOffset + (coord[0] - box.minX) * scale;
+        const y = height - (yOffset + (coord[1] - box.minY) * scale);
+        return [x, y];
+      }
+
+      function toPath(feature) {
+        return getFeatureRings(feature).map(ring => {
+          const pts = ring.map(project);
+          return pts.map((pt, idx) => `${idx === 0 ? 'M' : 'L'} ${pt[0].toFixed(2)} ${pt[1].toFixed(2)}`).join(' ') + ' Z';
+        }).join(' ');
+      }
+
+      const basePaths = allData.map(item => `<path d="${toPath(item.feature)}" fill="#f8fafc" stroke="#7c8797" stroke-width="0.9"/>`).join('');
+      const selectedPaths = filteredData.map(item => `<path d="${toPath(item.feature)}" fill="rgba(239,68,68,0.18)" stroke="#c81e1e" stroke-width="1.2"/>`).join('');
+
+      return `
+        <svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">
+          <rect x="0.5" y="0.5" width="${width-1}" height="${height-1}" fill="#ffffff" stroke="#111827"/>
+          ${basePaths}
+          ${selectedPaths}
+        </svg>`;
+    }
+
+    function getSimpleScaleBarHtml() {
+      return `
+        <div style="margin-top:10px; font-size:11px; color:#334155;">
+          <div style="display:flex; align-items:flex-end; gap:8px;">
+            <div style="display:flex; align-items:stretch; border:1px solid #111827; height:8px; width:160px;">
+              <span style="flex:1; background:#111827;"></span>
+              <span style="flex:1; background:#ffffff;"></span>
+              <span style="flex:1; background:#111827;"></span>
+              <span style="flex:1; background:#ffffff;"></span>
+            </div>
+            <span>Kilometers</span>
+          </div>
+          <div style="display:flex; width:160px; justify-content:space-between; margin-top:3px;">
+            <span>0</span><span>0.01</span><span>0.02</span><span>0.03</span><span>0.04</span>
+          </div>
+        </div>`;
+    }
+
+    
+    function getExportPatternFill(landuse) {
+      const normalized = normalizeValue(landuse);
+      const style = getLanduseStyle(normalized);
+      if (style.pattern && style.pattern !== 'solid') {
+        return `url(#exp-pattern-${normalized.toLowerCase().replace(/[^a-z0-9]+/g, '-')})`;
+      }
+      return style.fill || '#94a3b8';
+    }
+
+    function getExportPatternDefs() {
+      return `
+        <defs>
+          <pattern id="exp-pattern-illegal-industrial-zone" patternUnits="userSpaceOnUse" width="10" height="10">
+            <rect width="10" height="10" fill="#ffffff"/>
+            <path d="M-2,10 L10,-2 M2,12 L12,2 M6,16 L16,6" stroke="#ec2fb3" stroke-width="2"/>
+          </pattern>
+          <pattern id="exp-pattern-existing-abadi" patternUnits="userSpaceOnUse" width="10" height="10">
+            <rect width="10" height="10" fill="#ffffff"/>
+            <path d="M-2,10 L10,-2 M2,12 L12,2 M6,16 L16,6" stroke="#8f8f8f" stroke-width="2"/>
+          </pattern>
+          <pattern id="exp-pattern-partial-payment-recieved" patternUnits="userSpaceOnUse" width="10" height="10">
+            <rect width="10" height="10" fill="#ffffff"/>
+            <path d="M-2,10 L10,-2 M2,12 L12,2 M6,16 L16,6" stroke="#36a893" stroke-width="2"/>
+          </pattern>
+          <pattern id="exp-pattern-under-process-commercialization" patternUnits="userSpaceOnUse" width="10" height="10">
+            <rect width="10" height="10" fill="#0a3f9a"/>
+            <path d="M-2,10 L10,-2 M2,12 L12,2 M6,16 L16,6 M-2,0 L10,12 M2,-2 L12,8 M6,-6 L16,4" stroke="#ffffff" stroke-width="1.8"/>
+          </pattern>
+          <pattern id="exp-pattern-under-process" patternUnits="userSpaceOnUse" width="10" height="10">
+            <rect width="10" height="10" fill="#0a3f9a"/>
+            <path d="M-2,10 L10,-2 M2,12 L12,2 M6,16 L16,6 M-2,0 L10,12 M2,-2 L12,8 M6,-6 L16,4" stroke="#ffffff" stroke-width="1.8"/>
+          </pattern>
+          <pattern id="exp-pattern-under-process-challan-issued" patternUnits="userSpaceOnUse" width="10" height="10">
+            <rect width="10" height="10" fill="#ffffff"/>
+            <path d="M-2,10 L10,-2 M2,12 L12,2 M6,16 L16,6" stroke="#4e5563" stroke-width="2"/>
+          </pattern>
+          <pattern id="exp-pattern-park" patternUnits="userSpaceOnUse" width="12" height="12">
+            <rect width="12" height="12" fill="#ffffff"/>
+            <circle cx="3" cy="3" r="1.5" fill="#8ccc67"/><circle cx="9" cy="3" r="1.5" fill="#8ccc67"/>
+            <circle cx="6" cy="6" r="1.5" fill="#8ccc67"/><circle cx="3" cy="9" r="1.5" fill="#8ccc67"/><circle cx="9" cy="9" r="1.5" fill="#8ccc67"/>
+          </pattern>
+          <pattern id="exp-pattern-illegal-commercial-zone" patternUnits="userSpaceOnUse" width="10" height="10">
+            <rect width="10" height="10" fill="#ffffff"/>
+            <path d="M-2,10 L10,-2 M2,12 L12,2 M6,16 L16,6" stroke="#ff2c2c" stroke-width="2"/>
+          </pattern>
+          <pattern id="exp-pattern-illegal-institutional-zone" patternUnits="userSpaceOnUse" width="10" height="10">
+            <rect width="10" height="10" fill="#ff1b1b"/>
+            <path d="M-2,10 L10,-2 M2,12 L12,2 M6,16 L16,6 M-2,0 L10,12 M2,-2 L12,8 M6,-6 L16,4" stroke="#ffffff" stroke-width="1.8"/>
+          </pattern>
+        </defs>`;
+    }
+
+    function buildExportMapSvg(filteredData) {
+      const width = 980;
+      const height = 680;
+      const pad = 55;
+      const box = getGlobalFeatureBounds(filteredData);
+      const dx = Math.max((box.maxX - box.minX), 0.000001);
+      const dy = Math.max((box.maxY - box.minY), 0.000001);
+      const scale = Math.min((width - pad * 2) / dx, (height - pad * 2) / dy);
+      const contentWidth = dx * scale;
+      const contentHeight = dy * scale;
+      const xOffset = (width - contentWidth) / 2;
+      const yOffset = (height - contentHeight) / 2;
+
+      function project(coord) {
+        const x = xOffset + (coord[0] - box.minX) * scale;
+        const y = height - (yOffset + (coord[1] - box.minY) * scale);
+        return [x, y];
+      }
+
+      function toPath(feature) {
+        return getFeatureRings(feature).map(ring => {
+          const pts = ring.map(project);
+          return pts.map((pt, idx) => `${idx === 0 ? 'M' : 'L'} ${pt[0].toFixed(2)} ${pt[1].toFixed(2)}`).join(' ') + ' Z';
+        }).join(' ');
+      }
+
+      const labels = filteredData.map(item => {
+        const b = getGlobalFeatureBounds([item]);
+        const center = project([(b.minX + b.maxX) / 2, (b.minY + b.maxY) / 2]);
+        const label = escapeHtml(String(item.plot || item.id || ''));
+        return `<text x="${center[0].toFixed(2)}" y="${center[1].toFixed(2)}" text-anchor="middle" dominant-baseline="middle" font-size="11" font-weight="700" fill="#ffffff" stroke="#1f2937" stroke-width="0.8" paint-order="stroke">${label}</text>`;
+      }).join('');
+
+      const paths = filteredData.map(item => {
+        const d = toPath(item.feature);
+        const fill = getExportPatternFill(item.landuse);
+        const stroke = getLanduseStyle(item.landuse).stroke || '#111827';
+        return `<path d="${d}" fill="${fill}" stroke="${stroke}" stroke-width="1.4"/>`;
+      }).join('');
+
+      return `
+        <svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">
+          ${getExportPatternDefs()}
+          <rect x="0" y="0" width="${width}" height="${height}" fill="#efefef"/>
+          ${paths}
+          ${labels}
+        </svg>`;
+    }
+
+    function getScaleLabel(filteredData) {
+      const box = getGlobalFeatureBounds(filteredData);
+      const avgLat = (box.minY + box.maxY) / 2;
+      const meters = Math.max(1, (box.maxX - box.minX) * 111320 * Math.cos(avgLat * Math.PI / 180));
+      if (meters >= 1000) return `${(meters / 1000).toFixed(2)} km`;
+      return `${Math.round(meters)} m`;
+    }
+async function exportMapAsPDF() {
+      const legendList = document.getElementById('legendList');
+      if (!legendList) return;
+
+      const filtered = getFilteredData();
+      if (!filtered.length) {
+        setStatus('No filtered records available to export.', true);
+        return;
+      }
+
+      try {
+        setStatus('Preparing map PDF export ...');
+
+        const exportWrap = document.createElement('div');
+        exportWrap.style.position = 'fixed';
+        exportWrap.style.left = '-10000px';
+        exportWrap.style.top = '0';
+        exportWrap.style.width = '1400px';
+        exportWrap.style.background = '#ffffff';
+        exportWrap.style.padding = '8px';
+        exportWrap.style.fontFamily = 'Segoe UI, Arial, sans-serif';
+        exportWrap.style.color = '#0f172a';
+
+        const page = document.createElement('div');
+        page.style.border = '1.5px solid #111827';
+        page.style.background = '#ffffff';
+
+        const titleBar = document.createElement('div');
+        titleBar.style.background = '#052b78';
+        titleBar.style.color = '#ffffff';
+        titleBar.style.fontSize = '34px';
+        titleBar.style.fontWeight = '700';
+        titleBar.style.textAlign = 'center';
+        titleBar.style.padding = '14px 18px';
+        titleBar.style.borderBottom = '1.5px solid #111827';
+        titleBar.textContent = getExportTitle();
+
+        const body = document.createElement('div');
+        body.style.display = 'grid';
+        body.style.gridTemplateColumns = '3.2fr 1fr';
+        body.style.minHeight = '860px';
+
+        const leftCol = document.createElement('div');
+        leftCol.style.position = 'relative';
+        leftCol.style.padding = '18px';
+        leftCol.style.borderRight = '1.5px solid #111827';
+        leftCol.style.background = '#efefef';
+
+        const northArrow = document.createElement('div');
+        northArrow.style.position = 'absolute';
+        northArrow.style.left = '24px';
+        northArrow.style.top = '14px';
+        northArrow.style.display = 'flex';
+        northArrow.style.flexDirection = 'column';
+        northArrow.style.alignItems = 'center';
+        northArrow.innerHTML = `
+          <div style="font-size:18px; font-family:serif; margin-bottom:4px;">N</div>
+          <svg width="30" height="54" viewBox="0 0 30 54" xmlns="http://www.w3.org/2000/svg">
+            <path d="M15 2 L27 46 L15 38 L3 46 Z" fill="#111827" stroke="#111827"/>
+          </svg>`;
+
+        const mapFrame = document.createElement('div');
+        mapFrame.style.marginTop = '20px';
+        mapFrame.style.border = '1.5px solid #111827';
+        mapFrame.style.background = '#efefef';
+        mapFrame.style.display = 'flex';
+        mapFrame.style.alignItems = 'center';
+        mapFrame.style.justifyContent = 'center';
+        mapFrame.style.height = '700px';
+        mapFrame.innerHTML = buildExportMapSvg(filtered);
+
+        const footerMeta = document.createElement('div');
+        footerMeta.style.display = 'flex';
+        footerMeta.style.justifyContent = 'space-between';
+        footerMeta.style.alignItems = 'flex-end';
+        footerMeta.style.marginTop = '10px';
+        footerMeta.style.fontSize = '12px';
+        footerMeta.style.color = '#334155';
+        footerMeta.innerHTML = `<div>Exported: ${new Date().toLocaleString()}</div><div>${filtered.length.toLocaleString()} plots</div>`;
+
+        leftCol.appendChild(northArrow);
+        leftCol.appendChild(mapFrame);
+        leftCol.appendChild(footerMeta);
+
+        const rightCol = document.createElement('div');
+        rightCol.style.display = 'grid';
+        rightCol.style.gridTemplateRows = '250px 1fr';
+        rightCol.style.background = '#ffffff';
+
+        const insetCard = document.createElement('div');
+        insetCard.style.borderBottom = '1.5px solid #111827';
+        insetCard.style.padding = '0';
+        insetCard.innerHTML = `
+          <div style="background:#efefef; color:#111827; font-size:16px; font-weight:700; padding:8px 10px; border-bottom:1.5px solid #111827;">Location Map</div>
+          <div style="padding:10px; display:flex; align-items:center; justify-content:center; background:#efefef; height:calc(100% - 42px);">
+            ${buildInsetSvg(mergedData, filtered)}
+          </div>`;
+
+        const legendCard = document.createElement('div');
+        legendCard.style.display = 'flex';
+        legendCard.style.flexDirection = 'column';
+        legendCard.style.minHeight = '0';
+        legendCard.style.background = '#ffffff';
+
+        const legendHeader = document.createElement('div');
+        legendHeader.style.background = '#052b78';
+        legendHeader.style.color = '#ffffff';
+        legendHeader.style.fontSize = '16px';
+        legendHeader.style.fontWeight = '700';
+        legendHeader.style.padding = '8px 10px';
+        legendHeader.style.borderBottom = '1.5px solid #111827';
+        legendHeader.textContent = 'Legend';
+
+        const legendBody = document.createElement('div');
+        legendBody.style.padding = '10px';
+        legendBody.style.flex = '1';
+        legendBody.style.background = '#ffffff';
+        legendBody.style.display = 'flex';
+        legendBody.style.flexDirection = 'column';
+        legendBody.style.justifyContent = 'space-between';
+
+        const legendClone = legendList.cloneNode(true);
+        legendClone.style.marginTop = '0';
+        legendClone.style.gap = '8px';
+        legendClone.style.maxHeight = 'none';
+        legendClone.style.overflow = 'visible';
+        legendClone.querySelectorAll('.legend-item').forEach(item => {
+          item.style.border = 'none';
+          item.style.background = 'transparent';
+          item.style.borderRadius = '0';
+          item.style.padding = '4px 0';
+          item.style.boxShadow = 'none';
+        });
+        legendClone.querySelectorAll('.legend-value').forEach(el => el.remove());
+
+        const scaleWrap = document.createElement('div');
+        scaleWrap.style.marginTop = '12px';
+        scaleWrap.style.fontSize = '11px';
+        scaleWrap.style.color = '#334155';
+        scaleWrap.innerHTML = `
+          <div style="display:flex; align-items:center; gap:8px;">
+            <div style="display:flex; align-items:stretch; border:1px solid #111827; height:8px; width:140px;">
+              <span style="flex:1; background:#111827;"></span>
+              <span style="flex:1; background:#ffffff;"></span>
+              <span style="flex:1; background:#111827;"></span>
+              <span style="flex:1; background:#ffffff;"></span>
+            </div>
+            <div>${getScaleLabel(filtered)}</div>
+          </div>`;
+
+        legendBody.appendChild(legendClone);
+        legendBody.appendChild(scaleWrap);
+        legendCard.appendChild(legendHeader);
+        legendCard.appendChild(legendBody);
+
+        rightCol.appendChild(insetCard);
+        rightCol.appendChild(legendCard);
+
+        body.appendChild(leftCol);
+        body.appendChild(rightCol);
+        page.appendChild(titleBar);
+        page.appendChild(body);
+        exportWrap.appendChild(page);
+        document.body.appendChild(exportWrap);
+
+        const finalCanvas = await html2canvas(exportWrap, {
+          useCORS: true,
+          allowTaint: false,
+          backgroundColor: '#ffffff',
+          scale: 2,
+          logging: false
+        });
+
+        document.body.removeChild(exportWrap);
+
+        const { jsPDF } = window.jspdf;
+        const pdf = new jsPDF('landscape', 'mm', 'a4');
+        const pageWidth = pdf.internal.pageSize.getWidth();
+        const pageHeight = pdf.internal.pageSize.getHeight();
+        const margin = 5;
+        const usableWidth = pageWidth - margin * 2;
+        const usableHeight = pageHeight - margin * 2;
+        const ratio = Math.min(usableWidth / finalCanvas.width, usableHeight / finalCanvas.height);
+        const renderWidth = finalCanvas.width * ratio;
+        const renderHeight = finalCanvas.height * ratio;
+        const x = (pageWidth - renderWidth) / 2;
+        const y = (pageHeight - renderHeight) / 2;
+
+        pdf.addImage(finalCanvas.toDataURL('image/png'), 'PNG', x, y, renderWidth, renderHeight);
+        const safeTitle = getExportTitle().replace(/[^a-z0-9]+/gi, '_').replace(/^_+|_+$/g, '');
+        pdf.save(`${safeTitle || 'landuse_map'}.pdf`);
+        setStatus('Map PDF exported successfully.');
+      } catch (error) {
+        console.error(error);
+        setStatus('Map PDF export failed. Open the HTML through a local server and try again.', true);
+      }
+    }
+
+
+    loadData();
+  </script>
+</body>
+</html>
