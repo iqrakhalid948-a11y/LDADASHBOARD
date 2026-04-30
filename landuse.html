@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>GIS Dashboard - CSV Linked with JSON by ID</title>
+  <title>Landuse Dashboard</title>
   <link
     rel="stylesheet"
     href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
@@ -593,7 +593,7 @@
     <section class="card header">
       <div class="title-row">
         <div class="title">
-          <h1>Data Analytics</h1>
+          <h1>Landuse Dashboard</h1>
         </div>
       </div>
 
@@ -686,6 +686,7 @@
             <button class="btn" onclick="setBaseLayer('OpenStreetMap')">OpenStreetMap</button>
             <button class="btn" onclick="setBaseLayer('Street')">Street</button>
             <button class="btn" onclick="setBaseLayer('Satellite')">Satellite</button>
+            <button class="btn" id="spatialToggleBtn" onclick="toggleSpatialData()">Hide Spatial Data</button>
             <button class="btn btn-primary" onclick="exportMapAsPDF()">Export Map PDF</button>
           </div>
         </div>
@@ -766,6 +767,7 @@
   <script>
     let map;
     let plotLayer;
+    let showSpatialData = true;
     let baseLayers = {};
     let currentBaseLayer;
     let mergedData = [];
@@ -839,44 +841,38 @@
     }
 
 
-    function getImageCandidates(item) {
-      // This version supports GitHub uploads where image files are uploaded
-      // individually in the same/root folder as landuse.html.
-      // It also tries both ID and Plot number, because sometimes images are
-      // named by ID (251.jpg) and sometimes by Plot number (84.jpg).
-      const rawNames = [
-        normalizeValue(item?.id),
-        normalizeValue(item?.plot),
-        normalizeValue(item?.properties?.ID),
-        normalizeValue(item?.properties?.PlotNo),
-        normalizeValue(item?.properties?.Plot),
-        normalizeValue(item?.properties?.PLOT)
-      ].filter(Boolean);
+    function getImageCandidates(id) {
+      const safeId = normalizeValue(id);
+      if (!safeId) return [];
 
-      const names = [...new Set(rawNames)];
-      const extensions = ['jpg', 'jpeg', 'png', 'webp', 'gif', 'JPG', 'JPEG', 'PNG', 'WEBP', 'GIF'];
-      const candidates = [];
-
-      names.forEach(name => {
-        extensions.forEach(ext => {
-          candidates.push(`${name}.${ext}`);          // root folder on GitHub
-          candidates.push(`./${name}.${ext}`);        // explicit current folder
-          candidates.push(`picture/${name}.${ext}`);  // also supports picture folder if added later
-          candidates.push(`pictures/${name}.${ext}`); // also supports pictures folder if added later
-        });
-      });
-
-      return candidates;
+      // Pictures are stored in a folder named "picture" placed with this HTML file.
+      // Example folder structure:
+      // landuse.html
+      // plot_data.csv
+      // plots.json
+      // picture/2923.jpg
+      // picture/2924.png
+      return [
+        `picture/${safeId}.jpg`,
+        `picture/${safeId}.jpeg`,
+        `picture/${safeId}.png`,
+        `picture/${safeId}.webp`,
+        `picture/${safeId}.gif`,
+        `picture/${safeId}.JPG`,
+        `picture/${safeId}.JPEG`,
+        `picture/${safeId}.PNG`,
+        `picture/${safeId}.WEBP`,
+        `picture/${safeId}.GIF`
+      ];
     }
 
-    function getPopupImageHtml(item) {
-      const candidates = getImageCandidates(item);
+    function getPopupImageHtml(id) {
+      const candidates = getImageCandidates(id);
       if (!candidates.length) return '';
 
       const firstImage = candidates[0];
       const encodedCandidates = encodeURIComponent(JSON.stringify(candidates));
-      const safeAlt = escapeHtml(`Plot image ${item?.id || item?.plot || ''}`);
-      const safeId = escapeHtml(item?.id || item?.plot || '');
+      const safeAlt = escapeHtml(`Plot image ${id}`);
 
       return `
         <div style="margin-top:12px; padding-top:10px; border-top:1px solid #e2e8f0;">
@@ -887,12 +883,10 @@
               alt="${safeAlt}"
               data-candidates="${encodedCandidates}"
               data-index="0"
-              onerror="try{const c=JSON.parse(decodeURIComponent(this.dataset.candidates||'%5B%5D'));let i=parseInt(this.dataset.index||'0',10)+1;if(i<c.length){this.dataset.index=i;this.src=c[i];if(this.parentElement)this.parentElement.href=c[i];}else{this.remove();const n=this.parentElement?this.parentElement.querySelector('.no-picture-note'):null;if(n)n.style.display='block';}}catch(e){this.remove();const n=this.parentElement?this.parentElement.querySelector('.no-picture-note'):null;if(n)n.style.display='block';}"
-              style="width:100%; max-height:190px; object-fit:cover; border-radius:10px; border:1px solid #cbd5e1; background:#f8fafc;"
+              onerror="try{const c=JSON.parse(decodeURIComponent(this.dataset.candidates||'%5B%5D'));let i=parseInt(this.dataset.index||'0',10)+1;if(i<c.length){this.dataset.index=i;this.src=c[i];if(this.parentElement)this.parentElement.href=c[i];}else{this.style.display='none';const n=this.nextElementSibling;if(n)n.style.display='block';if(this.parentElement)this.parentElement.style.display='none';}}catch(e){this.style.display='none';const n=this.nextElementSibling;if(n)n.style.display='block';if(this.parentElement)this.parentElement.style.display='none';}"
+              style="width:100%; max-height:170px; object-fit:cover; border-radius:10px; border:1px solid #cbd5e1; background:#f8fafc;"
             />
-            <span class="no-picture-note" style="display:none; padding:12px; border:1px dashed #cbd5e1; border-radius:10px; color:#64748b; font-size:12px; background:#f8fafc;">
-              No picture found. On GitHub, upload the image in the same folder as landuse.html and name it like <strong>${safeId}.jpg</strong> or <strong>${safeId}.png</strong>. The code also checks the plot number.
-            </span>
+            <span style="display:none; padding:12px; border:1px dashed #cbd5e1; border-radius:10px; color:#64748b; font-size:12px; background:#f8fafc;">No picture found for ID ${escapeHtml(id)} in the picture folder.</span>
           </a>
         </div>
       `;
@@ -1280,6 +1274,19 @@
       });
     }
 
+
+    function toggleSpatialData() {
+      showSpatialData = !showSpatialData;
+
+      const btn = document.getElementById('spatialToggleBtn');
+      if (btn) {
+        btn.textContent = showSpatialData ? 'Hide Spatial Data' : 'Show Spatial Data';
+        btn.classList.toggle('btn-primary', !showSpatialData);
+      }
+
+      applyFilters();
+    }
+
     function setBaseLayer(name) {
       if (!baseLayers[name] || currentBaseLayer === baseLayers[name]) return;
       map.removeLayer(currentBaseLayer);
@@ -1465,14 +1472,20 @@
       });
 
       const legendKeys = new Set(LEGEND_ITEMS.map(item => item.key));
-      const extraKeys = Object.keys(counts)
-        .filter(key => !legendKeys.has(key))
-        .sort((a, b) => a.localeCompare(b));
 
-      const finalItems = [
-        ...LEGEND_ITEMS,
-        ...extraKeys.map(key => ({ key, label: key }))
-      ];
+      const orderedItems = LEGEND_ITEMS.filter(item => (counts[item.key] || 0) > 0);
+
+      const extraItems = Object.keys(counts)
+        .filter(key => !legendKeys.has(key) && counts[key] > 0)
+        .sort((a, b) => a.localeCompare(b))
+        .map(key => ({ key, label: key }));
+
+      const finalItems = [...orderedItems, ...extraItems];
+
+      if (!finalItems.length) {
+        legendList.innerHTML = '<div class="insight-item">No landuse classes found for the current filters.</div>';
+        return;
+      }
 
       finalItems.forEach(item => {
         const total = counts[item.key] || 0;
@@ -1538,7 +1551,7 @@
 
     function getPopupHtml(item) {
       const style = getLanduseStyle(item.landuse);
-      const popupImageHtml = getPopupImageHtml(item);
+      const popupImageHtml = getPopupImageHtml(item.id);
       const canViewLetter = isCommercialPlot(item) && !!item.commercialLetter;
       const letterRow = canViewLetter
         ? `<div style="margin-top:12px; padding-top:10px; border-top:1px solid #e2e8f0; display:flex; justify-content:space-between; align-items:center; gap:10px;">
@@ -1569,6 +1582,9 @@
     function updateMap(filtered) {
       if (!plotLayer || !map) return;
       plotLayer.clearLayers();
+
+      if (!showSpatialData) return;
+
       if (filtered.length === 0) return;
 
       ensureSvgPatterns();
