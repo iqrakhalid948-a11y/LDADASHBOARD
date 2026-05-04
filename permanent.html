@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Permanent Commercialization Dashboard</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+:root{--navy:#0e2744;--navy2:#14365a;--grey:#f1f5f9;--text:#0f172a;--muted:#64748b;--white:#fff;--border:#dbe4ef;--shadow:0 12px 30px rgba(15,23,42,.10);--radius:20px;--green:#16a34a;--orange:#d97706;--red:#dc2626;--blue:#2563eb;--pink:#ec4899;--purple:#7c3aed;--cyan:#0891b2}
+*{box-sizing:border-box;margin:0;padding:0;font-family:"Segoe UI",Arial,sans-serif}body{background:linear-gradient(180deg,#f7fafc 0%,#edf3f8 100%);color:var(--text);padding:22px}.container{max-width:1700px;margin:auto;display:grid;gap:20px}.card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);box-shadow:0 4px 14px rgba(15,23,42,.06);padding:18px}.header{background:linear-gradient(135deg,var(--navy),var(--navy2));color:white;box-shadow:var(--shadow)}.top{display:flex;justify-content:space-between;gap:16px;align-items:center;flex-wrap:wrap;margin-bottom:16px}.brand-row{display:flex;align-items:center;gap:14px}.lda-logo{width:58px;height:58px;object-fit:contain;background:#fff;border-radius:14px;padding:6px;box-shadow:0 4px 12px rgba(15,23,42,.18)}.logo-fallback{width:58px;height:58px;border-radius:14px;background:white;color:#0e2744;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:16px;box-shadow:0 4px 12px rgba(15,23,42,.18)}h1{font-size:32px;letter-spacing:.2px}.subtitle{color:rgba(255,255,255,.78);font-size:14px;margin-top:5px}.home{color:white;text-decoration:none;border:1px solid rgba(255,255,255,.25);padding:10px 14px;border-radius:12px;background:rgba(255,255,255,.10);font-weight:700}.filters{display:grid;grid-template-columns:repeat(auto-fit,minmax(165px,1fr));gap:12px}.filter label{display:block;font-size:12px;font-weight:800;margin-bottom:6px;color:rgba(255,255,255,.9)}select,input,button{width:100%;padding:11px 12px;border-radius:12px;border:1px solid var(--border);font-size:14px;outline:none}button{cursor:pointer;font-weight:900;background:white;color:var(--navy)}.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}.stat{position:relative;overflow:hidden;border:none;color:white;min-height:132px}.stat:nth-child(1){background:linear-gradient(135deg,#0e2744,#1d4976)}.stat:nth-child(2){background:linear-gradient(135deg,#065f46,#16a34a)}.stat:nth-child(3){background:linear-gradient(135deg,#92400e,#d97706)}.stat:nth-child(4){background:linear-gradient(135deg,#1e3a8a,#2563eb)}.stat:nth-child(5){background:linear-gradient(135deg,#831843,#ec4899)}.stat:nth-child(6){background:linear-gradient(135deg,#581c87,#7c3aed)}.stat:after{content:"";position:absolute;width:125px;height:125px;border-radius:50%;right:-28px;top:-28px;background:rgba(255,255,255,.11)}.stat-top{display:flex;justify-content:space-between;align-items:center;gap:10px;position:relative;z-index:1}.stat-label{font-size:13px;color:rgba(255,255,255,.85);font-weight:800}.icon{font-size:24px;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.22);width:44px;height:44px;border-radius:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0}.stat-value{font-size:31px;font-weight:900;margin-top:8px;position:relative;z-index:1}.stat-note{font-size:12px;color:rgba(255,255,255,.78);margin-top:7px;position:relative;z-index:1}.main{display:grid;grid-template-columns:4fr 1.15fr;gap:20px;align-items:start}.map-card{min-height:790px}.map-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:14px;flex-wrap:wrap}.map-head h2,.panel h2{color:var(--navy);font-size:22px}.muted{color:var(--muted);font-size:13px;margin-top:3px;line-height:1.4}.btn-row{display:flex;gap:10px;flex-wrap:wrap}.btn{width:auto;background:var(--navy);color:white;border-color:var(--navy);padding:10px 14px;border-radius:12px}.map-tools button{width:auto;padding:9px 13px;border-radius:11px;border:1px solid var(--border);background:#f8fafc;color:#0e2744;font-weight:900}.map-tools button.active-basemap{background:#0e2744;color:white;border-color:#0e2744}.map-box-wrap{position:relative}#map{height:700px;border-radius:22px;border:1px solid #cfe0f0;background:#eef5fb}.side{display:grid;gap:20px}.chart-wrap{height:280px;display:flex;align-items:center;justify-content:center}.legend-list{display:grid;gap:9px;margin-top:12px}.legend-item{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 11px;border:1px solid var(--border);background:#f8fafc;border-radius:12px;cursor:pointer}.legend-left{display:flex;align-items:center;gap:9px;font-size:13px;font-weight:800;color:#334155}.legend-dot{display:inline-block;width:15px;height:15px;border-radius:5px;border:1px solid rgba(15,23,42,.2)}.legend-count{font-weight:900;color:var(--navy);font-size:13px}.status{padding:12px;border:1px solid var(--border);border-radius:12px;background:#f8fafc;color:#334155;font-size:13px;line-height:1.5}.table-tools{display:flex;gap:10px;align-items:center;margin:12px 0 14px 0;flex-wrap:wrap}.table-wrap{overflow:auto;border:1px solid var(--border);border-radius:16px}table{width:100%;border-collapse:collapse;background:white;font-size:13px}th,td{padding:11px 10px;border-bottom:1px solid var(--border);white-space:nowrap;text-align:left}th{background:#eaf2fa;color:var(--navy);font-weight:900}.badge{padding:5px 9px;border-radius:999px;font-size:12px;font-weight:900;display:inline-block}.badge-approved{background:#dcfce7;color:#166534}.badge-under{background:#fef3c7;color:#854d0e}.badge-pending{background:#fee2e2;color:#991b1b}.badge-other{background:#e2e8f0;color:#334155}.highlight{background:#fff3a3;border-radius:3px;padding:0 2px}.leaflet-popup-content{font-size:13px;line-height:1.45}.popup-row{display:flex;justify-content:space-between;gap:12px;border-bottom:1px solid #eef2f7;padding:3px 0}.popup-row b{color:#334155}.active-filter{display:inline-flex;align-items:center;gap:8px;margin-top:10px;background:#f8fafc;color:#334155;border:1px solid #dbe4ef;border-radius:999px;padding:8px 12px;font-size:13px;font-weight:800}@media(max-width:1050px){.main{grid-template-columns:1fr}#map{height:580px}.map-card{min-height:auto}}
+
+
+/* ===============================
+   FINAL FIX: prevent loaded data from enlarging layout
+   =============================== */
+
+html, body {
+  max-width: 100%;
+  overflow-x: hidden !important;
+}
+
+.container,
+.card,
+.header,
+.stats,
+.stat,
+.main,
+.map-card,
+.side,
+.panel,
+.filters,
+.filter,
+.table-wrap,
+.map-box-wrap {
+  min-width: 0 !important;
+  max-width: 100% !important;
+}
+
+/* Keep filters same size even when dropdown text is very long */
+.filters {
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)) !important;
+  align-items: end;
+}
+
+.filter {
+  min-width: 0 !important;
+  overflow: hidden;
+}
+
+.filter select,
+.filter input,
+.filter button,
+select,
+input,
+button {
+  min-width: 0 !important;
+  max-width: 100% !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+/* Long selected option text must not stretch the dropdown */
+select {
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+/* Keep stats from growing when values become long */
+.stats {
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)) !important;
+}
+
+.stat {
+  overflow: hidden !important;
+}
+
+.stat-label,
+.stat-value,
+.stat-note {
+  min-width: 0 !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+.stat-value {
+  white-space: nowrap !important;
+}
+
+/* Keep map layout stable */
+.main {
+  grid-template-columns: minmax(0, 3fr) minmax(280px, 1fr) !important;
+}
+
+.map-box-wrap {
+  overflow: hidden !important;
+}
+
+#map {
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+/* Long chart/legend/status text must wrap or truncate */
+.legend-item,
+.legend-left,
+.status,
+.active-filter {
+  min-width: 0 !important;
+  max-width: 100% !important;
+}
+
+.legend-left span:last-child,
+.active-filter {
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+/* Table can scroll horizontally without stretching the whole dashboard */
+.table-wrap {
+  width: 100% !important;
+  max-width: 100% !important;
+  overflow-x: auto !important;
+  overflow-y: auto;
+}
+
+table {
+  width: max-content;
+  min-width: 100%;
+  max-width: none;
+}
+
+/* Prevent very long cell text from changing dashboard width */
+th,
+td {
+  max-width: 240px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Specific wider columns that need readability */
+td:nth-child(8),
+td:nth-child(9),
+td:nth-child(10),
+td:nth-child(16) {
+  max-width: 320px;
+}
+
+/* Responsive safety */
+@media (max-width: 1100px) {
+  .main {
+    grid-template-columns: 1fr !important;
+  }
+
+  .side {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .filters {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+
+  .stats {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+@media (max-width: 520px) {
+  .filters {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+
+
+/* ===============================
+   FIX: map option buttons like Landuse dashboard
+   =============================== */
+
+.map-head {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  gap: 14px !important;
+  flex-wrap: wrap !important;
+}
+
+.btn-row,
+.map-tools {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  gap: 10px !important;
+  flex-wrap: wrap !important;
+  width: auto !important;
+  max-width: 100% !important;
+}
+
+.map-tools button,
+.btn-row button,
+.map-head .btn {
+  width: auto !important;
+  min-width: auto !important;
+  max-width: none !important;
+  padding: 10px 14px !important;
+  border-radius: 12px !important;
+  font-size: 14px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  white-space: nowrap !important;
+}
+
+@media (max-width: 768px) {
+  .btn-row,
+  .map-tools {
+    justify-content: flex-start !important;
+  }
+}
+
+
+/* Payment-status map/graph update */
+.legend-dot{border-radius:4px}
+
+</style>
+</head>
+<body>
+<div class="container">
+<section class="card header"><div class="top"><div class="brand-row"><img id="ldaLogoImg" class="lda-logo" src="lda_logo.png" onerror="this.style.display='none';document.getElementById('ldaLogoFallback').style.display='flex';"><div id="ldaLogoFallback" class="logo-fallback" style="display:none">LDA</div><div><h1>Permanent Commercialization Dashboard</h1><div class="subtitle">CSV commercialization records linked with JSON plot geometry by Plot No, Scheme and Block</div></div></div><a class="home" href="index.html">← Main Page</a></div>
+<div class="filters">
+<div class="filter"><label>Scheme</label><select id="scheme"><option value="All">All Scheme</option></select></div>
+<div class="filter"><label>Block</label><select id="block"><option value="All">All Block</option></select></div>
+<div class="filter"><label>Plot</label><select id="plot"><option value="All">All Plot</option></select></div>
+<div class="filter"><label>Application Status</label><select id="applicationStatus"><option value="All">All Application Status</option></select></div>
+<div class="filter"><label>Payment Status</label><select id="paymentStatus"><option value="All">All Payment Status</option></select></div>
+<div class="filter"><label>Shifting Status</label><select id="shiftingStatus"><option value="All">All Shifting Status</option></select></div>
+<div class="filter"><label>Smart Search</label><input id="searchInput" placeholder="Search anything: plot, scheme, status, amount..." /></div>
+<div class="filter"><label>&nbsp;</label><button onclick="clearFilters()">Clear Filters</button></div>
+</div></section>
+<section class="stats">
+<div class="card stat"><div class="stat-top"><div class="stat-label">Total Records</div><div class="icon">🏢</div></div><div id="totalRecords" class="stat-value">0</div><div class="stat-note">Filtered CSV records</div></div>
+<div class="card stat"><div class="stat-top"><div class="stat-label">Approved Cases</div><div class="icon">✅</div></div><div id="approvedCount" class="stat-value">0</div><div class="stat-note">Application status approved</div></div>
+<div class="card stat"><div class="stat-top"><div class="stat-label">Under Process</div><div class="icon">⏳</div></div><div id="underProcessCount" class="stat-value">0</div><div class="stat-note">Application status underprocess/pending</div></div>
+<div class="card stat"><div class="stat-top"><div class="stat-label">Total Challan</div><div class="icon">💰</div></div><div id="totalChallan" class="stat-value">0</div><div class="stat-note">Sum of amount of challan</div></div>
+<div class="card stat"><div class="stat-top"><div class="stat-label">Amount Received</div><div class="icon">📥</div></div><div id="amountReceived" class="stat-value">0</div><div class="stat-note">Sum of amount received</div></div>
+<div class="card stat"><div class="stat-top"><div class="stat-label">Outstanding</div><div class="icon">📌</div></div><div id="outstanding" class="stat-value">0</div><div class="stat-note">Challan minus received</div></div>
+</section>
+<section class="main"><div class="card map-card"><div class="map-head"><div><h2>Spatial Commercial View</h2><p class="muted">Grey polygons are JSON plots. Map polygon colours are based on Payment Status from the CSV records.</p><div id="activeFilterBox"></div></div><div class="btn-row map-tools"><button id="btnOSM" onclick="setBaseMap('osm')" class="active-basemap">Street</button><button id="btnSatellite" onclick="setBaseMap('satellite')">Satellite</button><button id="btnSpatialToggle" onclick="toggleSpatialData()">Hide Spatial Data</button><button class="btn" onclick="exportTable()">Export CSV</button></div></div><div class="map-box-wrap"><div id="map"></div></div></div>
+<div class="side"><div class="card panel"><h2>Payment Status</h2><p class="muted">Chart reflects current filters and smart search.</p><div class="chart-wrap"><canvas id="statusChart"></canvas></div></div><div class="card panel"><h2>Payment Status Legend</h2><p class="muted">Click row to filter payment status.</p><div class="legend-list" id="statusLegend"></div></div><div class="card panel"><h2>Data Status</h2><div class="status" id="statusBox">Loading CSV and JSON files...</div></div></div></section>
+<section class="card"><div class="map-head"><div><h2>Permanent Commercial Records</h2><p class="muted">Table reflects filters and smart search across all CSV fields.</p></div></div><div class="table-tools"><input id="tableSearchInput" placeholder="Search table only..." style="max-width:380px;background:#fff"><button class="btn" onclick="document.getElementById('tableSearchInput').value='';updateTable(filteredData());">Clear Table Search</button></div><div class="table-wrap"><table><thead><tr><th>SR No</th><th>Plot No</th><th>Block</th><th>Scheme</th><th>ID</th><th>Road</th><th>Application Type</th><th>Application Status</th><th>Shifting Status</th><th>Reason Pending</th><th>Challan Date</th><th>Amount Challan</th><th>Due Date</th><th>Amount Received</th><th>Payment Status</th><th>Remarks</th></tr></thead><tbody id="recordsBody"></tbody></table></div></section>
+</div>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+<script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+<script>
+let map, plotLayer, statusChart, currentBaseLayer; let baseLayers={}; let showSpatialLayer=true; let allData=[]; let allJsonFeatures=[]; let jsonByKey=new Map();
+const filterIds=['scheme','block','plot','applicationStatus','paymentStatus','shiftingStatus'];
+const COLORS={paid:'#16a34a',partial:'#f59e0b',notpaid:'#dc2626',installment:'#7c3aed',pending:'#2563eb',other:'#64748b'};
+function norm(v){return (v===null||v===undefined)?'':String(v).trim();}
+function clean(v){const s=norm(v); if(/^\d+\.0+$/.test(s)) return s.split('.')[0]; return s;}
+function low(v){return norm(v).toLowerCase();}
+function esc(v){return String(v??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}
+function num(v){const n=parseFloat(norm(v).replace(/,/g,'')); return Number.isFinite(n)?n:0;}
+function money(v){return num(v).toLocaleString(undefined,{maximumFractionDigits:0});}
+function getAny(row, keys){for(const k of keys){if(row[k]!==undefined && norm(row[k])) return norm(row[k]);}return '';}
+function featureProp(f,k){const p=f?.properties||{}; if(k==='scheme') return norm(p.Town_Name||p.Scheme||p.scheme); if(k==='block') return norm(p.Block||p.block); if(k==='plot') return clean(p.PlotNo||p.Plot||p.Plot_No||p['Plot No']||p.PLOT); return '';}
+function linkKey(scheme,block,plot){return `${low(scheme)}|${low(block)}|${clean(plot).toLowerCase()}`;}
+function rowLinkKey(r){return linkKey(r.scheme,r.block,r.plot);}
+function statusClass(s){const v=low(s); if(v.includes('approved')) return 'approved'; if(v.includes('under')||v.includes('process')) return 'under'; if(v.includes('pending')||v.includes('object')||v.includes('not clear')) return 'pending'; return 'other';}
+function paymentClass(s){
+  const v=low(s);
+  if(!v) return 'other';
+  if(v.includes('full') || v === 'paid' || v.includes('fully paid')) return 'paid';
+  if(v.includes('partial')) return 'partial';
+  if(v.includes('install')) return 'installment';
+  if(v.includes('not paid') || v.includes('unpaid') || v.includes('no payment')) return 'notpaid';
+  if(v.includes('pending') || v.includes('due')) return 'pending';
+  return 'other';
+}
+function paymentLabelFromClass(c){
+  return c==='paid'?'Full / Paid':
+         c==='partial'?'Partial Payment':
+         c==='installment'?'Installment':
+         c==='notpaid'?'Not Paid':
+         c==='pending'?'Pending / Due':'Other';
+}
+
+function badgeClass(s){const c=statusClass(s); if(c==='approved') return 'badge-approved'; if(c==='under') return 'badge-under'; if(c==='pending') return 'badge-pending'; return 'badge-other';}
+function smartSearchMatch(row, searchText){
+  const q=norm(searchText).toLowerCase(); if(!q) return true;
+  const words=q.split(/\s+/).filter(Boolean);
+  const haystack=[...Object.values(row.raw||{}), row.plot,row.block,row.scheme,row.id,row.road,row.applicationType,row.applicationStatus,row.shiftingStatus,row.reason,row.challanDate,row.amountChallan,row.dueDate,row.amountReceived,row.paymentStatus,row.remarks].join(' ').toLowerCase();
+  return words.every(w=>haystack.includes(w));
+}
+function tableSearchMatch(row){const q=norm(document.getElementById('tableSearchInput')?.value).toLowerCase(); if(!q) return true; return smartSearchMatch(row,q);}
+function normalizeRow(row){
+  const plot=clean(getAny(row,['Plot No','PlotNo','Plot','PLOT'])); const scheme=getAny(row,['Scheme','Town_Name','Town Name']); const block=getAny(row,['Block','BLOCK']);
+  const amountChallan=getAny(row,['Amount of Challan','Amount Challan','Total Amount']); const amountReceived=getAny(row,['Amount Received','Received']);
+  const paymentStatus=getAny(row,['Payment Status','Amount Received Category (Full/Partial/20% for Installments)','Amount Received Category']);
+  return {raw:row,sr:getAny(row,['SR NO','SR No','Sr No']),plot,block,scheme,key:getAny(row,['Key']),id:clean(getAny(row,['ID','PLOT_ID'])),road:getAny(row,['Road']),applicationType:getAny(row,['ApplicationType (Permissible/Permitted)','Application Type']),applicationStatus:getAny(row,['Application Status (Approved/Underprocess)','Application Status']),shiftingStatus:getAny(row,['Sifiting Status (Clear/Not Clear/Objection/Pending)','Shifting Status','Sifiting Status']),reason:getAny(row,['Reason for Pending']),challanDate:getAny(row,['Date of Challan Issuance']),amountChallan, dueDate:getAny(row,['Due Date of Challan (45 days from date of issuance of challan)','Due Date']), amountReceived,paymentStatus,remarks:getAny(row,['Remarks']), installment:getAny(row,['Installment Plan (if any)']), mapped:false, feature:null};
+}
+function setStatus(msg,error=false){const box=document.getElementById('statusBox'); box.textContent=msg; box.style.background=error?'#fee2e2':'#f8fafc'; box.style.color=error?'#991b1b':'#334155'; box.style.borderColor=error?'#fecaca':'#dbe4ef';}
+function initMap(){map=L.map('map').setView([31.5204,74.3587],13); baseLayers.osm=L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:20,attribution:'© OpenStreetMap'}); baseLayers.satellite=L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',{maxZoom:20,attribution:'Tiles © Esri'}); currentBaseLayer=baseLayers.osm.addTo(map);}
+function setBaseMap(type){if(currentBaseLayer) map.removeLayer(currentBaseLayer); currentBaseLayer=baseLayers[type].addTo(map); document.getElementById('btnOSM').classList.toggle('active-basemap',type==='osm'); document.getElementById('btnSatellite').classList.toggle('active-basemap',type==='satellite');}
+function toggleSpatialData(){showSpatialLayer=!showSpatialLayer; document.getElementById('btnSpatialToggle').textContent=showSpatialLayer?'Hide Spatial Data':'Show Spatial Data'; updateMap(filteredData());}
+function selected(id){return document.getElementById(id).value;}
+function setSelectOptions(id, values){const sel=document.getElementById(id); const old=sel.value||'All'; const label=id.replace(/([A-Z])/g,' $1').replace(/^./,x=>x.toUpperCase()); sel.innerHTML=`<option value="All">All ${label}</option>`+values.map(v=>`<option value="${esc(v)}">${esc(v)}</option>`).join(''); if(values.includes(old)) sel.value=old; else sel.value='All';}
+function buildFilters(){
+  const active={}; filterIds.forEach(id=>active[id]=selected(id));
+  const jsonFiltered=(ignoreId)=>allJsonFeatures.filter(f=>{
+    if(ignoreId!=='scheme'&&active.scheme!=='All'&&featureProp(f,'scheme')!==active.scheme)return false;
+    if(ignoreId!=='block'&&active.block!=='All'&&featureProp(f,'block')!==active.block)return false;
+    if(ignoreId!=='plot'&&active.plot!=='All'&&featureProp(f,'plot')!==active.plot)return false;
+    return true;
+  });
+  ['scheme','block','plot'].forEach(id=>setSelectOptions(id,[...new Set(jsonFiltered(id).map(f=>featureProp(f,id)).filter(Boolean))].sort((a,b)=>a.localeCompare(b,undefined,{numeric:true}))));
+  const baseRows=allData.filter(r=>{
+    if(active.scheme!=='All'&&r.scheme!==active.scheme)return false; if(active.block!=='All'&&r.block!==active.block)return false; if(active.plot!=='All'&&r.plot!==active.plot)return false; return true;
+  });
+  setSelectOptions('applicationStatus',[...new Set(baseRows.map(r=>r.applicationStatus).filter(Boolean))].sort());
+  setSelectOptions('paymentStatus',[...new Set(baseRows.map(r=>r.paymentStatus).filter(Boolean))].sort());
+  setSelectOptions('shiftingStatus',[...new Set(baseRows.map(r=>r.shiftingStatus).filter(Boolean))].sort());
+}
+function filteredData(){const search=document.getElementById('searchInput').value; return allData.filter(r=>{if(selected('scheme')!=='All'&&r.scheme!==selected('scheme'))return false;if(selected('block')!=='All'&&r.block!==selected('block'))return false;if(selected('plot')!=='All'&&r.plot!==selected('plot'))return false;if(selected('applicationStatus')!=='All'&&r.applicationStatus!==selected('applicationStatus'))return false;if(selected('paymentStatus')!=='All'&&r.paymentStatus!==selected('paymentStatus'))return false;if(selected('shiftingStatus')!=='All'&&r.shiftingStatus!==selected('shiftingStatus'))return false;if(!smartSearchMatch(r,search))return false;return true;});}
+function updateStats(data){const total=data.length; const approved=data.filter(r=>low(r.applicationStatus).includes('approved')).length; const under=data.filter(r=>low(r.applicationStatus).includes('under')||low(r.applicationStatus).includes('process')).length; const challan=data.reduce((s,r)=>s+num(r.amountChallan),0); const received=data.reduce((s,r)=>s+num(r.amountReceived),0); document.getElementById('totalRecords').textContent=total.toLocaleString(); document.getElementById('approvedCount').textContent=approved.toLocaleString(); document.getElementById('underProcessCount').textContent=under.toLocaleString(); document.getElementById('totalChallan').textContent=challan.toLocaleString(undefined,{maximumFractionDigits:0}); document.getElementById('amountReceived').textContent=received.toLocaleString(undefined,{maximumFractionDigits:0}); document.getElementById('outstanding').textContent=Math.max(challan-received,0).toLocaleString(undefined,{maximumFractionDigits:0});}
+function updateChart(data){
+  const counts={};
+  data.forEach(r=>{
+    const cls=paymentClass(r.paymentStatus);
+    const label=paymentLabelFromClass(cls);
+    counts[label]=(counts[label]||0)+1;
+  });
+
+  const labels=Object.keys(counts);
+  const vals=Object.values(counts);
+  const colorMap={
+    'Full / Paid':COLORS.paid,
+    'Partial Payment':COLORS.partial,
+    'Installment':COLORS.installment,
+    'Not Paid':COLORS.notpaid,
+    'Pending / Due':COLORS.pending,
+    'Other':COLORS.other
+  };
+
+  if(statusChart)statusChart.destroy();
+  statusChart=new Chart(document.getElementById('statusChart'),{
+    type:'doughnut',
+    data:{
+      labels,
+      datasets:[{
+        data:vals,
+        backgroundColor:labels.map(l=>colorMap[l]||COLORS.other),
+        borderWidth:2
+      }]
+    },
+    options:{
+      responsive:true,
+      maintainAspectRatio:false,
+      plugins:{legend:{position:'bottom'}},
+      onClick:(e,els)=>{
+        if(!els.length)return;
+        filterByPaymentStatus(labels[els[0].index]);
+      }
+    }
+  });
+
+  const leg=document.getElementById('statusLegend');
+  leg.innerHTML=labels.map((l,i)=>`<div class="legend-item" onclick="filterByPaymentStatus('${esc(l)}')"><div class="legend-left"><span class="legend-dot" style="background:${colorMap[l]||COLORS.other}"></span><span>${esc(l)}</span></div><span class="legend-count">${vals[i]}</span></div>`).join('');
+}
+function filterByPaymentStatus(label){
+  const sel=document.getElementById('paymentStatus');
+  const opts=[...sel.options].map(o=>o.value);
+  let match='All';
+
+  if(label==='Full / Paid'){
+    match=opts.find(x=>low(x).includes('full') || low(x)==='paid' || low(x).includes('fully paid')) || 'All';
+  }else if(label==='Partial Payment'){
+    match=opts.find(x=>low(x).includes('partial')) || 'All';
+  }else if(label==='Installment'){
+    match=opts.find(x=>low(x).includes('install')) || 'All';
+  }else if(label==='Not Paid'){
+    match=opts.find(x=>low(x).includes('not paid') || low(x).includes('unpaid') || low(x).includes('no payment')) || 'All';
+  }else if(label==='Pending / Due'){
+    match=opts.find(x=>low(x).includes('pending') || low(x).includes('due')) || 'All';
+  }else{
+    match=opts.find(x=>paymentClass(x)==='other') || 'All';
+  }
+
+  sel.value=(sel.value===match)?'All':match;
+  updateDashboard(true);
+}
+function filterByStatus(label){filterByPaymentStatus(label);}
+function popupHtml(r, feature){const p=feature?.properties||{}; return `<b style="color:#0e2744;font-size:15px">Permanent Commercial Plot</b><div style="margin-top:8px"><div class="popup-row"><b>Plot</b><span>${esc(r?.plot||p.PlotNo||'')}</span></div><div class="popup-row"><b>Scheme</b><span>${esc(r?.scheme||p.Town_Name||'')}</span></div><div class="popup-row"><b>Block</b><span>${esc(r?.block||p.Block||'')}</span></div><div class="popup-row"><b>Application Status</b><span>${esc(r?.applicationStatus||'JSON Plot')}</span></div><div class="popup-row"><b>Payment Status</b><span>${esc(r?.paymentStatus||'')}</span></div><div class="popup-row"><b>Challan</b><span>${r?money(r.amountChallan):''}</span></div><div class="popup-row"><b>Received</b><span>${r?money(r.amountReceived):''}</span></div><div class="popup-row"><b>Road</b><span>${esc(r?.road||'')}</span></div></div>`;}
+function jsonMatchesFilters(f){if(selected('scheme')!=='All'&&featureProp(f,'scheme')!==selected('scheme'))return false;if(selected('block')!=='All'&&featureProp(f,'block')!==selected('block'))return false;if(selected('plot')!=='All'&&featureProp(f,'plot')!==selected('plot'))return false;return true;}
+function updateMap(data){if(plotLayer){map.removeLayer(plotLayer);plotLayer=null;} if(!showSpatialLayer)return; const filteredSet=new Map(data.filter(r=>r.mapped).map(r=>[rowLinkKey(r),r])); const hasGeoFilter=selected('scheme')!=='All'||selected('block')!=='All'||selected('plot')!=='All'; const features=allJsonFeatures.filter(f=>hasGeoFilter?jsonMatchesFilters(f):true); plotLayer=L.geoJSON(features,{style:f=>{const k=linkKey(featureProp(f,'scheme'),featureProp(f,'block'),featureProp(f,'plot')); const r=filteredSet.get(k); if(r){const cls=paymentClass(r.paymentStatus); return {color:COLORS[cls]||COLORS.other,weight:2.2,fillColor:COLORS[cls]||COLORS.other,fillOpacity:.68};} return {color:'#64748b',weight:.65,fillColor:'#94a3b8',fillOpacity:.18};},onEachFeature:(f,l)=>{const k=linkKey(featureProp(f,'scheme'),featureProp(f,'block'),featureProp(f,'plot')); l.bindPopup(popupHtml(filteredSet.get(k),f));}}).addTo(map); try{const b=plotLayer.getBounds(); if(b.isValid()) map.fitBounds(b,{padding:[18,18]});}catch(e){}}
+function mark(text,q){text=esc(text); q=norm(q); if(!q)return text; q.split(/\s+/).filter(Boolean).forEach(w=>{try{text=text.replace(new RegExp(`(${w.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')})`,'ig'),'<span class="highlight">$1</span>')}catch(e){}}); return text;}
+function updateTable(data){const q=document.getElementById('searchInput').value; const rows=data.filter(tableSearchMatch); document.getElementById('recordsBody').innerHTML=rows.map(r=>`<tr><td>${mark(r.sr,q)}</td><td>${mark(r.plot,q)}</td><td>${mark(r.block,q)}</td><td>${mark(r.scheme,q)}</td><td>${mark(r.id,q)}</td><td>${mark(r.road,q)}</td><td>${mark(r.applicationType,q)}</td><td><span class="badge ${badgeClass(r.applicationStatus)}">${mark(r.applicationStatus,q)}</span></td><td>${mark(r.shiftingStatus,q)}</td><td>${mark(r.reason,q)}</td><td>${mark(r.challanDate,q)}</td><td>${money(r.amountChallan)}</td><td>${mark(r.dueDate,q)}</td><td>${money(r.amountReceived)}</td><td>${mark(r.paymentStatus,q)}</td><td>${mark(r.remarks,q)}</td></tr>`).join('') || `<tr><td colspan="16">No records found.</td></tr>`;}
+function activeFilterSummary(){const parts=[]; filterIds.forEach(id=>{const v=selected(id); if(v&&v!=='All')parts.push(`${id.replace(/([A-Z])/g,' $1')}: ${v}`);}); const s=norm(document.getElementById('searchInput').value); if(s)parts.push(`Search: ${s}`); document.getElementById('activeFilterBox').innerHTML=parts.length?`<div class="active-filter">${esc(parts.join(' • '))}</div>`:'';}
+function updateDashboard(rebuild=false){if(rebuild) buildFilters(); const data=filteredData(); updateStats(data); updateChart(data); updateMap(data); updateTable(data); activeFilterSummary(); setStatus(`Loaded ${allData.length.toLocaleString()} CSV records and ${allJsonFeatures.length.toLocaleString()} JSON plots. Current result: ${data.length.toLocaleString()} records.`);}
+function clearFilters(){filterIds.forEach(id=>document.getElementById(id).value='All'); document.getElementById('searchInput').value=''; document.getElementById('tableSearchInput').value=''; updateDashboard(true);}
+function exportTable(){const data=filteredData().filter(tableSearchMatch); const headers=['SR NO','Plot No','Block','Scheme','ID','Road','Application Type','Application Status','Shifting Status','Reason Pending','Challan Date','Amount Challan','Due Date','Amount Received','Payment Status','Remarks']; const csv=[headers.join(',')].concat(data.map(r=>[r.sr,r.plot,r.block,r.scheme,r.id,r.road,r.applicationType,r.applicationStatus,r.shiftingStatus,r.reason,r.challanDate,r.amountChallan,r.dueDate,r.amountReceived,r.paymentStatus,r.remarks].map(v=>`"${String(v??'').replace(/"/g,'""')}"`).join(','))).join('\n'); const blob=new Blob([csv],{type:'text/csv'}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='permanent_commercial_filtered.csv'; a.click(); URL.revokeObjectURL(a.href);}
+function loadCsv(url){return new Promise((resolve,reject)=>Papa.parse(url,{download:true,header:true,skipEmptyLines:false,complete:r=>resolve(r.data),error:e=>reject(e)}));}
+async function init(){try{initMap(); const [csvRows,json]=await Promise.all([loadCsv('commercial.csv'), fetch('plots.json').then(r=>r.json())]); allJsonFeatures=(json.features||[]).filter(f=>f.geometry); allJsonFeatures.forEach(f=>jsonByKey.set(linkKey(featureProp(f,'scheme'),featureProp(f,'block'),featureProp(f,'plot')),f)); allData=csvRows.map(normalizeRow).filter(r=>r.plot||r.scheme||r.block||r.applicationStatus||r.amountChallan).map(r=>{const f=jsonByKey.get(rowLinkKey(r)); r.feature=f||null; r.mapped=!!f; return r;}); buildFilters(); updateDashboard(false); }catch(err){console.error(err); setStatus('Data loading failed. Keep permanent_commercial_dashboard_smart_search.html, commercial.csv and plots.json in the same folder and run from a local server.',true);}}
+filterIds.forEach(id=>document.addEventListener('change',e=>{if(e.target&&e.target.id===id)updateDashboard(true);})); document.addEventListener('input',e=>{if(e.target&&e.target.id==='searchInput')updateDashboard(false); if(e.target&&e.target.id==='tableSearchInput')updateTable(filteredData());}); init();
+window.addEventListener('load', () => {
+  setTimeout(() => {
+    try { map.invalidateSize(); } catch(e) {}
+  }, 300);
+});
+window.addEventListener('resize', () => {
+  try { map.invalidateSize(); } catch(e) {}
+});
+</script>
+</body>
+</html>

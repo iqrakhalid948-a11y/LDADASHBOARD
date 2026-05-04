@@ -2,105 +2,372 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Main Dashboard</title>
+<title>LDA Data Analytics Dashboard</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
-body {
+:root{
+  --navy:#0e2744;
+  --navy2:#14365a;
+  --teal:#0f766e;
+  --gold:#f59e0b;
+  --white:#ffffff;
+  --muted:#dbeafe;
+  --card:#ffffff;
+  --border:rgba(255,255,255,.18);
+  --shadow:0 22px 60px rgba(0,0,0,.28);
+}
+
+*{
   margin:0;
-  font-family: "Segoe UI", sans-serif;
-  background: linear-gradient(135deg, #0e2744, #1d4976);
+  padding:0;
+  box-sizing:border-box;
+  font-family:"Segoe UI", Arial, sans-serif;
+}
+
+body{
+  min-height:100vh;
   color:#fff;
+  background:
+    linear-gradient(135deg, rgba(14,39,68,.92), rgba(20,54,90,.78)),
+    url("lda_office.jpg");
+  background-size:cover;
+  background-position:center;
+  background-attachment:fixed;
 }
 
-.header {
-  text-align:center;
-  padding:40px 20px;
+body::before{
+  content:"";
+  position:fixed;
+  inset:0;
+  background:
+    radial-gradient(circle at top left, rgba(245,158,11,.20), transparent 32%),
+    radial-gradient(circle at bottom right, rgba(15,118,110,.22), transparent 34%);
+  pointer-events:none;
+  z-index:-1;
 }
 
-.header h1 {
-  font-size:36px;
-  margin-bottom:10px;
-}
-
-.container {
+.page{
+  min-height:100vh;
   display:flex;
-  justify-content:center;
-  gap:30px;
-  flex-wrap:wrap;
-  padding:40px;
+  flex-direction:column;
 }
 
-.card {
+.topbar{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:22px 44px;
+  border-bottom:1px solid rgba(255,255,255,.14);
+  background:rgba(14,39,68,.46);
+  backdrop-filter:blur(12px);
+}
+
+.brand{
+  display:flex;
+  align-items:center;
+  gap:14px;
+}
+
+.logo{
+  width:64px;
+  height:64px;
+  object-fit:contain;
   background:#fff;
-  color:#0e2744;
-  width:300px;
-  padding:30px;
-  border-radius:20px;
+  border-radius:16px;
+  padding:7px;
+  box-shadow:0 10px 26px rgba(0,0,0,.25);
+}
+
+.logo-fallback{
+  width:64px;
+  height:64px;
+  border-radius:16px;
+  background:#fff;
+  color:var(--navy);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  font-weight:900;
+  font-size:18px;
+  box-shadow:0 10px 26px rgba(0,0,0,.25);
+}
+
+.brand-text h2{
+  font-size:20px;
+  letter-spacing:.3px;
+}
+
+.brand-text p{
+  font-size:12px;
+  color:#cbd5e1;
+  margin-top:3px;
+}
+
+.badge{
+  padding:10px 14px;
+  border:1px solid rgba(255,255,255,.22);
+  border-radius:999px;
+  background:rgba(255,255,255,.10);
+  color:#e2e8f0;
+  font-size:13px;
+  font-weight:700;
+}
+
+.hero{
   text-align:center;
-  box-shadow:0 10px 30px rgba(0,0,0,0.2);
-  transition:0.3s;
+  padding:74px 24px 34px;
 }
 
-.card:hover {
+.hero .kicker{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  padding:9px 15px;
+  border-radius:999px;
+  background:rgba(255,255,255,.13);
+  border:1px solid rgba(255,255,255,.18);
+  color:#e0f2fe;
+  font-weight:800;
+  font-size:13px;
+  margin-bottom:18px;
+}
+
+.hero h1{
+  font-size:clamp(36px,5vw,62px);
+  line-height:1.05;
+  font-weight:900;
+  letter-spacing:-1.2px;
+  text-shadow:0 12px 32px rgba(0,0,0,.32);
+}
+
+.hero p{
+  max-width:760px;
+  margin:18px auto 0;
+  color:#e2e8f0;
+  font-size:17px;
+  line-height:1.65;
+}
+
+.dashboard-grid{
+  width:min(1180px,92%);
+  margin:34px auto 70px;
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:24px;
+}
+
+.card{
+  position:relative;
+  overflow:hidden;
+  min-height:300px;
+  padding:28px;
+  border-radius:28px;
+  background:linear-gradient(180deg, rgba(255,255,255,.96), rgba(248,250,252,.92));
+  color:var(--navy);
+  border:1px solid rgba(255,255,255,.72);
+  box-shadow:var(--shadow);
+  transition:.28s ease;
+}
+
+.card::before{
+  content:"";
+  position:absolute;
+  width:150px;
+  height:150px;
+  border-radius:50%;
+  right:-52px;
+  top:-50px;
+  background:linear-gradient(135deg, rgba(15,118,110,.18), rgba(245,158,11,.16));
+}
+
+.card:hover{
   transform:translateY(-10px);
+  box-shadow:0 28px 70px rgba(0,0,0,.34);
 }
 
-.card h2 {
-  margin-bottom:20px;
+.icon{
+  width:68px;
+  height:68px;
+  border-radius:22px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:32px;
+  color:#fff;
+  background:linear-gradient(135deg,var(--navy),var(--teal));
+  box-shadow:0 12px 26px rgba(14,39,68,.26);
+  margin-bottom:22px;
+  position:relative;
+  z-index:1;
 }
 
-.card p {
+.card:nth-child(2) .icon{
+  background:linear-gradient(135deg,#92400e,#f59e0b);
+}
+
+.card:nth-child(3) .icon{
+  background:linear-gradient(135deg,#7f1d1d,#dc2626);
+}
+
+.card h2{
+  font-size:24px;
+  margin-bottom:12px;
+  position:relative;
+  z-index:1;
+}
+
+.card p{
+  color:#475569;
+  line-height:1.55;
   font-size:14px;
-  margin-bottom:20px;
+  margin-bottom:24px;
+  min-height:66px;
+  position:relative;
+  z-index:1;
 }
 
-.btn {
-  display:inline-block;
-  padding:10px 20px;
-  background:#0e2744;
+.card-footer{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  position:relative;
+  z-index:1;
+}
+
+.tag{
+  font-size:12px;
+  color:#64748b;
+  background:#eef2f7;
+  border:1px solid #dbe4ef;
+  padding:7px 10px;
+  border-radius:999px;
+  font-weight:800;
+}
+
+.btn{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  padding:11px 17px;
+  background:linear-gradient(135deg,var(--navy),var(--navy2));
   color:#fff;
   text-decoration:none;
-  border-radius:10px;
+  border-radius:14px;
+  font-weight:900;
+  box-shadow:0 12px 24px rgba(14,39,68,.24);
+  transition:.22s ease;
 }
 
-.btn:hover {
-  background:#1d4976;
+.btn:hover{
+  transform:translateX(4px);
+  background:linear-gradient(135deg,#14365a,#0f766e);
+}
+
+.footer{
+  margin-top:auto;
+  text-align:center;
+  padding:18px 24px;
+  color:#cbd5e1;
+  font-size:13px;
+  background:rgba(14,39,68,.35);
+  border-top:1px solid rgba(255,255,255,.12);
+  backdrop-filter:blur(10px);
+}
+
+@media(max-width:980px){
+  .dashboard-grid{
+    grid-template-columns:1fr;
+  }
+
+  .topbar{
+    padding:18px 22px;
+    align-items:flex-start;
+    gap:14px;
+    flex-direction:column;
+  }
+
+  .hero{
+    padding-top:48px;
+  }
 }
 </style>
 </head>
 
 <body>
+<div class="page">
 
-<div class="header">
-  <h1>Data Analytics Dashboard</h1>
-  <p>Select a module to continue</p>
+  <header class="topbar">
+    <div class="brand">
+      <img class="logo" src="lda_logo.png" alt="LDA Logo" onerror="this.style.display='none';document.getElementById('logoFallback').style.display='flex';">
+      <div id="logoFallback" class="logo-fallback">LDA</div>
+
+      <div class="brand-text">
+        <h2>Lahore Development Authority</h2>
+        <p>Urban Development & Spatial Analytics</p>
+      </div>
+    </div>
+
+    <div class="badge">Integrated Dashboard Portal</div>
+  </header>
+
+  <section class="hero">
+    <div class="kicker">🏛 Official Analytics Workspace</div>
+    <h1>Data Analytics Dashboard</h1>
+    <p>
+      A centralized portal for spatial landuse review, commercialization monitoring,
+      and illegal penalty analysis with modern GIS-based decision support.
+    </p>
+  </section>
+
+  <main class="dashboard-grid">
+
+    <article class="card">
+      <div class="icon">🌍</div>
+      <h2>Landuse</h2>
+      <p>
+        View landuse classification, zoning patterns, spatial distribution,
+        and planning-related analytics through an interactive map dashboard.
+      </p>
+      <div class="card-footer">
+        <span class="tag">GIS View</span>
+        <a href="landuse.html" class="btn">Open →</a>
+      </div>
+    </article>
+
+    <article class="card">
+      <div class="icon">🏢</div>
+      <h2>Permanent Commercialization</h2>
+      <p>
+        Review commercialization records, approved cases, payment progress,
+        and spatial status for permanent commercialization monitoring.
+      </p>
+      <div class="card-footer">
+        <span class="tag">Commercial</span>
+        <a href="permanent.html" class="btn">Open →</a>
+      </div>
+    </article>
+
+    <article class="card">
+      <div class="icon">⚠️</div>
+      <h2>Illegal Penalty</h2>
+      <p>
+        Track illegal plots, penalty status, payment recovery, notices,
+        remarks, and plot-wise reports linked with spatial data.
+      </p>
+      <div class="card-footer">
+        <span class="tag">Penalty</span>
+        <a href="illegal.html" class="btn">Open →</a>
+      </div>
+    </article>
+
+  </main>
+
+  <footer class="footer">
+    © Lahore Development Authority | Data Analytics & GIS Dashboard
+  </footer>
+
 </div>
-
-<div class="container">
-
-  <!-- LANDUSE -->
-  <div class="card">4
-    <h2>🌍 Landuse</h2>
-    <p>View spatial landuse classification and analytics</p>
-    <a href="landuse.html" class="btn">Open</a>
-  </div>
-
-  <!-- PERMANENT COMMERCIALIZATION -->
-  <div class="card">
-    <h2>🏢 Permanent Commercialization</h2>
-    <p>Manage and analyze commercialization data</p>
-    <a href="permanent.html" class="btn">Open</a>
-  </div>
-
-  <!-- ILLEGAL PENALTY -->
-  <div class="card">
-    <h2>⚠ Illegal Penalty</h2>
-    <p>Track illegal plots and penalty records</p>
-    <a href="illegal.html" class="btn">Open</a>
-  </div>
-
-</div>
-
 </body>
 </html>

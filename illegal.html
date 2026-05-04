@@ -1,0 +1,2906 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Illegal Penalty Dashboard</title>
+
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <style>
+    :root{
+      --navy:#0e2744;
+      --navy2:#14365a;
+      --grey:#f1f5f9;
+      --text:#0f172a;
+      --muted:#64748b;
+      --white:#fff;
+      --border:#dbe4ef;
+      --shadow:0 12px 30px rgba(15,23,42,.10);
+      --radius:20px;
+
+      --full:#16a34a;
+      --court:#4b2e16;
+      --notpaid:#dc2626;
+      --partial:#facc15;
+      --approved:#ec4899;
+      --withdrawn:#64748b;
+      --unknown:#94a3b8;
+    }
+
+    *{
+      box-sizing:border-box;
+      margin:0;
+      padding:0;
+      font-family:"Segoe UI", Arial, sans-serif;
+    }
+
+    body{
+      background:linear-gradient(180deg,#f7fafc 0%,#edf3f8 100%);
+      color:var(--text);
+      padding:22px;
+    }
+
+    .container{
+      max-width:1600px;
+      margin:auto;
+      display:grid;
+      gap:20px;
+    }
+
+    .card{
+      background:var(--white);
+      border:1px solid var(--border);
+      border-radius:var(--radius);
+      box-shadow:0 4px 14px rgba(15,23,42,.06);
+      padding:18px;
+    }
+
+    .header{
+      background:linear-gradient(135deg,var(--navy),var(--navy2));
+      color:white;
+      box-shadow:var(--shadow);
+    }
+
+    .top{
+      display:flex;
+      justify-content:space-between;
+      gap:16px;
+      align-items:center;
+      flex-wrap:wrap;
+      margin-bottom:16px;
+    }
+
+    h1{
+      font-size:32px;
+      letter-spacing:.2px;
+    }
+
+    .subtitle{
+      color:rgba(255,255,255,.78);
+      font-size:14px;
+      margin-top:5px;
+    }
+
+
+    .brand-row{display:flex;align-items:center;gap:14px}
+    .lda-logo{width:58px;height:58px;object-fit:contain;background:#fff;border-radius:14px;padding:6px;box-shadow:0 4px 12px rgba(15,23,42,.18)}
+    .logo-fallback{width:58px;height:58px;border-radius:14px;background:white;color:#0e2744;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:16px;box-shadow:0 4px 12px rgba(15,23,42,.18)}
+
+    .home{
+      color:white;
+      text-decoration:none;
+      border:1px solid rgba(255,255,255,.25);
+      padding:10px 14px;
+      border-radius:12px;
+      background:rgba(255,255,255,.10);
+      font-weight:700;
+    }
+
+    .filters{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(155px,1fr));
+      gap:12px;
+    }
+
+    .filter label{
+      display:block;
+      font-size:12px;
+      font-weight:700;
+      margin-bottom:6px;
+      color:rgba(255,255,255,.88);
+    }
+
+    select,input,button{
+      width:100%;
+      padding:11px 12px;
+      border-radius:12px;
+      border:1px solid var(--border);
+      font-size:14px;
+      outline:none;
+    }
+
+    button{
+      cursor:pointer;
+      font-weight:800;
+      background:white;
+      color:var(--navy);
+    }
+
+    .stats{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(215px,1fr));
+      gap:14px;
+    }
+
+    .stat{
+      position:relative;
+      overflow:hidden;
+      border:none;
+      color:white;
+    }
+
+    .stat:nth-child(1){background:linear-gradient(135deg,#7f1d1d,#dc2626)}
+    .stat:nth-child(2){background:linear-gradient(135deg,#0e2744,#1d4976)}
+    .stat:nth-child(3){background:linear-gradient(135deg,#065f46,#16a34a)}
+    .stat:nth-child(4){background:linear-gradient(135deg,#92400e,#d97706)}
+    .stat:nth-child(5){background:linear-gradient(135deg,#831843,#ec4899)}
+
+    .stat:after{
+      content:"";
+      position:absolute;
+      width:120px;
+      height:120px;
+      border-radius:50%;
+      right:-28px;
+      top:-28px;
+      background:rgba(255,255,255,.1);
+    }
+
+    .stat-top{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+      position:relative;
+      z-index:1;
+    }
+
+    .stat-label{
+      font-size:13px;
+      color:rgba(255,255,255,.82);
+      font-weight:700;
+    }
+
+    .icon{
+      font-size:24px;
+      background:rgba(255,255,255,.16);
+      border:1px solid rgba(255,255,255,.22);
+      width:44px;
+      height:44px;
+      border-radius:14px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      flex-shrink:0;
+    }
+
+    .stat-value{
+      font-size:32px;
+      font-weight:900;
+      margin-top:8px;
+      position:relative;
+      z-index:1;
+    }
+
+    .stat-note{
+      font-size:12px;
+      color:rgba(255,255,255,.76);
+      margin-top:8px;
+      position:relative;
+      z-index:1;
+    }
+
+    .main{
+      display:grid;
+      grid-template-columns:4.8fr 1fr;
+      gap:20px;
+      align-items:start;
+    }
+
+    .map-card{min-height:890px}
+
+    .map-head{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+      margin-bottom:14px;
+      flex-wrap:wrap;
+    }
+
+    .map-head h2,.panel h2{
+      color:var(--navy);
+      font-size:22px;
+    }
+
+    .muted{
+      color:var(--muted);
+      font-size:13px;
+      margin-top:3px;
+    }
+
+    #map{
+      height:820px;
+      border-radius:22px;
+      border:1px solid #cfe0f0;
+      background:#eef5fb;
+    }
+
+    .side{
+      display:grid;
+      gap:20px;
+    }
+
+    .status{
+      padding:12px;
+      border:1px solid var(--border);
+      border-radius:12px;
+      background:#f8fafc;
+      color:#334155;
+      font-size:13px;
+      line-height:1.5;
+    }
+
+    .legend-list{
+      display:grid;
+      gap:9px;
+      margin-top:12px;
+    }
+
+    .legend-item{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      padding:10px 11px;
+      border:1px solid var(--border);
+      background:#f8fafc;
+      border-radius:12px;
+      cursor:pointer;
+      transition:.18s ease;
+    }
+
+    .legend-item:hover{
+      transform:translateY(-1px);
+      background:white;
+      box-shadow:0 4px 10px rgba(15,23,42,.06);
+    }
+
+    .legend-left{
+      display:flex;
+      align-items:center;
+      gap:9px;
+      font-size:13px;
+      font-weight:700;
+      color:#334155;
+    }
+
+    .legend-dot{
+      display:inline-block;
+      width:15px;
+      height:15px;
+      border-radius:5px;
+      border:1px solid rgba(15,23,42,.2);
+    }
+
+    .legend-count{
+      font-weight:900;
+      color:var(--navy);
+      font-size:13px;
+    }
+
+    .chart-wrap{
+      height:290px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding-top:6px;
+    }
+
+    #paymentChart{
+      max-width:270px;
+      max-height:270px;
+    }
+
+    .chart-hint{
+      margin-top:8px;
+      color:#64748b;
+      font-size:12px;
+      line-height:1.35;
+    }
+
+    .insights{
+      display:grid;
+      gap:10px;
+    }
+
+    .insight{
+      background:#f8fafc;
+      border:1px solid var(--border);
+      border-radius:12px;
+      padding:12px;
+      color:#334155;
+      font-size:13px;
+      line-height:1.45;
+    }
+
+    .table-wrap{
+      overflow:auto;
+      border:1px solid var(--border);
+      border-radius:16px;
+    }
+
+    table{
+      width:100%;
+      border-collapse:collapse;
+      background:white;
+      font-size:13px;
+    }
+
+    th,td{
+      padding:11px 10px;
+      border-bottom:1px solid var(--border);
+      white-space:nowrap;
+      text-align:left;
+    }
+
+    th{
+      background:#eaf2fa;
+      color:var(--navy);
+      font-weight:800;
+    }
+
+    .badge{
+      padding:5px 9px;
+      border-radius:999px;
+      font-size:12px;
+      font-weight:800;
+      display:inline-block;
+    }
+
+    .badge-full{background:#dcfce7;color:#166534}
+    .badge-court{background:#ede0d4;color:#4b2e16}
+    .badge-notpaid{background:#fee2e2;color:#991b1b}
+    .badge-partial{background:#fef3c7;color:#854d0e}
+    .badge-approved{background:#fce7f3;color:#9d174d}
+    .badge-other{background:#e2e8f0;color:#334155}
+    .badge-withdrawn{background:#e4e4e7;color:#3f3f46}
+
+    .btn-row{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+
+    .btn{
+      width:auto;
+      background:var(--navy);
+      color:white;
+      border-color:var(--navy);
+      padding:10px 14px;
+      border-radius:12px;
+    }
+
+    .popup-img{
+      width:100%;
+      max-height:160px;
+      object-fit:cover;
+      border-radius:10px;
+      border:1px solid #cbd5e1;
+      background:#f8fafc;
+      margin-top:8px;
+    }
+
+    .active-filter{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      margin-top:10px;
+      background:#f8fafc;
+      color:#334155;
+      border:1px solid #dbe4ef;
+      border-radius:999px;
+      padding:8px 12px;
+      font-size:13px;
+      font-weight:700;
+    }
+
+    .active-filter button{
+      padding:2px 8px;
+      width:auto;
+      border-radius:999px;
+      border:1px solid #cbd5e1;
+      background:#fff;
+      color:#0e2744;
+      font-size:12px;
+    }
+
+
+
+    .filter-menu{
+      position:relative;
+    }
+
+    .filter-toggle{
+      width:100%;
+      padding:11px 12px;
+      border-radius:12px;
+      border:1px solid var(--border);
+      background:white;
+      color:#0e2744;
+      font-size:14px;
+      font-weight:800;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:8px;
+      cursor:pointer;
+      min-height:44px;
+      text-align:left;
+    }
+
+    .filter-toggle span:first-child{
+      overflow:hidden;
+      text-overflow:ellipsis;
+      white-space:nowrap;
+    }
+
+    .filter-dropdown{
+      display:none;
+      position:absolute;
+      top:calc(100% + 6px);
+      left:0;
+      min-width:260px;
+      width:max-content;
+      max-width:420px;
+      background:white;
+      border:1px solid var(--border);
+      border-radius:14px;
+      box-shadow:0 12px 28px rgba(15,23,42,.18);
+      padding:10px;
+      z-index:99999;
+      max-height:360px;
+      overflow:auto;
+    }
+
+    .filter-dropdown.open{
+      display:block;
+    }
+
+    .filter-option{
+      display:grid;
+      grid-template-columns:18px minmax(170px,1fr);
+      align-items:center;
+      gap:8px;
+      color:#0e2744;
+      font-size:13px;
+      font-weight:700;
+      padding:8px 7px;
+      border-radius:8px;
+      cursor:pointer;
+      white-space:nowrap;
+      min-width:230px;
+    }
+
+    .filter-option span{
+      display:inline-block;
+      color:#0e2744;
+      overflow:visible;
+      text-overflow:clip;
+    }
+
+    .filter-option:hover{
+      background:#f1f5f9;
+    }
+
+    .filter-option input{
+      width:auto;
+      transform:scale(1.05);
+    }
+
+    .filter-actions{
+      display:block;
+      margin-bottom:8px;
+      border-bottom:1px solid #e2e8f0;
+      padding-bottom:8px;
+    }
+
+    .filter-actions .filter-option{
+      background:#eef4fb;
+      border:1px solid #dbe4ef;
+      font-weight:900;
+    }
+
+    .map-tools{
+      display:flex;
+      gap:8px;
+      align-items:center;
+      flex-wrap:wrap;
+    }
+
+    .map-tools button{
+      width:auto;
+      padding:9px 13px;
+      border-radius:11px;
+      border:1px solid var(--border);
+      background:#f8fafc;
+      color:#0e2744;
+      font-weight:900;
+    }
+
+
+    .spatial-toggle-off{
+      background:#ffffff !important;
+      color:#7c3aed !important;
+      border-color:#a1a1aa !important;
+    }
+
+    .map-tools button.active-basemap{
+      background:#0e2744;
+      color:white;
+      border-color:#0e2744;
+    }
+
+    .layer-list{
+      display:grid;
+      gap:10px;
+      margin-top:12px;
+    }
+
+    .layer-check{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      padding:10px 11px;
+      border:1px solid var(--border);
+      background:#f8fafc;
+      border-radius:12px;
+      color:#334155;
+      font-size:13px;
+      font-weight:700;
+    }
+
+    .layer-check input{
+      width:auto;
+      transform:scale(1.1);
+      cursor:pointer;
+    }
+
+    .basemap-buttons{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:8px;
+      margin-top:12px;
+    }
+
+    .basemap-buttons button{
+      padding:9px 10px;
+      border-radius:10px;
+      background:#f8fafc;
+      color:#0e2744;
+      border:1px solid var(--border);
+      font-weight:800;
+    }
+
+    .basemap-buttons button.active-basemap{
+      background:#0e2744;
+      color:white;
+      border-color:#0e2744;
+    }
+
+
+    .map-box-wrap{
+      position:relative;
+    }
+
+    .custom-popup-panel{
+      position:absolute;
+      left:18px;
+      bottom:18px;
+      width:330px;
+      max-height:430px;
+      overflow:auto;
+      background:#ffffff;
+      border:1px solid #dbe4ef;
+      border-radius:16px;
+      box-shadow:0 14px 34px rgba(15,23,42,.22);
+      padding:14px;
+      z-index:99999;
+      display:none;
+      pointer-events:auto;
+      font-size:13px;
+      line-height:1.55;
+    }
+
+    .custom-popup-panel h3{
+      color:#0e2744;
+      font-size:16px;
+      margin-bottom:8px;
+    }
+
+    .custom-popup-close{
+      position:absolute;
+      top:8px;
+      right:10px;
+      width:auto;
+      border:none;
+      background:#f1f5f9;
+      color:#0e2744;
+      border-radius:8px;
+      padding:3px 8px;
+      font-weight:900;
+      cursor:pointer;
+    }
+
+    .popup-row{
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      border-bottom:1px solid #eef2f7;
+      padding:3px 0;
+    }
+
+    .popup-row b{
+      color:#334155;
+      flex-shrink:0;
+    }
+
+
+    .filter-choice{
+      display:block;
+      width:100%;
+      color:#0e2744;
+      font-size:13px;
+      font-weight:700;
+      padding:9px 10px;
+      border-radius:8px;
+      cursor:pointer;
+      white-space:nowrap;
+      min-width:230px;
+      background:#ffffff;
+      border:none;
+      text-align:left;
+      margin-bottom:3px;
+    }
+
+    .filter-choice:hover{
+      background:#f1f5f9;
+    }
+
+    .filter-choice.active-choice{
+      background:#0e2744;
+      color:#ffffff;
+    }
+
+    .filter-choice.all-choice{
+      background:#eef4fb;
+      border:1px solid #dbe4ef;
+      font-weight:900;
+      margin-bottom:8px;
+    }
+
+    @media(max-width:1050px){
+      .main{grid-template-columns:1fr}
+      #map{height:620px}
+      .map-card{min-height:auto}
+    }
+  </style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+
+<body>
+<div class="container">
+
+  <section class="card header">
+    <div class="top">
+      <div class="brand-row">
+        <img id="ldaLogoImg" class="lda-logo" src="lda_logo.png" onerror="this.style.display='none';document.getElementById('ldaLogoFallback').style.display='flex';">
+        <div id="ldaLogoFallback" class="logo-fallback" style="display:none">LDA</div>
+        <div>
+          <h1>Illegal Penalty Dashboard</h1>
+          <div class="subtitle">CSV-based penalty statistics linked with JSON plot geometry by ID</div>
+        </div>
+      </div>
+      <a class="home" href="index.html">← Main Page</a>
+    </div>
+
+    <div class="filters">
+      <div class="filter">
+        <label>Directorate</label>
+        <div class="filter-menu" id="directorateMenu"></div>
+      </div>
+
+      <div class="filter">
+        <label>AD</label>
+        <div class="filter-menu" id="adMenu"></div>
+      </div>
+
+      <div class="filter">
+        <label>Scheme</label>
+        <div class="filter-menu" id="schemeMenu"></div>
+      </div>
+
+      <div class="filter">
+        <label>Phase</label>
+        <div class="filter-menu" id="phaseMenu"></div>
+      </div>
+
+      <div class="filter">
+        <label>Block</label>
+        <div class="filter-menu" id="blockMenu"></div>
+      </div>
+
+      <div class="filter">
+        <label>Plot</label>
+        <div class="filter-menu" id="plotMenu"></div>
+      </div>
+
+      <div class="filter">
+        <label>Payment Status</label>
+        <div class="filter-menu" id="paymentStatusMenu"></div>
+      </div>
+
+      <div class="filter">
+        <label>Search</label>
+        <input id="searchInput" placeholder="Search ID, plot, scheme, AD..." />
+      </div>
+
+      <div class="filter">
+        <label>&nbsp;</label>
+        <button onclick="clearFilters()">Clear Filters</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="stats">
+    <div class="card stat">
+      <div class="stat-top">
+        <div class="stat-label">Total Illegal Records</div>
+        <div class="icon">⚠️</div>
+      </div>
+      <div id="totalIllegal" class="stat-value">0</div>
+      <div class="stat-note">All filtered CSV records</div>
+    </div>
+
+    <div class="card stat">
+      <div class="stat-top">
+        <div class="stat-label">Total Amount</div>
+        <div class="icon">💰</div>
+      </div>
+      <div id="totalAmount" class="stat-value">0</div>
+      <div class="stat-note">Sum of total amount</div>
+    </div>
+
+    <div class="card stat">
+      <div class="stat-top">
+        <div class="stat-label">Amount Received</div>
+        <div class="icon">✅</div>
+      </div>
+      <div id="receivedAmount" class="stat-value">0</div>
+      <div class="stat-note">Sum of amount received</div>
+    </div>
+
+    <div class="card stat">
+      <div class="stat-top">
+        <div class="stat-label">Outstanding Amount</div>
+        <div class="icon">⏳</div>
+      </div>
+      <div id="outstandingAmount" class="stat-value">0</div>
+      <div class="stat-note">Remaining recoverable amount</div>
+    </div>
+
+    <div class="card stat">
+      <div class="stat-top">
+        <div class="stat-label">Approved Cases</div>
+        <div class="icon">📌</div>
+      </div>
+      <div id="approvedCount" class="stat-value">0</div>
+      <div class="stat-note">Records with Approved payment/application status</div>
+    </div>
+  </section>
+
+  <section class="main">
+    <div class="card map-card">
+      <div class="map-head">
+        <div>
+          <h2>Spatial Penalty View</h2>
+          <p class="muted">Map polygons are linked from JSON by ID. Stats and table are calculated from the CSV.</p>
+          <div id="activeStatusBox"></div>
+        </div>
+        <div class="btn-row map-tools">
+          <button id="btnOSM" onclick="setBaseMap('osm')" class="active-basemap">Street</button>
+          <button id="btnSatellite" onclick="setBaseMap('satellite')">Satellite</button>
+          <button id="btnSpatialToggle" onclick="toggleSpatialData()">Hide All Spatial Data</button>
+          <button class="btn" onclick="exportTable()">Export CSV</button>
+          <button class="btn" onclick="generateFilterSummaryPDF()">Report</button>
+        </div>
+      </div>
+      <div class="map-box-wrap">
+        <div id="map"></div>
+        <div id="customPopup" class="custom-popup-panel" style="display:none"></div>
+      </div>
+    </div>
+
+    <div class="side">
+
+      <div class="card panel">
+        <h2>Payment Status Chart</h2>
+        <p class="muted">Click a donut segment to filter the map, stats and table.</p>
+        <div class="chart-wrap">
+          <canvas id="paymentChart"></canvas>
+        </div>
+        <div class="chart-hint">Click the same status again or press Clear Filters to reset.</div>
+      </div>
+
+      <div class="card panel">
+        <h2>Payment Status Legend</h2>
+        <p class="muted">Click a legend row to filter by status.</p>
+        <div class="legend-list" id="paymentLegend"></div>
+      </div>
+
+      
+    </div>
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="map-head">
+      <div>
+        <h2>Illegal Penalty Records</h2>
+        <p class="muted">Table includes all filtered CSV rows. Records without JSON geometry still remain in stats and table.</p>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:10px;align-items:center;margin:12px 0 14px 0;flex-wrap:wrap">
+      <input id="tableSearchInput" placeholder="Search below enlisted data..." style="max-width:360px;background:#fff">
+      <button class="btn" onclick="document.getElementById('tableSearchInput').value='';updateTable(filteredData());">Clear Table Search</button>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Directorate</th>
+            <th>AD</th>
+            <th>Scheme</th>
+            <th>Phase</th>
+            <th>Block</th>
+            <th>Plot</th>
+            <th>Area</th>
+            <th>Commercial Status</th>
+            <th>Total Amount</th>
+            <th>Received</th>
+            <th>Outstanding</th>
+            <th>Payment Status</th>
+            <th>Application Status</th>
+            <th>Remarks</th>
+          </tr>
+        </thead>
+        <tbody id="recordsBody"></tbody>
+      </table>
+    </div>
+  </section>
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+<script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+
+<script>
+let map;
+let plotLayer;
+let baseLayers = {};
+let currentBaseLayer = null;
+let allData = [];
+let allJsonFeatures = [];
+let selectedPlotBounds = null;
+let showSpatialLayer = true;
+let visiblePaymentLayers = new Set(['Full Payment','Court Case','Not Paid','Partial Payment','Approved','Withdrawn','Other']);
+let paymentChart = null;
+let activePaymentStatus = 'All';
+
+const filterIds = ['directorate','ad','scheme','phase','block','plot','paymentStatus'];
+const filterLabels = {directorate:'Directorate', ad:'AD', scheme:'Scheme', phase:'Phase', block:'Block', plot:'Plot', paymentStatus:'Payment Status'};
+let selectedFilters = {directorate:new Set(), ad:new Set(), scheme:new Set(), phase:new Set(), block:new Set(), plot:new Set(), paymentStatus:new Set()};
+let initializedFilters = new Set();
+let userClearedFilters = new Set();
+
+const searchFields = [
+  'id','directorate','ad','scheme','phase','block','plot','area',
+  'noticeDeliveryStatus','commercialStatus','paymentStatus',
+  'applicationStatus','currentLandUse','remarks','careOf'
+];
+
+const PAYMENT_RULES = [
+  { key:'Full Payment', label:'Full Payment', color:'#16a34a', aliases:['full payment','full paid','fully paid'] },
+  { key:'Court Case', label:'Court Case', color:'#4b2e16', aliases:['court case','court'] },
+  { key:'Not Paid', label:'Not Paid', color:'#dc2626', aliases:['not paid','unpaid','pending','outstanding'] },
+  { key:'Partial Payment', label:'Partial Payment', color:'#facc15', aliases:['partial payment','partial'] },
+  { key:'Approved', label:'Approved', color:'#ec4899', aliases:['approved'] },
+  { key:'Withdrawn', label:'Withdrawn', color:'#7c3aed', aliases:['withdrawn'] }
+];
+
+function norm(v){
+  return (v===null || v===undefined) ? '' : String(v).trim();
+}
+
+const BLANK_VALUE = '__BLANK__';
+
+function filterKeyValue(v){
+  const value = norm(v);
+  return value ? value : BLANK_VALUE;
+}
+
+function filterDisplayValue(v){
+  return v === BLANK_VALUE ? '(Blank)' : v;
+}
+
+function filtersAreDefault(){
+  const searchOn = norm(document.getElementById('searchInput')?.value) !== '';
+  if(searchOn || activePaymentStatus !== 'All') return false;
+
+  return filterIds.every(id => {
+    const allVals = new Set(allData.map(x => filterKeyValue(x[id])));
+    const selected = selectedFilters[id] || new Set();
+
+    if(selected.size !== allVals.size) return false;
+    for(const v of allVals){
+      if(!selected.has(v)) return false;
+    }
+    return true;
+  });
+}
+
+function featurePropValue(feature, field){
+  const p = feature && feature.properties ? feature.properties : {};
+
+  if(field === 'scheme'){
+    return filterKeyValue(p.Town_Name || p.Scheme || p.scheme);
+  }
+
+  if(field === 'phase'){
+    return filterKeyValue(p.Phase || p.phase);
+  }
+
+  if(field === 'block'){
+    return filterKeyValue(p.Block || p.block);
+  }
+
+  if(field === 'plot'){
+    return filterKeyValue(p.PlotNo || p.Plot || p.Plot_No || p['Plot No'] || p.PLOT);
+  }
+
+  if(field === 'directorate'){
+    return filterKeyValue(p.Directorate || p.directorate);
+  }
+
+  if(field === 'ad'){
+    return filterKeyValue(p.AD || p.ad);
+  }
+
+  if(field === 'paymentStatus'){
+    return BLANK_VALUE;
+  }
+
+  return BLANK_VALUE;
+}
+
+function getFilteredJsonFeatures(data){
+  // If no filters/search/chart status are active, show complete JSON layer.
+  if(filtersAreDefault()){
+    return allJsonFeatures;
+  }
+
+  // For filters applied through CSV fields, show grey JSON layer for matching geometry.
+  // This keeps the grey layer visible but limited to selected Scheme / Phase / Block / Plot.
+  const matchedFromFilteredCsv = data
+    .filter(x => x.mapped)
+    .map(x => x.feature);
+
+  // If CSV matched geometry exists, use it because it reflects all filters exactly.
+  if(matchedFromFilteredCsv.length){
+    return matchedFromFilteredCsv;
+  }
+
+  // Fallback for cases where CSV has no matched geometry but JSON properties can still match.
+  return allJsonFeatures.filter(feature => {
+    return ['directorate','ad','scheme','phase','block','plot'].every(id => {
+      const set = selectedFilters[id];
+      if(!set || set.size === 0) return false;
+
+      // If all available CSV values for this filter are selected, do not restrict by this field.
+      const allVals = new Set(allData.map(x => filterKeyValue(x[id])));
+      if(set.size === allVals.size) return true;
+
+      return set.has(featurePropValue(feature, id));
+    });
+  });
+}
+
+
+function cleanId(v){
+  const s = norm(v);
+  if (!s) return '';
+  if (/^\d+\.0+$/.test(s)) return s.split('.')[0];
+  return s;
+}
+
+function esc(v){
+  return String(v ?? '')
+    .replace(/&/g,'&amp;')
+    .replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;')
+    .replace(/'/g,'&#39;');
+}
+
+function num(v){
+  const n = parseFloat(norm(v).replace(/,/g,''));
+  return Number.isFinite(n) ? n : 0;
+}
+
+function money(v){
+  return num(v).toLocaleString(undefined,{maximumFractionDigits:0});
+}
+
+function get(row, keys){
+  // Robust CSV lookup: handles BOM, extra spaces, different casing and line breaks in headers.
+  if(!row) return '';
+
+  for (const k of keys){
+    if (row[k] !== undefined && norm(row[k])) return norm(row[k]);
+  }
+
+  const normalized = {};
+  Object.keys(row).forEach(key => {
+    const cleaned = String(key || '')
+      .replace(/^\ufeff/, '')
+      .replace(/\s+/g, ' ')
+      .trim()
+      .toLowerCase();
+    normalized[cleaned] = row[key];
+  });
+
+  for (const k of keys){
+    const cleaned = String(k || '')
+      .replace(/^\ufeff/, '')
+      .replace(/\s+/g, ' ')
+      .trim()
+      .toLowerCase();
+    if (normalized[cleaned] !== undefined && norm(normalized[cleaned])) return norm(normalized[cleaned]);
+  }
+
+  return '';
+}
+
+function setStatus(msg,error=false){
+  console.log(msg);
+}
+
+function classifyPaymentStatus(status){
+  const s = norm(status).toLowerCase();
+  for (const rule of PAYMENT_RULES){
+    if (rule.key === 'Other') continue;
+    if (rule.aliases.some(a => s.includes(a))) return rule.key;
+  }
+  return 'Other';
+}
+
+function getPaymentRule(status){
+  const cls = classifyPaymentStatus(status);
+  return PAYMENT_RULES.find(r => r.key === cls) || { key:'Other', label:'Other', color:'#94a3b8' };
+}
+
+function getPaymentColor(status){
+  return getPaymentRule(status).color;
+}
+
+function paymentBadgeClass(status){
+  const cls = classifyPaymentStatus(status);
+  if (cls === 'Full Payment') return 'badge-full';
+  if (cls === 'Court Case') return 'badge-court';
+  if (cls === 'Not Paid') return 'badge-notpaid';
+  if (cls === 'Partial Payment') return 'badge-partial';
+  if (cls === 'Approved') return 'badge-approved';
+  if (cls === 'Withdrawn') return 'badge-withdrawn';
+  return 'badge-other';
+}
+
+
+function splitImageLinks(value){
+  const raw = norm(value);
+  if(!raw) return [];
+
+  return raw
+    .split(/\s*(?:\||;|\n)\s*/)
+    .flatMap(part => part.split(/\s*,\s*(?=https?:\/\/|\.\/|picture\/|pictures\/|[A-Za-z0-9_-]+\.(?:jpg|jpeg|png|webp|gif))/i))
+    .map(x => norm(x))
+    .filter(Boolean);
+}
+
+function formatImageLink(url){
+  let raw = norm(url);
+  if(!raw) return '';
+
+  raw = raw.replace(/&amp;/g, '&');
+
+  // Google Drive view link:
+  // https://drive.google.com/file/d/FILE_ID/view?usp=sharing
+  const driveFileMatch = raw.match(/drive\.google\.com\/file\/d\/([^\/\?]+)/i);
+  if(driveFileMatch && driveFileMatch[1]){
+    return `https://drive.google.com/uc?export=view&id=${driveFileMatch[1]}`;
+  }
+
+  // Google Drive open?id=FILE_ID or uc?id=FILE_ID
+  const driveIdMatch = raw.match(/[?&]id=([^&]+)/i);
+  if(raw.includes('drive.google.com') && driveIdMatch && driveIdMatch[1]){
+    return `https://drive.google.com/uc?export=view&id=${driveIdMatch[1]}`;
+  }
+
+  return raw;
+}
+
+
+
+function formatNoticeLink(url){
+  let raw = norm(url);
+  if(!raw) return '';
+
+  raw = raw.replace(/&amp;/g, '&');
+
+  // Google Drive file view link
+  const driveFileMatch = raw.match(/drive\.google\.com\/file\/d\/([^\/\?]+)/i);
+  if(driveFileMatch && driveFileMatch[1]){
+    return `https://drive.google.com/file/d/${driveFileMatch[1]}/view?usp=sharing`;
+  }
+
+  // Google Drive open?id=FILE_ID
+  const driveIdMatch = raw.match(/[?&]id=([^&]+)/i);
+  if(raw.includes('drive.google.com') && driveIdMatch && driveIdMatch[1]){
+    return `https://drive.google.com/file/d/${driveIdMatch[1]}/view?usp=sharing`;
+  }
+
+  return raw;
+}
+
+function noticeButton(item){
+  const link = formatNoticeLink(item.noticeLink);
+  if(!link) return '';
+
+  return `
+    <div style="margin-top:10px;border-top:1px solid #e2e8f0;padding-top:9px">
+      <a href="${esc(link)}" target="_blank" rel="noopener noreferrer"
+         style="display:flex;align-items:center;justify-content:center;gap:7px;width:100%;padding:8px 12px;background:#14365a;color:#fff;text-decoration:none;border-radius:9px;font-weight:800">
+        📄 View Notice
+      </a>
+    </div>`;
+}
+
+function imageCandidates(item){
+  const ids = [item.id, item.plot].map(norm).filter(Boolean);
+  const exts = ['jpg','jpeg','png','webp','gif','JPG','JPEG','PNG','WEBP','GIF'];
+  const out = [];
+  ids.forEach(id => exts.forEach(ext => out.push(`${id}.${ext}`)));
+  ids.forEach(id => exts.forEach(ext => out.push(`picture/${id}.${ext}`)));
+  ids.forEach(id => exts.forEach(ext => out.push(`pictures/${id}.${ext}`)));
+  return [...new Set(out)];
+}
+
+function popupImage(item){
+  const csvLinks = splitImageLinks(item.picture).map(formatImageLink).filter(Boolean);
+
+  if(csvLinks.length){
+    const gallery = csvLinks.map((link, idx) => `
+      <a href="${esc(link)}" target="_blank" rel="noopener noreferrer" style="display:inline-block;margin:4px 4px 0 0;">
+        <img
+          src="${esc(link)}"
+          class="popup-img"
+          alt="Plot picture ${idx + 1}"
+          loading="lazy"
+          onerror="this.style.display='none'"
+          style="width:${csvLinks.length > 1 ? '92px' : '100%'};height:${csvLinks.length > 1 ? '72px' : 'auto'};max-height:170px;cursor:pointer;"
+        >
+      </a>
+    `).join('');
+
+    return `
+      <div style="margin-top:10px;border-top:1px solid #e2e8f0;padding-top:9px">
+        <b>Picture</b>
+        <div style="margin-top:6px">${gallery}</div>
+      </div>`;
+  }
+
+  const c = imageCandidates(item);
+  if(!c.length) return '';
+
+  const enc = encodeURIComponent(JSON.stringify(c));
+
+  return `
+    <div style="margin-top:10px;border-top:1px solid #e2e8f0;padding-top:9px">
+      <b>Picture</b>
+      <a href="${esc(c[0])}" target="_blank" style="display:block" rel="noopener noreferrer">
+        <img class="popup-img"
+             src="${esc(c[0])}"
+             data-candidates="${enc}"
+             data-index="0"
+             onerror="try{
+               const c=JSON.parse(decodeURIComponent(this.dataset.candidates||'%5B%5D'));
+               let i=parseInt(this.dataset.index||'0')+1;
+               if(i<c.length){
+                 this.dataset.index=i;
+                 this.src=c[i];
+                 this.parentElement.href=c[i];
+               }else{
+                 this.style.display='none';
+                 this.parentElement.style.display='none';
+               }
+             }catch(e){
+               this.style.display='none';
+               this.parentElement.style.display='none';
+             }">
+      </a>
+    </div>`;
+}
+
+function initMap(){
+  map = L.map('map',{center:[31.51,74.35],zoom:14});
+
+  baseLayers = {
+    osm: L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
+      maxZoom:19,
+      attribution:'&copy; OpenStreetMap'
+    }),
+    satellite: L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',{
+      maxZoom:19,
+      attribution:'Tiles &copy; Esri'
+    })
+  };
+
+  currentBaseLayer = baseLayers.osm;
+  currentBaseLayer.addTo(map);
+
+  plotLayer = L.layerGroup().addTo(map);
+  map.on('click', hideCustomPopup);
+}
+
+
+function toggleSpatialData(){
+  showSpatialLayer = !showSpatialLayer;
+
+  const btn = document.getElementById('btnSpatialToggle');
+  if(btn){
+    btn.textContent = showSpatialLayer ? 'Hide All Spatial Data' : 'Show All Spatial Data';
+    btn.classList.toggle('spatial-toggle-off', !showSpatialLayer);
+  }
+
+  applyFilters();
+}
+
+function setBaseMap(type){
+  if(!baseLayers[type] || currentBaseLayer === baseLayers[type]) return;
+
+  map.removeLayer(currentBaseLayer);
+  currentBaseLayer = baseLayers[type];
+  currentBaseLayer.addTo(map);
+
+  document.getElementById('btnOSM').classList.toggle('active-basemap', type === 'osm');
+  document.getElementById('btnSatellite').classList.toggle('active-basemap', type === 'satellite');
+}
+
+function buildData(csvRows,json){
+  const jsonMap = new Map();
+
+  (json.features || []).forEach(f => {
+    const props = f.properties || {};
+    const keys = [
+      cleanId(props.ID),
+      cleanId(props.ID_1),
+      cleanId(props.UniqueID),
+      cleanId(f.id)
+    ].filter(Boolean);
+
+    keys.forEach(k => {
+      if(!jsonMap.has(k)) jsonMap.set(k, f);
+    });
+  });
+
+  const rows = csvRows.map(row => {
+    const id = cleanId(get(row,['ID','Id','id','UniqueID','Unique ID','Plot ID','PlotID','Record ID']));
+    const feature = jsonMap.get(id) || null;
+
+    const item = {
+      id,
+      picture: get(row,['Picture','Pictures','Image','Images','Photo','Photos','Picture Link','Image Link','Photo Link']),
+      noticeLink: get(row,['Notice','Notice Link','Notice URL','Notice File','Notice Path','Open Notice','Notice PDF']),
+      directorate: get(row,['Directorate']),
+      ad: get(row,['AD']),
+      scheme: get(row,['Scheme']),
+      phase: get(row,['Phase']),
+      block: get(row,['Block ','Block']),
+      plot: get(row,['Plot No.','Plot','PlotNo']),
+      key: get(row,['Key']),
+      noticeDeliveryStatus: get(row,['Notice Delivery Status']),
+      commercialStatus: get(row,['Commercial Status']),
+      plotNoticeStatus: get(row,['Plot Notice Status']),
+      area: get(row,['Plot Area\n(K-M-S)','Plot Area\\n(K-M-S)','Plot Area (K-M-S)','Area']),
+      amountPending: get(row,['Amount Pending 24-25']),
+      amountGenerated: get(row,['Amount Generated 25-26']),
+      totalAmount: get(row,['Total Amount']),
+      amountReceived: get(row,['Amount Recieved','Amount Received']),
+      paymentDate: get(row,['Payment Date & No.']),
+      outstandingAmount: get(row,['Outstanding Amount']),
+      paymentStatus: get(row,['Payment Status']),
+      applicationStatus: get(row,['Application Status']),
+      currentLandUse: get(row,['Current Land Use']),
+      sealingStatus: get(row,['Sealing Status']),
+      careOf: get(row,['CARE OFF']),
+      remarks: get(row,['Remarks']),
+      previousSealingDate: get(row,['Previous Sealing Date']),
+      lastSealingDate: get(row,['Last Sealing Date']),
+      desealingReason: get(row,['De-Sealing Reason']),
+      otherActions: get(row,['Any Other Actions\nLegal Parawise Comments Detail\nWithdrawn cases Pending amount','Any Other Actions\\nLegal Parawise Comments Detail\\nWithdrawn cases Pending amount']),
+      feature,
+      mapped: !!feature,
+      raw: row
+    };
+
+    if(feature){
+      feature.properties = feature.properties || {};
+      feature.properties.__csvItem = item;
+    }
+
+    return item;
+  }).filter(x => x.id);
+
+  return rows;
+}
+function closeAllFilterDropdowns(exceptId=''){
+  document.querySelectorAll('.filter-dropdown').forEach(el => {
+    if(el.id !== exceptId) el.classList.remove('open');
+  });
+}
+
+function populateMultiFilter(id, values){
+  const menu = document.getElementById(id + 'Menu');
+  const label = filterLabels[id] || id;
+
+  const sorted = [...new Set(values.map(v => filterKeyValue(v)))]
+    .sort((a,b)=>filterDisplayValue(a).localeCompare(filterDisplayValue(b),undefined,{numeric:true}));
+
+  // First load: select all values by default, including blanks.
+  if(!initializedFilters.has(id)){
+    selectedFilters[id] = new Set(sorted);
+    initializedFilters.add(id);
+  }else{
+    selectedFilters[id] = new Set([...selectedFilters[id]].filter(v => sorted.includes(v)));
+
+    // If parent filter changed and this filter was reset, select all available values.
+    if(selectedFilters[id].size === 0 && sorted.length && !userClearedFilters.has(id)){
+      selectedFilters[id] = new Set(sorted);
+    }
+  }
+
+  const selectedCount = selectedFilters[id].size;
+  const title = selectedCount === sorted.length ? `All ${label}` : (
+    selectedCount === 1 ? filterDisplayValue([...selectedFilters[id]][0]) : `${selectedCount} selected`
+  );
+
+  menu.innerHTML = `
+    <button type="button" class="filter-toggle" data-filter-toggle="${id}">
+      <span id="${id}Title">${esc(title)}</span>
+      <span>▾</span>
+    </button>
+
+    <div class="filter-dropdown" id="${id}Dropdown">
+      <button type="button" class="filter-choice all-choice ${selectedCount === sorted.length ? 'active-choice' : ''}" data-value="__ALL__">
+        All ${esc(label)}
+      </button>
+
+      ${sorted.map(v => `
+        <button type="button" class="filter-choice ${selectedFilters[id].has(v) && selectedFilters[id].size === 1 ? 'active-choice' : ''}" data-value="${esc(v)}">
+          ${esc(filterDisplayValue(v))}
+        </button>
+      `).join('')}
+    </div>
+  `;
+
+  const toggle = menu.querySelector('[data-filter-toggle]');
+  const dropdown = menu.querySelector('.filter-dropdown');
+
+  toggle.addEventListener('click', function(e){
+    e.stopPropagation();
+    const dropdownId = id + 'Dropdown';
+    const willOpen = !dropdown.classList.contains('open');
+    closeAllFilterDropdowns(dropdownId);
+    dropdown.classList.toggle('open', willOpen);
+  });
+
+  dropdown.querySelectorAll('.filter-choice').forEach(btn => {
+    btn.addEventListener('click', function(e){
+      e.stopPropagation();
+
+      const value = this.dataset.value || '__ALL__';
+
+      if(value === '__ALL__'){
+        selectedFilters[id] = new Set(sorted);
+        userClearedFilters.delete(id);
+      }else{
+        selectedFilters[id] = new Set([value]);
+        userClearedFilters.delete(id);
+      }
+
+      resetDownstreamFilters(id);
+      activePaymentStatus = 'All';
+      populateFilters();
+      applyFilters();
+      closeAllFilterDropdowns();
+    });
+  });
+
+  dropdown.addEventListener('click', function(e){
+    e.stopPropagation();
+  });
+}
+
+function resetDownstreamFilters(changedId){
+  const downstream = {
+    directorate: ['ad','scheme','phase','block','plot','paymentStatus'],
+    ad: ['scheme','phase','block','plot','paymentStatus'],
+    scheme: ['phase','block','plot','paymentStatus'],
+    phase: ['block','plot','paymentStatus'],
+    block: ['plot','paymentStatus'],
+    plot: ['paymentStatus'],
+    paymentStatus: []
+  };
+
+  (downstream[changedId] || []).forEach(id => {
+    initializedFilters.delete(id);
+    userClearedFilters.delete(id);
+    selectedFilters[id] = new Set();
+  });
+}
+
+// Kept for compatibility. No checkboxes are used now.
+function toggleFilterValue(id, value, checked){
+  if(checked){
+    selectedFilters[id] = new Set([value]);
+    userClearedFilters.delete(id);
+  }else{
+    selectedFilters[id].delete(value);
+    if(selectedFilters[id].size === 0) userClearedFilters.add(id);
+  }
+
+  resetDownstreamFilters(id);
+  updateFilterTitle(id);
+  populateFilters();
+  applyFilters();
+}
+
+function toggleAllFilter(id, checked){
+  const values = [...new Set(dataMatchingFilters(id).map(x => filterKeyValue(x[id])))]
+    .sort((a,b)=>filterDisplayValue(a).localeCompare(filterDisplayValue(b),undefined,{numeric:true}));
+
+  if(checked){
+    selectedFilters[id] = new Set(values);
+    userClearedFilters.delete(id);
+  }else{
+    selectedFilters[id].clear();
+    userClearedFilters.add(id);
+  }
+
+  resetDownstreamFilters(id);
+  updateFilterTitle(id);
+  populateFilters();
+  applyFilters();
+}
+
+function updateFilterTitle(id){
+  const title = document.getElementById(id + 'Title');
+  if(!title) return;
+
+  const label = filterLabels[id] || id;
+  const values = [...new Set(dataMatchingFilters(id).map(x => filterKeyValue(x[id])))]
+    .sort((a,b)=>filterDisplayValue(a).localeCompare(filterDisplayValue(b),undefined,{numeric:true}));
+
+  const selected = selectedFilters[id] || new Set();
+  title.textContent = selected.size === values.length ? `All ${label}` : (
+    selected.size === 1 ? filterDisplayValue([...selected][0]) : `${selected.size} selected`
+  );
+}
+
+function dataMatchingFilters(targetId){
+  const dependencyMap = {
+    directorate: [],
+    ad: ['directorate'],
+    scheme: ['directorate','ad'],
+    phase: ['directorate','ad','scheme'],
+    block: ['directorate','ad','scheme','phase'],
+    plot: ['directorate','ad','scheme','phase','block'],
+    paymentStatus: ['directorate','ad','scheme','phase','block','plot']
+  };
+
+  const deps = dependencyMap[targetId] || [];
+
+  return allData.filter(x => {
+    return deps.every(id => {
+      const set = selectedFilters[id];
+
+      // Ignore empty parent filters so options can recover after reset.
+      if(!set || set.size === 0) return true;
+
+      return set.has(filterKeyValue(x[id]));
+    });
+  });
+}
+
+function populateFilters(){
+  populateMultiFilter('directorate',[...new Set(dataMatchingFilters('directorate').map(x => x.directorate))]);
+  populateMultiFilter('ad',[...new Set(dataMatchingFilters('ad').map(x => x.ad))]);
+  populateMultiFilter('scheme',[...new Set(dataMatchingFilters('scheme').map(x => x.scheme))]);
+  populateMultiFilter('phase',[...new Set(dataMatchingFilters('phase').map(x => x.phase))]);
+  populateMultiFilter('block',[...new Set(dataMatchingFilters('block').map(x => x.block))]);
+  populateMultiFilter('plot',[...new Set(dataMatchingFilters('plot').map(x => x.plot))]);
+  populateMultiFilter('paymentStatus',[...new Set(dataMatchingFilters('paymentStatus').map(x => x.paymentStatus))]);
+
+  const searchInput = document.getElementById('searchInput');
+  if(searchInput && !searchInput.dataset.bound){
+    searchInput.addEventListener('input', applyFilters);
+    searchInput.dataset.bound = 'true';
+  }
+
+  const tableSearch = document.getElementById('tableSearchInput');
+  if(tableSearch && !tableSearch.dataset.bound){
+    tableSearch.addEventListener('input', () => updateTable(filteredData()));
+    tableSearch.dataset.bound = 'true';
+  }
+
+  if(!document.body.dataset.filterCloseBound){
+    document.addEventListener('click', function(e){
+      if(!e.target.closest('.filter-menu')){
+        closeAllFilterDropdowns();
+      }
+    });
+    document.body.dataset.filterCloseBound = 'true';
+  }
+}
+
+function baseFilteredData(){
+  const q = norm(document.getElementById('searchInput').value).toLowerCase();
+
+  return allData.filter(x =>
+    filterIds.every(id => {
+      const set = selectedFilters[id];
+
+      // If the user unchecks all options in a filter, show no records.
+      if(!set || set.size === 0) return false;
+
+      return set.has(filterKeyValue(x[id]));
+    })
+    &&
+    (!q || searchFields.some(f => norm(x[f]).toLowerCase().includes(q)))
+  );
+}
+
+function filteredData(){
+  let data = baseFilteredData();
+
+  // Donut chart single-status filter:
+  // Example: click "Not Paid" -> only Not Paid records appear in stats, table and spatial view.
+  if(activePaymentStatus !== 'All'){
+    return data.filter(x => classifyPaymentStatus(x.paymentStatus) === activePaymentStatus);
+  }
+
+  // When no donut segment is selected, show records whose payment layer is enabled.
+  return data.filter(x => {
+    const cls = classifyPaymentStatus(x.paymentStatus);
+    return cls === 'Other' || visiblePaymentLayers.has(cls);
+  });
+}
+
+function clearFilters(){
+  initializedFilters = new Set();
+  userClearedFilters = new Set();
+  filterIds.forEach(id => {
+    const vals = [...new Set(allData.map(x => filterKeyValue(x[id])))];
+    selectedFilters[id] = new Set(vals);
+    initializedFilters.add(id);
+  });
+  document.getElementById('searchInput').value = '';
+  const tableSearch = document.getElementById('tableSearchInput');
+  if(tableSearch) tableSearch.value = '';
+  activePaymentStatus = 'All';
+  visiblePaymentLayers = new Set(PAYMENT_RULES.map(r=>r.key));
+  showSpatialLayer = true;
+  const btn = document.getElementById('btnSpatialToggle');
+  if(btn){
+    btn.textContent = 'Hide All Spatial Data';
+    btn.classList.remove('spatial-toggle-off');
+  }
+  populateFilters();
+  applyFilters();
+}
+
+function updateStats(data){
+  const total = data.length;
+  const totalAmount = data.reduce((s,x)=>s+num(x.totalAmount),0);
+  const received = data.reduce((s,x)=>s+num(x.amountReceived),0);
+  const outstanding = data.reduce((s,x)=>s+num(x.outstandingAmount),0);
+  const approved = data.filter(x =>
+    classifyPaymentStatus(x.paymentStatus) === 'Approved' ||
+    norm(x.applicationStatus).toLowerCase().includes('approved')
+  ).length;
+
+  document.getElementById('totalIllegal').textContent = total.toLocaleString();
+  document.getElementById('totalAmount').textContent = totalAmount.toLocaleString();
+  document.getElementById('receivedAmount').textContent = received.toLocaleString();
+  document.getElementById('outstandingAmount').textContent = outstanding.toLocaleString();
+  document.getElementById('approvedCount').textContent = approved.toLocaleString();
+}
+
+function popup(item){
+  const color = getPaymentColor(item.paymentStatus);
+
+  return `
+    <div style="min-width:300px;font-family:Segoe UI,Arial;line-height:1.55">
+      <div style="font-size:16px;font-weight:800;color:#0e2744;margin-bottom:7px">Plot ${esc(item.plot || '-')}</div>
+
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+        <span style="width:14px;height:14px;border-radius:4px;background:${color};display:inline-block;border:1px solid rgba(0,0,0,.2)"></span>
+        <b>${esc(item.paymentStatus || 'Unknown')}</b>
+      </div>
+
+      <div><b>ID:</b> ${esc(item.id)}</div>
+      <div><b>Directorate:</b> ${esc(item.directorate || '-')}</div>
+      <div><b>AD:</b> ${esc(item.ad || '-')}</div>
+      <div><b>Scheme:</b> ${esc(item.scheme || '-')}</div>
+      <div><b>Phase:</b> ${esc(item.phase || '-')}</div>
+      <div><b>Block:</b> ${esc(item.block || '-')}</div>
+      <div><b>Area:</b> ${esc(item.area || '-')}</div>
+      <div><b>Commercial Status:</b> ${esc(item.commercialStatus || '-')}</div>
+      <div><b>Application Status:</b> ${esc(item.applicationStatus || '-')}</div>
+      <div><b>Current Land Use:</b> ${esc(item.currentLandUse || '-')}</div>
+      <div><b>Total Amount:</b> ${money(item.totalAmount)}</div>
+      <div><b>Amount Received:</b> ${money(item.amountReceived)}</div>
+      <div><b>Outstanding Amount:</b> ${money(item.outstandingAmount)}</div>
+      <div><b>Remarks:</b> ${esc(item.remarks || '-')}</div>
+
+      ${popupImage(item)}
+      ${noticeButton(item)}
+        <button onclick="generatePDF('${item.id}')" 
+        style="margin-top:10px;padding:8px 12px;background:#0e2744;color:#fff;border:none;border-radius:8px;cursor:pointer;font-weight:700;width:100%">
+        📄 Download Professional PDF
+        </button>
+    </div>`;
+}
+
+
+function hasRestrictiveFilters(){
+  const searchOn = norm(document.getElementById('searchInput').value) !== '';
+  if(searchOn || activePaymentStatus !== 'All') return true;
+
+  return filterIds.some(id => {
+    const values = [...new Set(allData.map(x => filterKeyValue(x[id])))];
+    const set = selectedFilters[id];
+    return set && set.size !== values.length;
+  });
+}
+
+
+function showCustomPopup(item, feature=null){
+  const box = document.getElementById('customPopup');
+  if(!box) return;
+
+  // If CSV record exists, show full CSV-linked penalty details.
+  if(item){
+    const color = getPaymentColor(item.paymentStatus);
+
+    box.style.display = 'block';
+    box.innerHTML = `
+      <button class="custom-popup-close" onclick="hideCustomPopup()">×</button>
+      <h3>Plot ${esc(item.plot || '-')}</h3>
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+        <span style="width:14px;height:14px;border-radius:4px;background:${color};display:inline-block;border:1px solid rgba(0,0,0,.2)"></span>
+        <b>${esc(item.paymentStatus || 'Unknown')}</b>
+      </div>
+      <div class="popup-row"><b>ID</b><span>${esc(item.id)}</span></div>
+      <div class="popup-row"><b>Directorate</b><span>${esc(item.directorate || '-')}</span></div>
+      <div class="popup-row"><b>AD</b><span>${esc(item.ad || '-')}</span></div>
+      <div class="popup-row"><b>Scheme</b><span>${esc(item.scheme || '-')}</span></div>
+      <div class="popup-row"><b>Phase</b><span>${esc(item.phase || '-')}</span></div>
+      <div class="popup-row"><b>Block</b><span>${esc(item.block || '-')}</span></div>
+      <div class="popup-row"><b>Area</b><span>${esc(item.area || '-')}</span></div>
+      <div class="popup-row"><b>Commercial</b><span>${esc(item.commercialStatus || '-')}</span></div>
+      <div class="popup-row"><b>Application</b><span>${esc(item.applicationStatus || '-')}</span></div>
+      <div class="popup-row"><b>Total</b><span>${money(item.totalAmount)}</span></div>
+      <div class="popup-row"><b>Received</b><span>${money(item.amountReceived)}</span></div>
+      <div class="popup-row"><b>Outstanding</b><span>${money(item.outstandingAmount)}</span></div>
+      <div style="margin-top:6px"><b>Remarks:</b><br>${esc(item.remarks || '-')}</div>
+      ${popupImage(item)}
+      ${noticeButton(item)}
+        <button onclick="generatePDF('${item.id}')" 
+        style="margin-top:10px;padding:8px 12px;background:#0e2744;color:#fff;border:none;border-radius:8px;cursor:pointer;font-weight:700;width:100%">
+        📄 Download Professional PDF
+        </button>
+    `;
+    return;
+  }
+
+  // If no CSV match, still show basic JSON plot details.
+  const p = feature && feature.properties ? feature.properties : {};
+  const jsonId = cleanId(p.ID || p.ID_1 || p.UniqueID || feature?.id || '');
+  const plotNo = p.PlotNo || p.Plot || p.PLOT || p['Plot No'] || '-';
+  const scheme = p.Town_Name || p.Scheme || p.scheme || '-';
+  const phase = p.Phase || p.phase || '-';
+  const block = p.Block || p.block || '-';
+
+  box.style.display = 'block';
+  box.innerHTML = `
+    <button class="custom-popup-close" onclick="hideCustomPopup()">×</button>
+    <h3>Plot ${esc(plotNo)}</h3>
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+      <span style="width:14px;height:14px;border-radius:4px;background:#6b7280;display:inline-block;border:1px solid rgba(0,0,0,.2)"></span>
+      <b>JSON Spatial Plot</b>
+    </div>
+    <div class="popup-row"><b>ID</b><span>${esc(jsonId || '-')}</span></div>
+    <div class="popup-row"><b>Scheme</b><span>${esc(scheme)}</span></div>
+    <div class="popup-row"><b>Phase</b><span>${esc(phase)}</span></div>
+    <div class="popup-row"><b>Block</b><span>${esc(block)}</span></div>
+    <div style="margin-top:8px;color:#64748b;font-size:12px">No matching CSV penalty record found for this plot ID.</div>
+  `;
+}
+function hideCustomPopup(){
+  const box = document.getElementById('customPopup');
+  if(box){
+    box.style.display = 'none';
+    box.innerHTML = '';
+  }
+}
+
+
+
+function isFilterDefault(id){
+  const allVals = new Set(allData.map(x => filterKeyValue(x[id])));
+  const selected = selectedFilters[id] || new Set();
+
+  if(selected.size !== allVals.size) return false;
+  for(const v of allVals){
+    if(!selected.has(v)) return false;
+  }
+  return true;
+}
+
+function hasAnyActiveFilter(){
+  const q = norm(document.getElementById('searchInput')?.value);
+  if(q || activePaymentStatus !== 'All') return true;
+
+  return filterIds.some(id => !isFilterDefault(id));
+}
+
+function firstProp(props, names){
+  for(const name of names){
+    if(props[name] !== undefined && norm(props[name]) !== '') return props[name];
+  }
+
+  const lowerMap = {};
+  Object.keys(props || {}).forEach(k => lowerMap[k.toLowerCase().trim()] = props[k]);
+
+  for(const name of names){
+    const key = String(name).toLowerCase().trim();
+    if(lowerMap[key] !== undefined && norm(lowerMap[key]) !== '') return lowerMap[key];
+  }
+
+  return '';
+}
+
+function softText(v){
+  return norm(v)
+    .toLowerCase()
+    .replace(/&amp;/g,'and')
+    .replace(/&/g,'and')
+    .replace(/[^a-z0-9]+/g,' ')
+    .replace(/\bphase\b/g,'')
+    .replace(/\bph\b/g,'')
+    .replace(/\bblock\b/g,'')
+    .replace(/\bblk\b/g,'')
+    .replace(/\s+/g,' ')
+    .trim();
+}
+
+function softMatch(a,b){
+  const x = softText(a);
+  const y = softText(b);
+
+  if(!x || !y) return false;
+  if(x === y) return true;
+
+  // Allow "Faisal Town" vs "Faisal Town Phase-II" etc.
+  return x.includes(y) || y.includes(x);
+}
+
+function jsonCandidateValues(feature, id){
+  const p = feature && feature.properties ? feature.properties : {};
+
+  if(id === 'scheme'){
+    return [
+      firstProp(p,['Scheme','scheme','SCHEME']),
+      firstProp(p,['Town_Name','TOWN_NAME','Town','town','TownName','TOWN']),
+      firstProp(p,['Mouza','mouza','MOUZA']),
+      firstProp(p,['Society','society','SOCIETY']),
+      firstProp(p,['Name','name','NAME'])
+    ].filter(v => norm(v));
+  }
+
+  if(id === 'phase'){
+    return [
+      firstProp(p,['Phase','phase','PHASE']),
+      firstProp(p,['Town_Name','TOWN_NAME','Town','town']),
+      firstProp(p,['Scheme','scheme','SCHEME']),
+      firstProp(p,['Name','name','NAME'])
+    ].filter(v => norm(v));
+  }
+
+  if(id === 'block'){
+    return [
+      firstProp(p,['Block','block','BLOCK']),
+      firstProp(p,['Block_Name','BLOCK_NAME','BlockName']),
+      firstProp(p,['Sector','sector','SECTOR'])
+    ].filter(v => norm(v));
+  }
+
+  if(id === 'plot'){
+    return [
+      firstProp(p,['PlotNo','Plot','Plot_No','Plot No','PLOT','PLOTNO','Plot_Number','PLOT_NUMBER'])
+    ].filter(v => norm(v));
+  }
+
+  if(id === 'directorate'){
+    return [
+      firstProp(p,['Directorate','directorate','DIRECTORATE'])
+    ].filter(v => norm(v));
+  }
+
+  if(id === 'ad'){
+    return [
+      firstProp(p,['AD','ad','Concerned AD','Concerned_AD','Assistant Director'])
+    ].filter(v => norm(v));
+  }
+
+  return [];
+}
+
+function selectedValuesForFilter(id){
+  const set = selectedFilters[id];
+  if(!set || set.size === 0) return [];
+
+  const allValues = [...new Set(dataMatchingFilters(id).map(x => filterKeyValue(x[id])))];
+
+  // All selected means no restriction on JSON.
+  if(allValues.length && set.size === allValues.length) return [];
+
+  return [...set].map(filterDisplayValue);
+}
+
+function jsonMatchesFilter(feature, id){
+  const selected = selectedValuesForFilter(id);
+  if(!selected.length) return true;
+
+  const candidates = jsonCandidateValues(feature, id);
+
+  // If JSON does not have this field, don't exclude it for directorate/AD.
+  // Spatial scope mainly depends on scheme/phase/block/plot.
+  if(!candidates.length && (id === 'directorate' || id === 'ad')) return true;
+
+  return selected.some(sel => candidates.some(c => softMatch(c, sel)));
+}
+
+function jsonFeatureMatchesCurrentFilters(feature){
+  // Apply all spatial filters, using flexible text matching.
+  const jsonFilterIds = ['directorate','ad','scheme','phase','block','plot'];
+  return jsonFilterIds.every(id => jsonMatchesFilter(feature, id));
+}
+
+function csvSpatialScopeItems(){
+  // Spatial scope from CSV fields as a fallback when JSON scheme/phase/block fields are inconsistent.
+  return allData.filter(x => {
+    return ['directorate','ad','scheme','phase','block','plot'].every(id => {
+      const selected = selectedValuesForFilter(id);
+      if(!selected.length) return true;
+      return selected.some(sel => softMatch(x[id], sel));
+    });
+  });
+}
+
+function idsForFeature(feature){
+  const props = feature.properties || {};
+  return [
+    cleanId(props.ID),
+    cleanId(props.ID_1),
+    cleanId(props.UniqueID),
+    cleanId(feature.id)
+  ].filter(Boolean);
+}
+
+function csvItemForFeature(feature, sourceMap){
+  for(const id of idsForFeature(feature)){
+    if(sourceMap.has(id)) return sourceMap.get(id);
+  }
+  return null;
+}
+
+function featureMatchesSpatialScope(feature, scopeItemById){
+  // First: direct JSON property matching
+  if(jsonFeatureMatchesCurrentFilters(feature)) return true;
+
+  // Second: infer from CSV item linked by ID.
+  // This makes all schemes behave like Faisal Town even if JSON fields are incomplete/different.
+  const scopeItem = csvItemForFeature(feature, scopeItemById);
+  return !!scopeItem;
+}
+
+
+function updateMap(data){
+  plotLayer.clearLayers();
+  hideCustomPopup();
+  selectedPlotBounds = null;
+
+  if(!showSpatialLayer){
+    return;
+  }
+
+  const bounds = [];
+  const filteredItemById = new Map(data.map(x => [cleanId(x.id), x]));
+  const scopeItemById = new Map(csvSpatialScopeItems().map(x => [cleanId(x.id), x]));
+  const activeFilter = hasAnyActiveFilter();
+
+  const plotSelected = selectedValuesForFilter('plot').length === 1
+    ? selectedValuesForFilter('plot')[0]
+    : null;
+
+  const featuresToDraw = activeFilter
+    ? allJsonFeatures.filter(feature => {
+        const csvFilteredMatched = !!csvItemForFeature(feature, filteredItemById);
+        const scopeMatched = featureMatchesSpatialScope(feature, scopeItemById);
+
+        return csvFilteredMatched || scopeMatched;
+      })
+    : allJsonFeatures;
+
+  featuresToDraw.forEach(feature => {
+    const item = csvItemForFeature(feature, filteredItemById);
+
+    const isMatched = !!item;
+    const color = isMatched ? getPaymentColor(item.paymentStatus) : '#6b7280';
+
+    const layer = L.geoJSON(feature,{
+      interactive:true,
+      style:{
+        color:color,
+        weight:isMatched ? 2.8 : 1,
+        fillColor:isMatched ? color : '#cbd5e1',
+        fillOpacity:isMatched ? .72 : .30
+      },
+      onEachFeature:(f,l)=>{
+        if(isMatched){
+          l.bindPopup(popup(item), {
+            maxWidth: 360,
+            autoPan: true,
+            closeButton: true
+          });
+        }else{
+          const p = feature.properties || {};
+          l.bindPopup(`
+            <div style="min-width:240px;font-family:Segoe UI,Arial;line-height:1.55">
+              <div style="font-size:16px;font-weight:800;color:#0e2744;margin-bottom:7px">Plot ${esc(firstProp(p,['PlotNo','Plot','Plot_No','Plot No','PLOT']) || '-')}</div>
+              <div><b>ID:</b> ${esc(firstProp(p,['ID','ID_1','UniqueID']) || '-')}</div>
+              <div><b>Scheme:</b> ${esc(firstProp(p,['Scheme','Town_Name','Town','Mouza','Name']) || '-')}</div>
+              <div><b>Phase:</b> ${esc(firstProp(p,['Phase','Town_Name','Scheme']) || '-')}</div>
+              <div><b>Block:</b> ${esc(firstProp(p,['Block','Block_Name','Sector']) || '-')}</div>
+              <div><b>Landuse:</b> ${esc(firstProp(p,['Landuse','Landuse_OC','landuse']) || '-')}</div>
+              <div style="margin-top:6px;color:#64748b;font-size:12px">JSON spatial record. No matching filtered CSV penalty record for this ID.</div>
+            </div>
+          `, {
+            maxWidth: 320,
+            autoPan: true,
+            closeButton: true
+          });
+        }
+      }
+    }).addTo(plotLayer);
+
+    layer.eachLayer(l => {
+      if(l.getBounds){
+        const b = l.getBounds();
+        bounds.push(b);
+
+        // Zoom to individual plot when Plot filter is selected.
+        const p = feature.properties || {};
+        const jsonPlotVals = jsonCandidateValues(feature, 'plot');
+        const csvPlotVal = item ? item.plot : '';
+        const isSelectedPlot =
+          plotSelected &&
+          (
+            (csvPlotVal && softMatch(csvPlotVal, plotSelected)) ||
+            jsonPlotVals.some(v => softMatch(v, plotSelected))
+          );
+
+        if(isSelectedPlot){
+          selectedPlotBounds = selectedPlotBounds ? selectedPlotBounds.extend(b) : b;
+        }
+      }
+    });
+  });
+
+  if(selectedPlotBounds){
+    map.fitBounds(selectedPlotBounds,{padding:[90,90], maxZoom:19});
+    return;
+  }
+
+  if(bounds.length){
+    const b = bounds.reduce((a,c)=>a.extend(c),bounds[0]);
+    map.fitBounds(b,{padding:[30,30]});
+  }
+}
+
+function updateTable(data){
+  const body = document.getElementById('recordsBody');
+  const q = norm(document.getElementById('tableSearchInput')?.value).toLowerCase();
+
+  let rowsData = data;
+  if(q){
+    rowsData = data.filter(x => [
+      x.id,x.directorate,x.ad,x.scheme,x.phase,x.block,x.plot,x.area,
+      x.commercialStatus,x.totalAmount,x.amountReceived,x.outstandingAmount,
+      x.paymentStatus,x.applicationStatus,x.remarks
+    ].some(v => norm(v).toLowerCase().includes(q)));
+  }
+
+  body.innerHTML = '';
+
+  if(!rowsData.length){
+    body.innerHTML = '<tr><td colspan="15" style="text-align:center;padding:22px;color:#64748b">No records found.</td></tr>';
+    return;
+  }
+
+  rowsData.forEach(x => {
+    const tr = document.createElement('tr');
+
+    tr.innerHTML = `
+      <td>${esc(x.id)}</td>
+      <td>${esc(x.directorate)}</td>
+      <td>${esc(x.ad)}</td>
+      <td>${esc(x.scheme)}</td>
+      <td>${esc(x.phase)}</td>
+      <td>${esc(x.block)}</td>
+      <td>${esc(x.plot)}</td>
+      <td>${esc(x.area || '-')}</td>
+      <td>${esc(x.commercialStatus || '-')}</td>
+      <td>${money(x.totalAmount)}</td>
+      <td>${money(x.amountReceived)}</td>
+      <td>${money(x.outstandingAmount)}</td>
+      <td><span class="badge ${paymentBadgeClass(x.paymentStatus)}">${esc(x.paymentStatus || 'Unknown')}</span></td>
+      <td>${esc(x.applicationStatus || '-')}</td>
+      <td>${esc(x.remarks || '-')}</td>
+    `;
+
+    body.appendChild(tr);
+  });
+}
+
+function paymentCounts(data){
+  const counts = {};
+  PAYMENT_RULES.forEach(r => counts[r.key] = 0);
+
+  data.forEach(x => {
+    const key = classifyPaymentStatus(x.paymentStatus);
+    if (counts[key] !== undefined) counts[key] = (counts[key] || 0) + 1;
+  });
+
+  return counts;
+}
+
+function updateLegend(data){
+  const counts = paymentCounts(data);
+  const box = document.getElementById('paymentLegend');
+  box.innerHTML = '';
+
+  PAYMENT_RULES.forEach(rule => {
+    const row = document.createElement('div');
+    row.className = 'legend-item';
+    row.onclick = () => {
+      activePaymentStatus = activePaymentStatus === rule.key ? 'All' : rule.key;
+      applyFilters();
+    };
+
+    row.innerHTML = `
+      <div class="legend-left">
+        <span class="legend-dot" style="background:${rule.color}"></span>
+        <span>${esc(rule.label)}</span>
+      </div>
+      <span class="legend-count">${(counts[rule.key] || 0).toLocaleString()}</span>
+    `;
+
+    box.appendChild(row);
+  });
+}
+
+function updateChart(data){
+  const counts = paymentCounts(data);
+  const labels = PAYMENT_RULES.map(r => r.label);
+  const keys = PAYMENT_RULES.map(r => r.key);
+  const values = PAYMENT_RULES.map(r => counts[r.key] || 0);
+  const colors = PAYMENT_RULES.map(r => r.color);
+
+  const ctx = document.getElementById('paymentChart');
+
+  if(paymentChart) paymentChart.destroy();
+
+  paymentChart = new Chart(ctx,{
+    type:'doughnut',
+    data:{
+      labels,
+      datasets:[{
+        data:values,
+        backgroundColor:colors,
+        borderColor:'#ffffff',
+        borderWidth:2
+      }]
+    },
+    options:{
+      responsive:true,
+      maintainAspectRatio:false,
+      cutout:'62%',
+      plugins:{
+        legend:{display:false},
+        tooltip:{
+          callbacks:{
+            label:function(context){
+              return `${context.label}: ${context.parsed.toLocaleString()}`;
+            }
+          }
+        }
+      },
+      onClick:function(evt,elements){
+        if(elements.length){
+          const index = elements[0].index;
+          const key = keys[index];
+
+          // Select only this payment status. Click the same segment again to reset.
+          activePaymentStatus = activePaymentStatus === key ? 'All' : key;
+
+          applyFilters();
+        }
+      }
+    }
+  });
+}
+
+function updateLayerControls(baseData){
+  const counts = paymentCounts(baseData);
+  const box = document.getElementById('layerControls');
+
+  let html = `
+    <label class="layer-check">
+      <input type="checkbox" ${showSpatialLayer ? 'checked' : ''} onchange="showSpatialLayer=this.checked;applyFilters();">
+      <span style="display:inline-block;width:15px;height:15px;border-radius:5px;background:#cbd5e1;border:1px solid #6b7280"></span>
+      <span>All JSON Spatial Data (Grey)</span>
+    </label>
+  `;
+
+  PAYMENT_RULES.forEach(rule => {
+    html += `
+      <label class="layer-check">
+        <input type="checkbox" ${visiblePaymentLayers.has(rule.key) ? 'checked' : ''} onchange="togglePaymentLayer('${esc(rule.key)}', this.checked)">
+        <span style="display:inline-block;width:15px;height:15px;border-radius:5px;background:${rule.color};border:1px solid rgba(15,23,42,.25)"></span>
+        <span>${esc(rule.label)} (${(counts[rule.key] || 0).toLocaleString()})</span>
+      </label>
+    `;
+  });
+
+  box.innerHTML = html;
+}
+
+function togglePaymentLayer(key, checked){
+  if(checked) visiblePaymentLayers.add(key);
+  else visiblePaymentLayers.delete(key);
+  applyFilters();
+}
+
+function updateActiveStatusBox(){
+  const box = document.getElementById('activeStatusBox');
+
+  if(activePaymentStatus === 'All'){
+    box.innerHTML = '';
+    return;
+  }
+
+  const rule = PAYMENT_RULES.find(r => r.key === activePaymentStatus) || {
+    label: activePaymentStatus,
+    color: '#94a3b8'
+  };
+
+  box.innerHTML = `
+    <div class="active-filter">
+      <span style="display:inline-block;width:12px;height:12px;border-radius:4px;background:${rule.color};border:1px solid rgba(15,23,42,.2)"></span>
+      Showing only: ${esc(rule.label)}
+      <button onclick="activePaymentStatus='All';applyFilters();">Reset</button>
+    </div>
+  `;
+}
+
+function applyFilters(){
+  const data = filteredData();
+  const baseData = baseFilteredData();
+
+  updateStats(data);
+  updateTable(data);
+  updateMap(data);
+  updateLegend(baseData);
+  updateChart(baseData);
+  
+  updateActiveStatusBox();
+}
+
+function exportTable(){
+  const d = filteredData();
+
+  const headers = [
+    'ID','Directorate','AD','Scheme','Phase','Block','Plot','Area',
+    'Commercial Status','Total Amount','Amount Received','Outstanding Amount',
+    'Payment Status','Application Status','Remarks'
+  ];
+
+  const rows = d.map(x => [
+    x.id,x.directorate,x.ad,x.scheme,x.phase,x.block,x.plot,x.area,
+    x.commercialStatus,x.totalAmount,x.amountReceived,x.outstandingAmount,
+    x.paymentStatus,x.applicationStatus,x.remarks
+  ]);
+
+  const csv = [headers,...rows]
+    .map(r => r.map(v => `"${String(v ?? '').replace(/"/g,'""')}"`).join(','))
+    .join('\n');
+
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([csv],{type:'text/csv'}));
+  a.download = 'illegal_filtered_records.csv';
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
+
+function setupCustomPopupEvents(){
+  const box = document.getElementById('customPopup');
+  if(box){
+    box.addEventListener('click', function(e){
+      e.stopPropagation();
+    });
+  }
+}
+
+function fetchTextWithFallback(urls){
+  return urls.reduce((chain, url) => chain.catch(() =>
+    fetch(url + '?v=' + Date.now(), {cache:'no-store'}).then(r => {
+      if(!r.ok) throw new Error(url + ' not found');
+      return r.text();
+    })
+  ), Promise.reject()).catch(err => { throw err; });
+}
+
+function fetchJsonWithFallback(urls){
+  return urls.reduce((chain, url) => chain.catch(() =>
+    fetch(url + '?v=' + Date.now(), {cache:'no-store'}).then(r => {
+      if(!r.ok) throw new Error(url + ' not found');
+      return r.json();
+    })
+  ), Promise.reject()).catch(err => { throw err; });
+}
+
+async function load(){
+  initMap();
+  setupCustomPopupEvents();
+
+  try{
+    const [json,csvText] = await Promise.all([
+      fetchJsonWithFallback(['plots.json','Plots.json','plot.json','Plot.json']),
+      fetchTextWithFallback(['illegal.csv','Illegal.csv','illegal_penalty.csv','Illegal Penalty.csv'])
+    ]);
+
+    const parsed = Papa.parse(csvText.replace(/^\ufeff/, ''),{
+      header:true,
+      skipEmptyLines:true,
+      transformHeader:h => String(h || '').replace(/^\ufeff/, '').trim()
+    });
+
+    allJsonFeatures = json.features || [];
+    allData = buildData(parsed.data || [], json);
+
+    populateFilters();
+    applyFilters();
+
+    const mapped = allData.filter(x=>x.mapped).length;
+    setStatus(`Loaded ${allData.length.toLocaleString()} CSV records. JSON plots shown in grey: ${allJsonFeatures.length.toLocaleString()}. Records matched with JSON geometry: ${mapped.toLocaleString()}.`);
+  }catch(e){
+    console.error(e);
+    // Keep the UI usable and show a clear visible message instead of silent zero cards.
+    allJsonFeatures = [];
+    allData = [];
+    populateFilters();
+    applyFilters();
+    alert('Data files could not be loaded. Put illegal.csv and plots.json in the same folder as this HTML file, then refresh.');
+    setStatus('Could not load files. Ensure illegal.html, illegal.csv and plots.json are in the same folder.',true);
+  }
+}
+
+load();
+
+
+function loadImageAsBase64(url){
+  return new Promise((resolve, reject) => {
+    if(!url){ reject(new Error("No URL")); return; }
+
+    const img = new Image();
+    img.crossOrigin = "Anonymous";
+
+    img.onload = function(){
+      try{
+        const canvas = document.createElement("canvas");
+        canvas.width = img.naturalWidth || img.width;
+        canvas.height = img.naturalHeight || img.height;
+        const ctx = canvas.getContext("2d");
+        ctx.drawImage(img, 0, 0);
+        resolve(canvas.toDataURL("image/png"));
+      }catch(e){
+        reject(e);
+      }
+    };
+
+    img.onerror = reject;
+    img.src = url;
+  });
+}
+
+async function tryLoadLogo(){
+  const candidates = [
+    "lda_logo.png",
+    "LDA_logo.png",
+    "LDA.png",
+    "lda.png",
+    "logo.png",
+    "Logo.png"
+  ];
+
+  for(const path of candidates){
+    try{
+      return await loadImageAsBase64(path);
+    }catch(e){}
+  }
+
+  return null;
+}
+
+function pdfCell(doc, label, value, x, y, w, h){
+  doc.setDrawColor(220, 228, 239);
+  doc.setFillColor(248, 250, 252);
+  doc.rect(x, y, w, h, "FD");
+
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(9);
+  doc.setTextColor(51, 65, 85);
+  doc.text(String(label || "-"), x + 3, y + 6);
+
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(10);
+  doc.setTextColor(15, 23, 42);
+
+  const text = doc.splitTextToSize(String(value || "-"), w - 6);
+  doc.text(text.slice(0, 2), x + 3, y + 12);
+}
+
+function pdfSectionTitle(doc, title, y){
+  doc.setFillColor(14, 39, 68);
+  doc.roundedRect(14, y, 182, 9, 2, 2, "F");
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(11);
+  doc.setTextColor(255, 255, 255);
+  doc.text(title, 18, y + 6);
+}
+
+
+function loadImageAsBase64ForReport(url){
+  return new Promise((resolve, reject) => {
+    if(!url){ reject(new Error("No image URL")); return; }
+    const img = new Image();
+    img.crossOrigin = "Anonymous";
+    img.onload = function(){
+      try{
+        const canvas = document.createElement("canvas");
+        canvas.width = img.naturalWidth || img.width;
+        canvas.height = img.naturalHeight || img.height;
+        canvas.getContext("2d").drawImage(img,0,0);
+        resolve(canvas.toDataURL("image/png"));
+      }catch(e){ reject(e); }
+    };
+    img.onerror = reject;
+    img.src = url;
+  });
+}
+
+async function loadLogoForPropertyReport(){
+  const names = ["lda_logo.png","LDA_logo.png","LDA.png","lda.png","logo.png","Logo.png"];
+  for(const n of names){
+    try{ return await loadImageAsBase64ForReport(n); }catch(e){}
+  }
+  return null;
+}
+
+function addPropertyReportWatermark(doc, logo){
+  if(!logo) return;
+  try{
+    const pageW = doc.internal.pageSize.getWidth();
+    const pageH = doc.internal.pageSize.getHeight();
+    if(doc.GState){
+      doc.saveGraphicsState();
+      doc.setGState(new doc.GState({opacity:0.06}));
+      doc.addImage(logo,"PNG",pageW/2-42,pageH/2-42,84,84);
+      doc.restoreGraphicsState();
+    }
+  }catch(e){}
+}
+
+async function generatePDF(id){
+  const { jsPDF } = window.jspdf;
+  const item = allData.find(x => cleanId(x.id) === cleanId(id));
+  if(!item){ alert("Plot data not found."); return; }
+
+  const doc = new jsPDF("p","mm","a4");
+  const pageW = doc.internal.pageSize.getWidth();
+  const pageH = doc.internal.pageSize.getHeight();
+  const logo = await loadLogoForPropertyReport();
+
+  function header(title, subtitle){
+    doc.setFillColor(14,39,68);
+    doc.rect(0,0,pageW,32,"F");
+
+    if(logo){
+      try{ doc.addImage(logo,"PNG",14,7,20,18); }
+      catch(e){
+        doc.setTextColor(255,255,255);
+        doc.setFont("helvetica","bold");
+        doc.setFontSize(12);
+        doc.text("LDA",16,18);
+      }
+    }else{
+      doc.setTextColor(255,255,255);
+      doc.setFont("helvetica","bold");
+      doc.setFontSize(12);
+      doc.text("LDA",16,18);
+    }
+
+    doc.setTextColor(255,255,255);
+    doc.setFont("helvetica","bold");
+    doc.setFontSize(16);
+    doc.text("Lahore Development Authority",40,13);
+    doc.setFontSize(12);
+    doc.text(title,40,22);
+    doc.setFont("helvetica","normal");
+    doc.setFontSize(8);
+    doc.text(subtitle || ("Generated: " + new Date().toLocaleString()),150,28);
+
+    addPropertyReportWatermark(doc, logo);
+  }
+
+  function section(title,y){
+    doc.setFillColor(14,39,68);
+    doc.roundedRect(14,y,182,9,2,2,"F");
+    doc.setTextColor(255,255,255);
+    doc.setFont("helvetica","bold");
+    doc.setFontSize(10);
+    doc.text(title,18,y+6);
+  }
+
+  function cell(label,value,x,y,w,h=18){
+    doc.setDrawColor(220,228,239);
+    doc.setFillColor(248,250,252);
+    doc.roundedRect(x,y,w,h,2,2,"FD");
+    doc.setTextColor(100,116,139);
+    doc.setFont("helvetica","bold");
+    doc.setFontSize(7.5);
+    doc.text(label,x+3,y+5);
+    doc.setTextColor(15,23,42);
+    doc.setFont("helvetica","normal");
+    doc.setFontSize(9);
+    const t = doc.splitTextToSize(String(value || "-"),w-6);
+    doc.text(t.slice(0,2),x+3,y+12);
+  }
+
+  header("Illegal Penalty Property Report");
+  let y = 42;
+
+  section("1. Property Identification",y); y += 14;
+  cell("ID",item.id,14,y,42);
+  cell("Plot",item.plot,60,y,42);
+  cell("Scheme",item.scheme,106,y,42);
+  cell("Phase",item.phase,152,y,44);
+  y += 22;
+  cell("Block",item.block,14,y,42);
+  cell("Area",item.area,60,y,42);
+  cell("Directorate",item.directorate,106,y,42);
+  cell("Concerned AD",item.ad,152,y,44);
+
+  y += 30;
+  section("2. Status Details",y); y += 14;
+  cell("Payment Status",item.paymentStatus,14,y,58);
+  cell("Commercial Status",item.commercialStatus,76,y,58);
+  cell("Application Status",item.applicationStatus,138,y,58);
+  y += 22;
+  cell("Current Land Use",item.currentLandUse,14,y,58);
+  cell("Sealing Status",item.sealingStatus,76,y,58);
+  cell("Notice Delivery",item.noticeDeliveryStatus,138,y,58);
+
+  y += 30;
+  section("3. Payment Details",y); y += 14;
+  cell("Total Amount",money(item.totalAmount),14,y,42);
+  cell("Received",money(item.amountReceived),60,y,42);
+  cell("Outstanding",money(item.outstandingAmount),106,y,42);
+  cell("Payment Date / No.",item.paymentDate,152,y,44);
+
+  y += 30;
+  section("4. Notice & Remarks",y); y += 14;
+
+  const noticeLink = formatNoticeLink(item.noticeLink);
+  cell("Notice", noticeLink ? "Available" : "Not Available",14,y,88);
+  cell("Picture", item.picture ? "Available" : "Not Available",108,y,88);
+  y += 24;
+
+  if(noticeLink){
+    doc.setTextColor(14,39,68);
+    doc.setFont("helvetica","bold");
+    doc.setFontSize(10);
+    doc.textWithLink("Open Notice Document",18,y,{url:noticeLink});
+    y += 9;
+  }
+
+  doc.setDrawColor(220,228,239);
+  doc.setFillColor(248,250,252);
+  doc.roundedRect(14,y,182,34,2,2,"FD");
+  doc.setTextColor(100,116,139);
+  doc.setFont("helvetica","bold");
+  doc.setFontSize(8);
+  doc.text("Remarks",18,y+6);
+  doc.setTextColor(15,23,42);
+  doc.setFont("helvetica","normal");
+  doc.setFontSize(9);
+  doc.text(doc.splitTextToSize(item.remarks || "-",174).slice(0,6),18,y+13);
+
+  const pictureLinks = splitImageLinks(item.picture).map(formatImageLink).filter(Boolean);
+
+  if(pictureLinks.length){
+    doc.addPage();
+    header("Property Picture Attachment","Plot ID: " + item.id);
+    section("Property Picture",42);
+
+    doc.setDrawColor(220,228,239);
+    doc.setFillColor(248,250,252);
+    doc.roundedRect(14,58,182,180,3,3,"FD");
+
+    try{
+      const imgData = await loadImageAsBase64ForReport(pictureLinks[0]);
+      doc.addImage(imgData,"PNG",20,66,170,155);
+    }catch(e){
+      doc.setTextColor(100,116,139);
+      doc.setFontSize(10);
+      doc.text("Property picture could not be embedded due to link access restrictions.",20,74);
+      doc.setTextColor(14,39,68);
+      doc.setFont("helvetica","bold");
+      doc.textWithLink("Open Property Picture",20,86,{url:pictureLinks[0]});
+    }
+  }
+
+  if(noticeLink){
+    doc.addPage();
+    header("Notice Attachment","Plot ID: " + item.id);
+    section("Notice Document",42);
+
+    doc.setTextColor(15,23,42);
+    doc.setFont("helvetica","normal");
+    doc.setFontSize(10);
+    doc.text("Click the link below to open the notice document.",14,62);
+
+    doc.setTextColor(14,39,68);
+    doc.setFont("helvetica","bold");
+    doc.setFontSize(11);
+    doc.textWithLink("Open Notice Document",14,75,{url:noticeLink});
+
+    if(/\.(jpg|jpeg|png|webp)(\?|$)/i.test(noticeLink) || noticeLink.includes("uc?export=view")){
+      try{
+        const noticeImg = await loadImageAsBase64ForReport(noticeLink);
+        doc.setDrawColor(220,228,239);
+        doc.setFillColor(248,250,252);
+        doc.roundedRect(14,88,182,170,3,3,"FD");
+        doc.addImage(noticeImg,"PNG",20,96,170,150);
+      }catch(e){}
+    }
+  }
+
+  const pages = doc.internal.getNumberOfPages();
+  for(let p=1;p<=pages;p++){
+    doc.setPage(p);
+    doc.setDrawColor(220,228,239);
+    doc.line(14,pageH-15,196,pageH-15);
+    doc.setTextColor(100,116,139);
+    doc.setFontSize(8);
+    doc.text("LDA Illegal Penalty Dashboard | Property Report",14,pageH-9);
+    doc.text(`Page ${p} of ${pages}`,178,pageH-9);
+  }
+
+  doc.save(`LDA_Property_${item.id}_Report.pdf`);
+}
+
+
+
+function pdfLoadImage(url){
+  return new Promise((resolve,reject)=>{
+    const img=new Image(); img.crossOrigin="Anonymous";
+    img.onload=()=>{try{const c=document.createElement("canvas");c.width=img.naturalWidth||img.width;c.height=img.naturalHeight||img.height;c.getContext("2d").drawImage(img,0,0);resolve(c.toDataURL("image/png"));}catch(e){reject(e);}};
+    img.onerror=reject; img.src=url;
+  });
+}
+async function pdfLoadLogo(){
+  for(const p of ["lda_logo.png","LDA_logo.png","LDA.png","lda.png","logo.png","Logo.png"]){try{return await pdfLoadImage(p);}catch(e){}}
+  return null;
+}
+function reportData(){
+  let d = filteredData();
+  const q = norm(document.getElementById("tableSearchInput")?.value).toLowerCase();
+  if(q){d=d.filter(x=>[x.id,x.directorate,x.ad,x.scheme,x.phase,x.block,x.plot,x.area,x.commercialStatus,x.paymentStatus,x.applicationStatus,x.remarks].some(v=>norm(v).toLowerCase().includes(q)));}
+  return d;
+}
+function filterText(){
+  const parts=[];
+  try{
+    Object.keys(filterLabels||{}).forEach(k=>{
+      const v=selectedFilters[k];
+      if(v instanceof Set){
+        const all=[...new Set(allData.map(x=>filterKeyValue(x[k])))];
+        if(v.size && v.size!==all.length) parts.push(`${filterLabels[k]}: ${[...v].map(filterDisplayValue).join(", ")}`);
+      }else if(v && v!=="All"){parts.push(`${filterLabels[k]||k}: ${v}`);}
+    });
+  }catch(e){}
+  const q=norm(document.getElementById("searchInput")?.value); if(q) parts.push("Dashboard Search: "+q);
+  const tq=norm(document.getElementById("tableSearchInput")?.value); if(tq) parts.push("Table Search: "+tq);
+  if(typeof activePaymentStatus!=="undefined" && activePaymentStatus!=="All") parts.push("Chart/Legend Status: "+activePaymentStatus);
+  return parts.length?parts.join(" | "):"All Records";
+}
+function drawHeader(doc,logo,sub){
+  const w=doc.internal.pageSize.getWidth();
+  doc.setFillColor(14,39,68); doc.rect(0,0,w,32,"F");
+  if(logo){try{doc.addImage(logo,"PNG",14,8,18,16);}catch(e){doc.setTextColor(255,255,255);doc.setFont("helvetica","bold");doc.setFontSize(12);doc.text("LDA",16,18);}}
+  else{doc.setTextColor(255,255,255);doc.setFont("helvetica","bold");doc.setFontSize(12);doc.text("LDA",16,18);}
+  doc.setTextColor(255,255,255); doc.setFont("helvetica","bold"); doc.setFontSize(16); doc.text("Lahore Development Authority",40,13);
+  doc.setFontSize(12); doc.text("Illegal Penalty Filter-wise Summary Report",40,22);
+  doc.setFont("helvetica","normal"); doc.setFontSize(8); doc.text(sub,150,28);
+}
+
+function addLogoWatermark(doc, logo){
+  if(!logo) return;
+  try{
+    const pageW = doc.internal.pageSize.getWidth();
+    const pageH = doc.internal.pageSize.getHeight();
+
+    // Use jsPDF graphics state for low-opacity watermark when supported.
+    if(doc.GState){
+      doc.saveGraphicsState();
+      doc.setGState(new doc.GState({opacity:0.07}));
+      doc.addImage(logo,"PNG",pageW/2-42,pageH/2-42,84,84);
+      doc.restoreGraphicsState();
+    }else{
+      // Fallback: smaller watermark if opacity is unavailable.
+      doc.addImage(logo,"PNG",pageW/2-35,pageH/2-35,70,70);
+    }
+  }catch(e){}
+}
+
+function section(doc,t,y){doc.setFillColor(14,39,68);doc.roundedRect(14,y,182,9,2,2,"F");doc.setTextColor(255,255,255);doc.setFont("helvetica","bold");doc.setFontSize(10);doc.text(t,18,y+6);}
+function kpi(doc,l,v,x,y,w){doc.setDrawColor(220,228,239);doc.setFillColor(248,250,252);doc.roundedRect(x,y,w,18,2,2,"FD");doc.setTextColor(100,116,139);doc.setFont("helvetica","bold");doc.setFontSize(7.5);doc.text(l,x+3,y+6);doc.setTextColor(15,23,42);doc.setFontSize(10);doc.text(String(v||"0"),x+3,y+14);}
+async function generateFilterSummaryPDF(){
+  const {jsPDF}=window.jspdf;
+  const data=reportData();
+  const doc=new jsPDF("p","mm","a4");
+  const logo=await pdfLoadLogo();
+  const pageH=doc.internal.pageSize.getHeight();
+
+  drawHeader(doc,logo,"Generated: "+new Date().toLocaleString());
+  addLogoWatermark(doc,logo);
+
+  let y=42;
+
+  // Applied filters as boxes
+  section(doc,"1. Applied Filters",y);
+  y+=14;
+
+  function filterBox(label,value,x,y,w){
+    doc.setDrawColor(220,228,239);
+    doc.setFillColor(248,250,252);
+    doc.roundedRect(x,y,w,16,2,2,"FD");
+    doc.setTextColor(100,116,139);
+    doc.setFont("helvetica","bold");
+    doc.setFontSize(7.5);
+    doc.text(label,x+3,y+5);
+    doc.setTextColor(15,23,42);
+    doc.setFontSize(9);
+    const t=doc.splitTextToSize(String(value||"All"),w-6);
+    doc.text(t.slice(0,1),x+3,y+12);
+  }
+
+  function getFilterDisplay(k){
+    try{
+      const v = selectedFilters[k];
+
+      if(v instanceof Set){
+        const all = [...new Set(allData.map(x => filterKeyValue(x[k])))];
+
+        // If all values are selected, filter is not actually applied.
+        if(!v.size || v.size === all.length) return "All";
+
+        const selected = [...v].map(filterDisplayValue);
+
+        // Show only one clean value. Never show long lists.
+        if(selected.length === 1) return selected[0];
+
+        return `${selected.length} selected`;
+      }
+
+      return v && v !== "All" ? v : "All";
+    }catch(e){
+      return "All";
+    }
+  }
+
+  const appliedFilters = [
+    ["Scheme", getFilterDisplay("scheme")],
+    ["Phase", getFilterDisplay("phase")],
+    ["Block", getFilterDisplay("block")],
+    ["Plot", getFilterDisplay("plot")],
+    ["Directorate", getFilterDisplay("directorate")],
+    ["AD", getFilterDisplay("ad")],
+    ["Payment Status", getFilterDisplay("paymentStatus")]
+  ].filter(([label,value]) => value && value !== "All");
+
+  const dashSearch = norm(document.getElementById("searchInput")?.value);
+  if(dashSearch) appliedFilters.push(["Search", dashSearch]);
+
+  if(activePaymentStatus && activePaymentStatus !== "All"){
+    appliedFilters.push(["Chart / Legend", activePaymentStatus]);
+  }
+
+  if(!appliedFilters.length){
+    filterBox("Selection", "All Records", 14, y, 182);
+    y += 22;
+  }else{
+    let boxX = 14;
+    let boxY = y;
+    const boxW = 56;
+    const gap = 6;
+
+    appliedFilters.forEach(([label,value], index) => {
+      filterBox(label, value, boxX, boxY, boxW);
+      boxX += boxW + gap;
+
+      if(boxX + boxW > 196){
+        boxX = 14;
+        boxY += 20;
+      }
+    });
+
+    y = boxY + 24;
+  }
+
+  const total=data.reduce((s,x)=>s+num(x.totalAmount),0);
+  const rec=data.reduce((s,x)=>s+num(x.amountReceived),0);
+  const out=data.reduce((s,x)=>s+num(x.outstandingAmount),0);
+
+  section(doc,"2. Summary Statistics",y);
+  y+=14;
+
+  kpi(doc,"Total Records",data.length.toLocaleString(),14,y,42);
+  kpi(doc,"Total Amount",money(total),60,y,42);
+  kpi(doc,"Received",money(rec),106,y,42);
+  kpi(doc,"Outstanding",money(out),152,y,44);
+  y+=30;
+
+  section(doc,"3. Payment Status Breakdown",y);
+  y+=14;
+
+  const counts=paymentCounts(data);
+  const totalCount=data.length || 1;
+
+  // Pie chart
+  const cx=62, cy=y+36, radius=28;
+  let startAngle=-90;
+
+  PAYMENT_RULES.forEach(r=>{
+    const count=counts[r.key]||0;
+    if(count<=0) return;
+
+    const angle=(count/totalCount)*360;
+    const endAngle=startAngle+angle;
+
+    const points=[];
+    points.push([cx,cy]);
+
+    for(let a=startAngle; a<=endAngle; a+=5){
+      const rad=a*Math.PI/180;
+      points.push([cx+radius*Math.cos(rad), cy+radius*Math.sin(rad)]);
+    }
+
+    const endRad=endAngle*Math.PI/180;
+    points.push([cx+radius*Math.cos(endRad), cy+radius*Math.sin(endRad)]);
+
+    const hex=(r.color||"#94a3b8").replace("#","");
+    const rr=parseInt(hex.substring(0,2),16);
+    const gg=parseInt(hex.substring(2,4),16);
+    const bb=parseInt(hex.substring(4,6),16);
+
+    doc.setFillColor(rr,gg,bb);
+    doc.setDrawColor(255,255,255);
+    doc.lines(points.slice(1).map((p,i)=>[p[0]-points[i][0],p[1]-points[i][1]]),points[0][0],points[0][1],[1,1],"FD");
+
+    startAngle=endAngle;
+  });
+
+  // Legend beside pie
+  let ly=y+7;
+  doc.setFont("helvetica","normal");
+  doc.setFontSize(9);
+  PAYMENT_RULES.forEach(r=>{
+    const count=counts[r.key]||0;
+    const pct=((count/totalCount)*100).toFixed(1);
+    const hex=(r.color||"#94a3b8").replace("#","");
+    doc.setFillColor(parseInt(hex.substring(0,2),16),parseInt(hex.substring(2,4),16),parseInt(hex.substring(4,6),16));
+    doc.rect(112,ly-4,4,4,"F");
+    doc.setTextColor(15,23,42);
+    doc.text(`${r.label}: ${count.toLocaleString()} (${pct}%)`,120,ly);
+    ly+=7;
+  });
+
+  y+=76;
+
+  section(doc,"4. Report Note",y);
+  y+=12;
+
+  doc.setTextColor(100,116,139);
+  doc.setFont("helvetica","normal");
+  doc.setFontSize(10);
+  doc.text("This report provides a filter-wise summary with statistics and payment status visualization.",14,y+5);
+  doc.text("Detailed CSV table is intentionally omitted from the PDF report.",14,y+12);
+
+  const pages=doc.internal.getNumberOfPages();
+  for(let i=1;i<=pages;i++){
+    doc.setPage(i);
+    doc.setDrawColor(220,228,239);
+    doc.line(14,pageH-15,196,pageH-15);
+    doc.setTextColor(100,116,139);
+    doc.setFontSize(8);
+    doc.text("LDA Illegal Penalty Dashboard | Official Summary Report",14,pageH-9);
+    doc.text(`Page ${i} of ${pages}`,178,pageH-9);
+  }
+
+  doc.save("LDA_Govt_Filter_Summary_Report.pdf");
+}
+
+</script>
+
+
+
+</body>
+</html>

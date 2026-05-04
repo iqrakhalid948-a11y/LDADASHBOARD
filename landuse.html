@@ -1575,9 +1575,138 @@
           <div><strong>Current Use:</strong> ${escapeHtml(item.currentUse || '-')}</div>
           ${popupImageHtml}
           ${letterRow}
+          <button onclick="generatePlotReport(${item.id})"
+            style="margin-top:12px;width:100%;padding:9px 12px;border:none;border-radius:10px;background:#0e2744;color:#ffffff;font-weight:700;cursor:pointer;">
+            📄 Report
+          </button>
         </div>
       `;
     }
+
+
+    async function generatePlotReport(id) {
+      const { jsPDF } = window.jspdf;
+      const item = mergedData.find(x => Number(x.id) === Number(id));
+
+      if (!item) {
+        alert('Plot data not found.');
+        return;
+      }
+
+      const doc = new jsPDF('p', 'mm', 'a4');
+      const pageW = doc.internal.pageSize.getWidth();
+      const pageH = doc.internal.pageSize.getHeight();
+
+      function header(title) {
+        doc.setFillColor(14, 39, 68);
+        doc.rect(0, 0, pageW, 30, 'F');
+
+        doc.setTextColor(255,255,255);
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(16);
+        doc.text('Lahore Development Authority', 14, 13);
+
+        doc.setFontSize(12);
+        doc.text(title, 14, 22);
+
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(8);
+        doc.text(`Generated: ${new Date().toLocaleString()}`, 145, 24);
+      }
+
+      function section(title, y) {
+        doc.setFillColor(14, 39, 68);
+        doc.roundedRect(14, y, 182, 9, 2, 2, 'F');
+
+        doc.setTextColor(255,255,255);
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(10);
+        doc.text(title, 18, y + 6);
+      }
+
+      function cell(label, value, x, y, w, h = 18) {
+        doc.setDrawColor(220, 228, 239);
+        doc.setFillColor(248, 250, 252);
+        doc.roundedRect(x, y, w, h, 2, 2, 'FD');
+
+        doc.setTextColor(100, 116, 139);
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(7.5);
+        doc.text(label, x + 3, y + 5);
+
+        doc.setTextColor(15, 23, 42);
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(9);
+        const text = doc.splitTextToSize(String(value || '-'), w - 6);
+        doc.text(text.slice(0, 2), x + 3, y + 12);
+      }
+
+      header('Landuse Plot Report');
+
+      let y = 42;
+
+      section('1. Plot Identification', y);
+      y += 14;
+
+      cell('ID', item.id, 14, y, 42);
+      cell('Plot', item.plot, 60, y, 42);
+      cell('Scheme', item.scheme, 106, y, 42);
+      cell('Phase', item.phase, 152, y, 44);
+
+      y += 22;
+
+      cell('Block', item.block, 14, y, 42);
+      cell('Directorate', item.directorate, 60, y, 42);
+      cell('Latitude', item.lat ? item.lat.toFixed(6) : '-', 106, y, 42);
+      cell('Longitude', item.lng ? item.lng.toFixed(6) : '-', 152, y, 44);
+
+      y += 30;
+
+      section('2. Landuse Details', y);
+      y += 14;
+
+      cell('Landuse', item.landuse, 14, y, 58);
+      cell('Current Use', item.currentUse, 76, y, 58);
+      cell('Reclassification Status', item.reclassificationStatus, 138, y, 58);
+
+      y += 30;
+
+      section('3. Linked Documents', y);
+      y += 14;
+
+      if (item.commercialLetter) {
+        doc.setTextColor(14,39,68);
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(10);
+        doc.textWithLink('Open Commercial Letter', 18, y, { url: item.commercialLetter });
+      } else {
+        doc.setTextColor(100,116,139);
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(10);
+        doc.text('No commercial letter linked for this plot.', 18, y);
+      }
+
+      y += 14;
+
+      doc.setTextColor(100,116,139);
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(9);
+      doc.text('This report is generated from the Landuse Dashboard popup view.', 14, y);
+
+      const pages = doc.internal.getNumberOfPages();
+      for (let p = 1; p <= pages; p++) {
+        doc.setPage(p);
+        doc.setDrawColor(220, 228, 239);
+        doc.line(14, pageH - 15, 196, pageH - 15);
+        doc.setTextColor(100,116,139);
+        doc.setFontSize(8);
+        doc.text('LDA Landuse Dashboard | Plot Report', 14, pageH - 9);
+        doc.text(`Page ${p} of ${pages}`, 178, pageH - 9);
+      }
+
+      doc.save(`Landuse_Plot_${item.id}_Report.pdf`);
+    }
+
 
     function updateMap(filtered) {
       if (!plotLayer || !map) return;
