@@ -1,0 +1,266 @@
+SR NO,Plot No,Block,Scheme,Key,ID,Road,ApplicationType (Permissible/Permitted),Application Status (Approved/Underprocess),Sifiting Status (Clear/Not Clear/Objection/Pending),Reason for Pending,Date of Challan Issuance,Amount of Challan,Due Date of Challan (45 days from date of issuance of challan),Amount Received,Payment Status,Remarks,Installment Plan (if any),,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,Ist installment Amount=,,2nd Installment Amount=,,3rd Installment Amount=,,4th Installment Amount=,,5th Installment Amount=,,6th Installment Amount=,,7th Installment Amount=,
+,,,,,,,,,,,,,,,,,Due Date,Amount Received,Due Date,Amount Received,Due Date,Amount Received,Due Date,Amount Received,Due Date,Amount Received,Due Date,Amount Received,Due Date,Amount Received
+,2,A,Faisal Town,2Faisal TownA,FT14127,Usmani Road,Permitted,Approved,Clear,Challan Issued,11.12.2025,29986818,25.01.2026,,,,,,,,,,,,,,,,,
+1,22,A,Faisal Town,22Faisal TownA,FT14947,Abul Hassan Asfahani Road,Permitted,Approved,Clear,Challan Issued,09.10.2024,31641102,22.11.2024,6328220,FULL PAID / Letter Issued,installments plan rejected,,,,,,,,,,,,,,
+2,23,A,Faisal Town,23Faisal TownA,FT15055,Abul Hassan Asfahani Road,Permitted,Approved,Clear,Challan Issued,16.12.2024,32808720,-,5000000,FULL PAID,installments plan approved,13.05.2025,3749389,29.06.2025,3749389,15.08.2025,3749389,01.10.2025,3749389,17.11.2025,3749389,03.01.2026,3750000,20.02.2026,3750000
+3,24,A,Faisal Town,24Faisal TownA,FT15092,Abul Hassan Asfahani Road,Permitted,Approved,Clear,Challan Issued,09.10.2024,31288880,22.11.2024,34443952,FULL PAID,installments plan rejected,,,,,,,,,,,,,,
+4,25,A,Faisal Town,25Faisal TownA,FT15091,Abul Hassan Asfahani Road,Permitted,Approved,Clear,Challan Issued,30.10.2024,15694000,13.12.2024,3138800,FULL PAID,installments plan approved,22-03-2025,1793600,08.05.2025,1793600,24.06.2025,,10.08.2025,,26.09.2025,,12.11.2025,,02.01.2026,
+5,32,A,Faisal Town,32Faisal TownA,FT15054,Abul Hassan Asfahani Road,Permitted,Under Process,Pending,not clear,,,,,,"Final LDA Sale Deed stand executed in favour of Muhammad Raza Wahla Chain of ID Cards is required. Possession proceeding has been cancelled, therefore approval of possession proceedings must be obtain from concerned. Legal Case is also pending, applicant must be advised to provide certified copy of LDA Sale Deed/Objection Conveyed",,,,,,,,,,,,,,
+6,1,B,Faisal Town,1Faisal TownB,FT14935,Abul Hassan Asfahani Road,Permitted,Approved,Clear,Challan Issued,,14712910,,14712910,FULL PAID / Letter Issued,,,,,,,,,,,,,,,
+7,3,B,Faisal Town,3Faisal TownB,FT14931,Abul Hassan Asfahani Road,Permitted,Approved,Clear,Challan Issued,-,16354800,-,3270960,20%,installments plan approved,30.11.2025,1869120,03.03.2026,1869120,04.06.2026,,05.09.2026,,07.12.2026,,10.03.2027,,12.06.2027,
+,5,B,Faisal Town,5Faisal TownB,FT13888,Abul Hassan Asfahani Road,Permitted,Approved,Clear,Challan Issued,9.2.26,18124970,,,FULL PAID / Letter Issued,,,,,,,,,,,,,,,
+8,6,B,Faisal Town,6Faisal TownB,FT15053,Abul Hassan Asfahani Road,Permitted,Under Process,Pending,not clear,,,,,,Sifting not done/PENDING AT DD HOUSING,,,,,,,,,,,,,,
+9,8,B,Faisal Town,8Faisal TownB,FT14925,Abul Hassan Asfahani Road,Permitted,Approved,Clear,Challan Issued,31.10.2024,8177400,15.12.2024,7768530,FULL PAID / Letter Issued,,,,,,,,,,,,,,,
+10,9,B,Faisal Town,9Faisal TownB,FT15090,Abul Hassan Asfahani Road,Permitted,Approved,Clear,Challan Issued,07.11.2024,16354800,,15537060,FULL PAID,,,,,,,,,,,,,,,
+11,10,B,Faisal Town,10Faisal TownB,FT15052,Abul Hassan Asfahani Road,Permitted,Approved,Clear,Challan Issued,18.10.2024,16354800,01.12.2024,3270960,20%,installments plan approved,30.01.2025,1869120,15.05.2025,1869120,30.08.2025,1869120,15.12.2025,1869120,30.03.2026,1869120,15.07.2026,,30.09.2026,
+12,13,B,Faisal Town,13Faisal TownB,FT15051,Abul Hassan Asfahani Road,Permitted,Approved,Clear,Challan Issued,04.11.2024,16354800,-,3771000,20%,installments plan approved,30.11.2025,1869115,03.03.26,1869115,04.06.2026,,05.09.2026,,07.12.2026,,10.03.2027,,15.06.2027,
+13,14,B,Faisal Town,14Faisal TownB,FT15089,Abul Hassan Asfahani Road,Permitted,Approved,Clear,Challan Issued,08.11.2024,16354800,,16354800,FULL PAID,,,,,,,,,,,,,,,
+14,16,B,Faisal Town,16Faisal TownB,FT14915,Abul Hassan Asfahani Road,Permitted,Approved,Clear,Challan Issued,09.10.2024,16668680,22.11.2024,3333800,FULL PAID / Letter Issued,installments plan approved,20.12.2024,3333720,20.02.2025,3333720,20.04.2025,3333720,28.06.2025,3333720,,,,,,
+15,17,B,Faisal Town,17Faisal TownB,FT14913,Abul Hassan Asfahani Road,Permitted,Approved,Clear,Challan Issued,04.11.2024,17023860,,4255965,FULL PAID / Letter Issued,installments plan approved,14.01.2025,3191974,27.03.2025,3191974,11.05.2025,3191974,28.06.2025,3191974,,,,,,
+16,18,B,Faisal Town,18Faisal TownB,FT15050,Abul Hassan Asfahani Road,Permitted,Approved,Clear,Challan Issued,15.01.2026,15445563,01.03.2026,,Not Paid,,,,,,,,,,,,,,,
+17,21,B,Faisal Town,21Faisal TownB,FT15049,Abul Hassan Asfahani Road,Permitted,Under Process,Pending,not clear,,,,,,"Pre-89 case personal appearance and approval of pre-89 case is required from concerned quarter
+ Auction report is incomplete without name of auction purchaser.
+ TP report has been verified without Area specifications and annual commercial dues report is required. Also CC is not issued yet.
+ Building Period expired on 31-12-1986. Objection conveyed",,,,,,,,,,,,,,
+18,22,B,Faisal Town,22Faisal TownB,FT15048,Abul Hassan Asfahani Road,Permitted,Under Process,Pending,not clear,,,,,,Sifting not done,,,,,,,,,,,,,,
+19,23,B,Faisal Town,23Faisal TownB,FT14903,Abul Hassan Asfahani Road,Permitted,Approved,Clear,Challan Issued,30.01.2026,18051758,16.03.2026,3630000,20%,installments plan rejected,,,,,,,,,,,,,,
+20,24,B,Faisal Town,24Faisal TownB,FT15088,Abul Hassan Asfahani Road,Permitted,Approved,Clear,Challan Issued,21.10.2024,16288720,04.12.2024,3257744,FULL PAID / Letter Issued,installments plan approved/not revised,25.01.2025,1861568,10.03.2025,1500000,25.04.2025,1500000,10.06.2025,4500000,25.07.2025,2070000,25.09.2025,,25.11.2025,4076804
+21,25,B,Faisal Town,25Faisal TownB,FT14900,Abul Hassan Asfahani Road,Permitted,Approved,Clear,Challan Issued,28.02.2025,16288720,,15474284,FULL PAID / Letter Issued,annual fee pening,,,,,,,,,,,,,,
+22,26,B,Faisal Town,26Faisal TownB,FT15047,Abul Hassan Asfahani Road,Permitted,Approved,Clear,challan issued,21.11.2024,16288720,-,3257744,20%,installments plan approved,29.04.2025,1861568,26.07.2025,1861568,22.10.2025,1861568,18.01.2026,1861568,16.04.2026,1861568,13.07.2026,,15.10.2026,
+23,28,B,Faisal Town,28Faisal TownB,FT14895,Abul Hassan Asfahani Road,Permitted,Under Process,Pending,not clear,,,,,,Objection by D-VI,,,,,,,,,,,,,,
+24,38,B,Faisal Town,38Faisal TownB,FT14247,Qazi Essa Road,Permitted,Under Process,Pending,not clear,,,,,,DLA STATUS IS CLARIIFICATION REQUIRED,,,,,,,,,,,,,,
+25,39,B,Faisal Town,39Faisal TownB,FT15096,Qazi Essa Road,Permitted,Approved,Clear,Challan Issued,4.11.2024,6210000,,1500000,FULL PAID,installments plan approved/not revised,01.01.2025,1177500,20.02.2025,1177500,20.04.2025,1177500,28.06.2025,1177500,,,,,,
+26,40,B,Faisal Town,40Faisal TownB,FT15095,Qazi Essa Road,Permitted,Approved,Clear,Challan Issued,31.10.2024,6228630,15.12.2024,6233630,FULL PAID,Annual Pending +LPS,,,,,,,,,,,,,,
+27,42,B,Faisal Town,42Faisal TownB,FT15087,Qazi Essa Road,Permitted,Approved,Clear,Challan Issued,14.10.2024,"65,57,760",27.11.2024,6230872,FULL PAID,,,,,,,,,,,,,,,
+28,43,B,Faisal Town,43Faisal TownB,FT14864,Qazi Essa Road,Permitted,Approved,Clear,Challan Issued,25.10.2024,6483240,08.12.2024,6483240,FULL PAID / Letter Issued,installments plan rejected,,,,,,,,,,,,,,
+29,44,B,Faisal Town,44Faisal TownB,FT14863,Qazi Essa Road,Permitted,APPROVED,Clear,CHALLAN ISSUED,,6406860,,6406860,FULL PAID / Letter Issued,Letter Issued,,,,,,,,,,,,,,
+30,45,B,Faisal Town,45Faisal TownB,FT15098,Qazi Essa Road,Permitted,Approved,Clear,Challan Issued,15.10.2024,"63,77,670",28.11.2024,1275534,FULL PAID,installments plan approved/not revised,18.01.2025,1275534,12.03.2025,1275534,04.05.2025,1275534,28.06.2025,1275534,,,,,,
+31,46,B,Faisal Town,46Faisal TownB,FT15043,Qazi Essa Road,Permitted,Approved,Clear,Challan Issued,30.10.2024,6377670,13.12.2024,1275534,20%,installments plan approved,27.04.2025,728877,25.07.2025,728877,22.10.2025,728877,19.01.2026,728877,18.04.2026,728877,16.07.2026,,13.10.2026,
+32,47,B,Faisal Town,47Faisal TownB,FT15085,Qazi Essa Road,Permitted,Approved,Clear,Challan Issued,09.10.2024,6377670,22.11.2024,1500000,FULL PAID,installments plan approved/not revised,25.01.2025,1219418,15.03.2025,1219418,10.05.2025,1219418,25.06.2025,1219418,,,,,,
+33,48,B,Faisal Town,48Faisal TownB,FT15083,Qazi Essa Road,Permitted,Approved,Clear,challan issued,22.11.2024,6377670,,1280000,FULL PAID,installments plan approved,18.03.2025,730000,02.05.2025,730000,16.06.2025,730000,31.07.2025,730000,14.09.2025,730000,29.10.2025,730000,15.12.2025,730000
+34,49,B,Faisal Town,49Faisal TownB,#N/A,Qazi Essa Road,Permitted,Under Process,Pending,not clear,,,,,,"THE INTANT FILE HAS BEEN APPROVED AS A DUPLICATE FILE. 
+ 
+ PLS REFER TO OBSERVATIONS OF LAND ACQUISITION AND AD REVENUE IN DETAIL.
+ 
+ POSSESSION OF THE SAID KHASRA HAS NOT BEEN TAKEN OVER BY LDA; SHOW-CAUSE NOTICE STANDS ISSUED IN THE FILE.
+ 
+ IN THIS REGARD AN INQUIRY HAS BEEN CONDUCTED DATED 06-01-23, NO 161 CONCLUDING ONLY 10 MARLA IN THE SHAPE OF PLOT 62-B FAISAL TOWN HAS BEEN UTILIZED IN THE SAID KHASRA. HENCE OWNERSHIP IS NOT VERIFIED. ,Objection Conveyed/CARE OF DG PUNJAB ASSEMBLY SAJJAD AHMAD",,,,,,,,,,,,,,
+35,50,B,Faisal Town,50Faisal TownB,FT15040,Qazi Essa Road,Permitted,Under Process,Pending,not clear,,,,,,",1. Refer to DLA report for observations. Ownership of the exemptee has not been verified and plot is liable to be cancelled. Vide office order dated 24.10.2022 (1189/C) issued by Director (C & I), a Committee was constituted to establish whether land of exemptee was utilized by LDA. The case was not cleared by the Committee as per letter No. LDA/DH-VI/161 dated 06.01.2023.
+ 2. Status of case titled 'Sumaria Shafiq vs. LDA' and any other pending litigation may be sought from concerned directorate. 
+ 3. Commercialization report may be sought from concerned directorate. THE INTANT FILE HAS BEEN APPROVED AS A DUPLICATE FILE. 
+ PLS REFER TO OBSERVATIONS OF LAND ACQUISITION AND AD REVENUE IN DETAIL.
+ POSSESSION OF THE SAID KHASRA HAS NOT BEEN TAKEN OVER BY LDA; SHOW-CAUSE NOTICE STANDS ISSUED IN THE FILE.
+ IN THIS REGARD AN INQUIRY HAS BEEN CONDUCTED DATED 06-01-23, NO 161 CONCLUDING ONLY 10 MARLA IN THE SHAPE OF PLOT 62-B FAISAL TOWN HAS BEEN UTILIZED IN THE SAID KHASRA. HENCE OWNERSHIP IS NOT VERIFIED. Objection Conveyed",,,,,,,,,,,,,,
+36,51,B,Faisal Town,51Faisal TownB,FT15038,Qazi Essa Road,Permitted,Under Process,Pending,not clear,,,,,,"PLS REFER TO OBSERVATIONS OF LAND ACQUISTION IN DETAIL.
+ 
+ To proceed further LAC must confirm that the instant land has been acquired and is currently under utilization of LDA and same does not fall in the abadi Deen Pura. Objection Conveyed",,,,,,,,,,,,,,
+37,52,B,Faisal Town,52Faisal TownB,FT15081,Qazi Essa Road,Permitted,Approved,Clear,Challan Issued,31.10.2024,6377670,15.12.2024,1300000,FULL PAID / Letter Issued,installments plan approved,30.01.2025,725382,15.03.2025,725382,30.04.2025,725382,15.06.2025,725382,30.07.2025,725382,15.09.2025,725382,30.11.2025,725382
+38,53,B,Faisal Town,53Faisal TownB,FT14801,Qazi Essa Road,Permitted,Approved,Clear,Challan Issued,25.10.2024,6377670,08.12.2024,6377670,FULL PAID / Letter Issued,installments plan rejected,,,,,,,,,,,,,,
+39,54,B,Faisal Town,54Faisal TownB,FT15066,Qazi Essa Road,Permitted,Approved,Clear,Challan Issued,31.10.2024,6377670,15.12.2024,6058790,FULL PAID,,,,,,,,,,,,,,,
+40,55,B,Faisal Town,55Faisal TownB,FT15080,Qazi Essa Road,Permitted,Approved,Clear,Challan Issued,09.10.2024,6375600,22.11.2024,6059000,FULL PAID,,,,,,,,,,,,,,,
+41,595,B,Faisal Town,595Faisal TownB,FT15077,Qazi Essa Road,Permitted,Approved,Clear,Challan Issued,25.10.2024,6793740,08.12.2024,1500000,FULL PAID,installments plan approved,30.01.2025,756250,10.03.2025,756250,20.04.2025,756250,05.06.2025,756250,25.07.2025,756250,10.09.2025,757000,30.11.2025,757000
+42,598,B,Faisal Town,598Faisal TownB,FT15075,Qazi Essa Road,Permitted,Approved,Clear,Challan Issued,15.10.2024,"64,77,030",28.11.2024,1295406,FULL PAID,installments plan approved,10.02.2025,740232,25.03.2025,740232,15.05.2025,740232,30.06.2025,740232,15.08.2025,740232,15.10.2025,740232,15.12.2025,740232
+43,599,B,Faisal Town,599Faisal TownB,FT15074,Qazi Essa Road,Permitted,Approved,Clear,Challan Issued,14.10.2024,"64,77,030",27.11.2024,1295406,FULL PAID,installments plan approved,18.03.2025,740232,02.05.2025,740232,16.06.2025,740232,31.07.2025,740232,14.09.2025,740232,29.10.2025,740232,15.12.2025,740232
+44,603,B,Faisal Town,603Faisal TownB,FT15036,Qazi Essa Road,Permitted,Approved,Clear,Challan Issued,20.11.2024,6563970,27.11.2024,1312798,20%,installments plan approved,01.02.2025,750167,15.05.2025,750167,30.07.2025,750167,15.10.2025,750167,30.12.2025,750167,15.03.2026,750167,20.05.2026,
+45,605,B,Faisal Town,605Faisal TownB,FT15035,Qazi Essa Road,Permitted,Approved,Clear,Challan Issued,12.02.2026,9433080,29.03.2026,,20%,installments plan approved,19.07.2026,,22.10.2026,,25.01.2027,,30.04.2027,,03.08.2027,,06.11.2027,,09.02.2028,
+46,606,B,Faisal Town,606Faisal TownB,FT15034,Qazi Essa Road,Permitted,Approved,Clear,Challan Issued,20.11.2024,6396300,27.11.2024,1279260,20%,installments plan approved,10.02.2025,731006,25.04.2025,731006,10.07.2025,731006,25.09.2025,731006,18.12.2025,731006,25.03.2026,25.03.2026,20.05.2026,
+47,645,B,Faisal Town,645Faisal TownB,FT15033,Qazi Essa Road,Permitted,Approved,Clear,Challan Issued,12.11.2024,12010140,-,2402028,20%,installments plan approved,01.03.2025,1371874,09.06.2025,1371874,17.09.2025,1371874,26.12.2025,1371874,05.04.2026,1371874,14.07.2026,,20.10.2026,
+48,860,B,Faisal Town,860Faisal TownB,FT14909,Internal Road,Permitted,Approved,Clear,Challan Issued,,7421000,,7421000,FULL PAID / Letter Issued,,,,,,,,,,,,,,,
+49,6.07609E+11,B,Faisal Town,607608609610Faisal TownB,#N/A,Qazi Essa Road,Permitted,Approved,Clear,Challan Issued,08.11.2024,12705660,,2541132,FULL PAID / Letter Issued,installments plan approved,05.03.2025,1452076,21.04.2025,1452076,07.06.2025,1452076,24.07.2025,1452076,09.09.2025,1452076,26.10.2025,1452076,15.12.2025,1452076
+50,1,C,Faisal Town,1Faisal TownC,FT14843,Qazi Essa Road,Permitted,Approved,Clear,APPROVED SCHOOL,APPROVED SCHOOL,APPROVED SCHOOL,APPROVED SCHOOL,,APPROVED SCHOOL,,,-,,,,,,,,,,,,
+51,2,C,Faisal Town,2Faisal TownC,FT15069,Abul Hassan Asfahani Road,Permitted,Approved,Clear,Challan Issued,19.11.2024,16800840,,16800840,FULL PAID,installments plan rejected,,,,,,,,,,,,,,
+,7,C,Faisal Town,7Faisal TownC,FT11923,Abul Hassan Asfahani Road,Permitted,Approved,Clear,Challan Issued,23.02.2026,18935302,09.04.2026,,FULL PAID,,,,,,,,,,,,,,,
+52,10,C,Faisal Town,10Faisal TownC,FT15068,Abul Hassan Asfahani Road,Permitted,Approved,Clear,Challan Issued,24.12.2024,16718240,,15884000,FULL PAID,,,,,,,,,,,,,,,
+53,12,C,Faisal Town,12Faisal TownC,FT14831,Abul Hassan Asfahani Road,Permitted,Approved,Clear,Challan Issued,20.05.2025,17494680,,16620000,FULL PAID / Letter Issued,,,,,,,,,,,,,,,
+54,15,C,Faisal Town,15Faisal TownC,FT15023,Abul Hassan Asfahani Road,Permitted,Approved,Clear,Challan Issued,26.05.25,16470440,-,3460000,20%,installments plan approved,18.11.2025,1858635,16.02.2026,1858635,17.05.2026,,15.08.2026,,13.11.2026,,11.02.2027,,13.05.2027,
+55,16,C,Faisal Town,16Faisal TownC,FT15022,Abul Hassan Asfahani Road,Permitted,Approved,Clear,Challan Issued,07.11.2024,16800840,,3350368,FULL PAID,installments plan approved,27.04.2025,1921525,14.06.2025,1921525,01.08.2025,1921525,18.09.2025,1921525,05.11.2025,1921525,23.12.2025,1921525,13.02.2026,1921525
+56,17,C,Faisal Town,17Faisal TownC,FT14826,Abul Hassan Asfahani Road,Permitted,Approved,Clear,Challan Issued,09.10.2024,16800840,22.11.2024,3360168,FULL PAID / Letter Issued,installments plan approved,20.12.2024,3360168,20.02.2025,3360168,20.04.2025,3360168,28.06.2025,3360168,,,,,,
+57,19,C,Faisal Town,19Faisal TownC,FT14823,Abul Hassan Asfahani Road,Permitted,Approved,Clear,Challan Issued,29.01.2026,89772500,15.03.2026,,Not Paid,,,,,,,,,,,,,,,
+58,22,C,Faisal Town,22Faisal TownC,FT15067,Abul Hassan Asfahani Road,Permitted,Approved,Clear,Challan Issued,09.10.2024,16800840,22.11.2024,16860168,FULL PAID,installments plan rejected,,,,,,,,,,,,,,
+59,23,C,Faisal Town,23Faisal TownC,FT15020,Abul Hassan Asfahani Road,Permitted,Approved,Clear,Challan Issued,03.12.25,18608050,,,20%,Installments Plan approved,08.06.2026,,06.09.2026,,05.12.2026,,05.03.2027,,03.06.2027,,01.09.2027,,30.11.2027,
+60,25,C,Faisal Town,25Faisal TownC,FT14815,Abul Hassan Asfahani Road,Permitted,Approved,Clear,Challan Issued,31.10.2024,18180260,15.12.2024,5000000,FULL PAID / Letter Issued,installments plan approved,18.02.2025,3295065,02.04.2025,3295065,16.05.2025,3295065,28.06.2025,3295065,,,,,,
+61,27,C,Faisal Town,27Faisal TownC,FT15018,Abul Hassan Asfahani Road,Permitted,Approved,clear,Challan Issued,30.06.2025,16586080,12.12.2025,3320000,Partial Payment,Installment Plan rejected,,,,,,,,,,,,,,
+62,33,C,Faisal Town,33Faisal TownC,FT14795,Abul Hassan Asfahani Road,Permitted,Approved,clear,challan Issued,,,,,FULL PAID / Letter Issued,Full fee paid Letter issued,,,,,,,,,,,,,,
+63,35,C,Faisal Town,35Faisal TownC,FT14792,Abul Hassan Asfahani Road,Permitted,Approved,Clear,Challan Issued,09.10.2024,8305430,22.11.2024,2000000,FULL PAID / Letter Issued,Full fee paid Letter issued,,,,,,,,,,,,,,
+64,38,C,Faisal Town,38Faisal TownC,FT14788,Abul Hassan Asfahani Road,Permitted,Approved,Clear,Challan Issued,30.10.2024,16908220,13.12.2024,3722293,FULL PAID / Letter Issued,installments plan approved,30.01.2025,1900000,15.03.2025,1885200,30.04.2025,1885200,15.06.2025,1885200,30.07.2025,1885200,15.09.2025,1885200,30.11.2025,1885200
+65,39,C,Faisal Town,39Faisal TownC,FT15015,Abul Hassan Asfahani Road,Permitted,Approved,Clear,Challan Issued,04.11.2024,16577820,-,3315564,FULL PAID,installments plan approved,18.04.2025,1894608,06.06.2025,1894608,25.07.2025,1894608,12.09.2025,1894608,31.10.2025,1894608,19.12.2025,1894608,10.02.2026,1894608
+66,41,C,Faisal Town,41Faisal TownC,FT14785,Abul Hassan Asfahani Road,Permitted,Approved,Clear,Challan Issued,31.10.2024,7500080,15.12.2024,7125076,FULL PAID / Letter Issued,,,,,,,,,,,,,,,
+67,146,C,Faisal Town,146Faisal TownC,FT12774,Internal Road,Permissible,under process,clear,25% CASE,,,,,,,,,,,,,,,,,,,,
+68,741,C,Faisal Town,741Faisal TownC,FT15032,Qazi Essa Road,Permitted,Approved,Clear,Challan Issued,13.11.2024,6259680,-,1252000,20%,installments plan approved,10.02.2025,715383,20.04.2025,715383,15.07.2025,715383,10.10.2025,715383,10.01.2026,715383,30.03.2026,715383,20.05.2026,
+69,742,C,Faisal Town,742Faisal TownC,FT15031,Qazi Essa Road,Permitted,Pending,not clear,not clear,,,,,,Instant file falls under the ambit of double exemption in addition to having been allegedly constructed against the policy. THE SAME NEEDS TO BE CANCELLED AS PER SOPS IN VOGUE. Objection conveyed,,,,,,,,,,,,,,
+70,744,C,Faisal Town,744Faisal TownC,FT14850,Qazi Essa Road,Permitted,Approved,Clear,challan issued,19.6.25,6264680,-,1255000,20%,installments plan approved,01.11.2025,715675,03.02.2026,715675,08.05.2026,,10.08.2026,,12.11.2026,,14.02.2027,,20.05.2027,
+71,745,C,Faisal Town,745Faisal TownC,FT14848,Qazi Essa Road,Permitted,Approved,Clear,challan issued,05.12.2024,6259680,,6259680,FULL PAID,FULL DONE,,,,,,,,,,,,,,
+72,746,C,Faisal Town,746Faisal TownC,FT15070,Qazi Essa Road,Permitted,Approved,Clear,Challan Issued,07.11.2024,6259680,,1251936,FULL PAID,installments plan approved,18.03.2025,715392,02.05.2025,715392,16.06.2025,715392,31.07.2025,715392,14.09.2025,715392,29.10.2025,715392,15.12.2025,715392
+73,747,C,Faisal Town,747Faisal TownC,FT14847,Qazi Essa Road,Permitted,Approved,Clear,Challan Issued,09.10.2024,6264680,22.11.2024,6264680,FULL PAID / Letter Issued,installments plan rejected,,,,,,,,,,,,,,
+74,748,C,Faisal Town,748Faisal TownC,FT15029,Qazi Essa Road,Permitted,Pending,not clear,not clear,,,,,,"DUE TO DEFECTIVE OWNERSHIP / DOUBLE EXEMPTION OF EXEMPTEE PLOT IS LIABLE TO BE CANCELLED. DLA REPORT IS BEING REPRODUCED AS UNDER:-
+ 
+ As per available record and w.r.t mutation no. 7614 the claimant in instant file has purchased the land from MR. KALE KHAN S/O RANJHE KHAN who claimed to bought the said land from MR IQBAL UD DIN.
+ MR IQBAL UD DIN was original awardee in khasra no. 2930, 3030 and 2934/3 after that several amendmants were made in award including the one in favor of MR SAEED AHMAD (claimant in instant file) from the name of MR KALE KAHN.
+ These amendments were cancelled later on in light of collector order dated:13-05-1984 (based on court orders dated:19-03-1984) and award was restored in the names of heirs of MR IQBAL UD DIN.
+ The mutation in favor of LDA has also been received from the name of heirs of MR IQBAL UD DIN.
+ So the ownership of claimant in instant file is not verified.
+ NO TRANSFER HAS BEEN DONE AFTER 1984 THEREFORE CASE FALLS IN THE AMBIT OF PRE-89 CATEGORY.
+ 
+ LITIGATION TITLED MST. SARDAR BANO VS LDA ETC. IS PENDING IN THE COURT OF LAW. FINAL FATE OF LITIGATION IS NOT KNOWN. Objection conveyed",,,,,,,,,,,,,,
+75,749,C,Faisal Town,749Faisal TownC,FT15028,Qazi Essa Road,Permitted,Approved,Clear,Challan Issued,07.11.2024,6228630,-,1245726,FULL PAID,installments plan approved,15.04.2025,711844,30.05.2025,711844,20.07.2025,711844,05.10.2025,718444,25.11.2025,718444,30.12.2025,711844,05.02.2026,711844
+76,753,C,Faisal Town,753Faisal TownC,FT15062,Qazi Essa Road,Permitted,Approved,Clear,Challan Issued,09.10.2024,6011280,22.11.2024,1202256,FULL PAID,installments plan approved,14.03.2025,687003,02.05.2025,687003,20.06.2025,687003,08.08.2025,687003,26.09.2025,687003,14.11.2025,687003,02.01.2026,687003
+77,754,C,Faisal Town,754Faisal TownC,FT14800,Qazi Essa Road,Permitted,Approved,Clear,Challan Issued,14.10.2024,6011280,27.11.2024,1205000,FULL PAID / Letter Issued,installments plan approved/not revised,18.01.2025,1201570,12.03.2025,1201570,04.05.2025,1201570,28.06.2025,1201570,,,,,,
+78,755,C,Faisal Town,755Faisal TownC,FT15064,Qazi Essa Road,Permitted,Approved,Clear,Challan Issued,21.10.2024,6017490,04.12.2024,5716700,FULL PAID,,,,,,,,,,,,,,,
+79,801,C,Faisal Town,801Faisal TownC,FT15058,Abul Hassan Asfahani Road,Permitted,Approved,Clear,Challan Issued,12.11.2024,18172000,,3634400,FULL PAID,installments plan approved/not revised,18.01.2025,3634400,12.03.2025,3634400,04.05.2025,3634400,28.06.2025,3634400,,,,,,
+80,803,C,Faisal Town,803Faisal TownC,FT15057,Maulana Shaukat Ali Road,Permitted,Approved,Clear,challan issued,05.12.2024,13406700,,2681340,FULL PAID,installments plan approved/not revised,10.02.2025,1532895,30.05.2025,1532195,15.09.2025,1532195,30.12.2025,1532195,15.04.2026,1532195,30.07.2026,1532195,10.11.2026,1532195
+81,3,C1,Faisal Town,3Faisal TownC1,FT14859,Abul Hassan Asfahani Road,Permitted,Approved,Clear,Challan Issued,30.10.2024,16536520,13.12.2024,15709694,FULL PAID / Letter Issued,,,,,,,,,,,,,,,
+82,5,C1,Faisal Town,5Faisal TownC1,FT15037,Abul Hassan Asfahani Road,Permitted,Approved,Clear,Challan Issued,27.01.2026,18315202,-,3665040,20%,Installments Plan approved,16.06.2026,,22.09.2026,,29.12.2026,,06.04.2027,,13.07.2027,,19.10.2027,,25.01.2028,
+83,6,C1,Faisal Town,6Faisal TownC1,FT15076,Abul Hassan Asfahani Road,Permitted,Approved,Clear,Challan Issued,07.11.2024,16536520,,3307304,FULL PAID,installments plan approved,18.03.2025,1889888,02.05.2025,1889888,16.06.2025,1889888,31.07.2025,1889888,14.09.2025,1889888,29.10.2025,1889888,15.12.2025,1889888
+84,9,C1,Faisal Town,9Faisal TownC1,FT14854,Abul Hassan Asfahani Road,Permitted,Approved,Clear,Challan Issued,07.11.2024,16528260,,16528260,FULL PAID / Letter Issued,,,,,,,,,,,,,,,
+85,11,C1,Faisal Town,11Faisal TownC1,FT15071,Abul Hassan Asfahani Road,Permitted,Approved,Clear,Challan Issued,07.11.2024,16536520,,3307500,FULL PAID,installments plan approved/not revised,10.01.2025,1889860,25.02.2025,1889860,10.04.2025,1889860,20.05.2025,1889860,10.07.2025,1889860,10.09.2025,1889860,30.11.2025,1889860
+86,12,C1,Faisal Town,12Faisal TownC1,FT15030,Abul Hassan Asfahani Road,Permitted,Approved,Clear,challan Issued,20.03.2025,16536520,-,3307304,20%,Installments plan approved,14.08.2025,1889888,16.11.2025,1889888,18.02.2026,1889888,23.05.2026,,25.08.2026,,27.11.2026,,02.03.2027,
+87,13,C1,Faisal Town,13Faisal TownC1,FT15065,Abul Hassan Asfahani Road,Permitted,Approved,Clear,Challan Issued,07.11.2024,16536520,,3307304,FULL PAID,installments plan approved/not revised,15.01.2025,3307304,25.02.2025,3307304,20.04.2025,3307304,28.06.2025,3307304,,,,,,
+88,14,C1,Faisal Town,14Faisal TownC1,FT15063,Abul Hassan Asfahani Road,Permitted,Approved,Clear,Challan Issued,14.10.2024,16528260,27.11.2024,16528260,FULL PAID,installments plan rejected,,,,,,,,,,,,,,
+89,15,C1,Faisal Town,15Faisal TownC1,FT15027,Abul Hassan Asfahani Road,Permitted,Approved,not clear,challan Issued,20.04.2026,18329270,04.06.2026,,,,,,,,,,,,,,,,,
+90,36,C1,Faisal Town,36Faisal TownC1,FT15044,Qazi Essa Road,Permitted,Approved,Clear,challan issued,06.03.2025,6210000,18.03.2025,2000000,partial payment,installment plan rejected,,,,,,,,,,,,,,
+91,37,C1,Faisal Town,37Faisal TownC1,FT15086,Qazi Essa Road,Permitted,Approved,Clear,Challan Issued,09.10.2024,6508080,22.11.2024,1301616,FULL PAID,installments plan approved/not revised,18.01.2025,1301616,12.03.2025,1301616,04.05.2025,1301616,28.06.2025,1301616,,,,,,
+92,38,C1,Faisal Town,38Faisal TownC1,FT15084,Qazi Essa Road,Permitted,Approved,Clear,challan issued,05.12.2024,6445980,,1289196,FULL PAID,installments plan approved/not revised,15.02.2025,736684,18.03.2025,736684,30.04.2025,736684,12.06.2025,736684,25.07.2025,736684,06.09.2025,736684,11.12.2025,736684
+93,39,C1,Faisal Town,39Faisal TownC1,FT15042,Qazi Essa Road,Permitted,Approved,Clear,Challan Issued,07.11.2024,6445980,-,4400000,partial payment,installments plan rejected/TIME BARRED,,,,,,,,,,,,,,
+94,40,C1,Faisal Town,40Faisal TownC1,FT15041,Qazi Essa Road,Permitted,Approved,Clear,Challan Issued,14.10.2024,"64,45,980",27.11.2024,1300000,Full paid / Letter Issued,installments plan approved,30.04.2025,750000,18.06.2025,750000,06.08.2025,735140,24.09.2025,735140,12.11.2025,1450000,31.12.2025,735140,20.02.2026,735140
+95,41,C1,Faisal Town,41Faisal TownC1,FT15039,Qazi Essa Road,Permitted,Approved,Clear,Challan Issued,14.10.2024,"64,39,770",27.11.2024,2900000,partial payment,installments plan rejected/TIME BARRED,,,,,,,,,,,,,,
+96,42,C1,Faisal Town,42Faisal TownC1,FT15082,Qazi Essa Road,Permitted,Approved,Clear,Challan Issued,11.11.2024,6445980,,1300000,FULL PAID,installments plan approved/not revised,05.02.2025,735140,27.03.2025,800000,16.05.2025,300000,05.07.2025,750000,24.08.2025,,13.10.2025,,12.12.2025,
+97,43,C1,Faisal Town,43Faisal TownC1,FT13069,Qazi Essa Road,Permitted,Approved,Clear,challan issued,05.12.2024,6445980,,6445980,FULL PAID / Letter Issued,,,,,,,,,,,,,,,
+98,44,C1,Faisal Town,44Faisal TownC1,FT11959,Qazi Essa Road,Permitted,Approved,Clear,Challan Issued,07.11.2024,6445980,,1289196,FULL PAID / Letter Issued,installments plan approved/not revised,18.01.2025,1289196,12.03.2025,1289196,04.05.2025,1289196,28.06.2025,1289196,,,,,,
+,45A,C1,Faisal Town,45AFaisal TownC1,FT13061,Qazi Essa Road,Permitted,Approved,Clear,Challan Issued,23.02.2026,9498156,09.04.2026,,FULL PAID,,,,,,,,,,,,,,,
+99,46,C1,Faisal Town,46Faisal TownC1,FT13055,Qazi Essa Road,Permitted,Approved,Clear,Challan Issued,14.10.2024,"64,39,770",27.11.2024,6117780,FULL PAID / Letter Issued,,,,,,,,,,,,,,,
+100,47,C1,Faisal Town,47Faisal TownC1,FT15097,Qazi Essa Road,Permitted,Approved,Clear,Challan Issued,07.11.2024,6445980,,6124200,FULL PAID,,,,,,,,,,,,,,,
+101,48,C1,Faisal Town,48Faisal TownC1,FT15079,Qazi Essa Road,Permitted,Approved,Clear,Challan Issued,28.10.2024,6445980,11.12.2024,6125000,FULL PAID,,,,,,,,,,,,,,,
+102,49,C1,Faisal Town,49Faisal TownC1,FT15078,Qazi Essa Road,Permitted,Approved,Clear,challan Issued,19.11.2024,6508080,,1305000,FULL PAID,installments plan approved,14.03.2025,743298,02.05.2025,743298,20.06.2025,743298,08.08.2025,743298,26.09.2025,743298,14.11.2025,743298,02.01.2026,743298
+103,1,D,Faisal Town,1Faisal TownD,FT15021,Abul Hassan Asfahani Road,Permitted,Approved,Clear,Challan Issued,29.10.2024,15867460,12.12.2024,4000000,20%,installments plan approved,16.04.2025,1695352,16.07.2025,1695352,15.10.2025,1695352,14.01.2026,1695352,15.04.2026,,15.07.2026,,15.10.2026,
+104,4,D,Faisal Town,4Faisal TownD,FT15019,Abul Hassan Asfahani Road,Permitted,Pending,not clear,not clear,,,,,,DISPOSAL OF COURT CASE TITLED MUHAMMAD WASEEM VS LDA IS REQUIRED,,,,,,,,,,,,,,
+105,16,D,Faisal Town,16Faisal TownD,FT15061,Abul Hassan Asfahani Road,Permitted,Approved,Clear,Challan Issued,05.12.2024,16520000,,13340000,FULL PAID,installments plan rejected,,,,,,,,,,,,,,
+106,17,D,Faisal Town,17Faisal TownD,FT14769,Abul Hassan Asfahani Road,Permitted,Approved,Clear,Challan Issued,31.10.2024,16520000,15.12.2024,3304000,FULL PAID,installments plan approved,25.01.2025,1888000,15.03.2025,1888000,30.05.2025,1888000,15.07.2025,1888000,30.08.2025,1888000,10.10.2025,1888000,25.11.2025,1888000
+107,18,D,Faisal Town,18Faisal TownD,FT15017,Abul Hassan Asfahani Road,Permitted,Pending,not clear,not clear,,,,,,"CM Summary Case.
+ Original Summary is not available in record.
+ Plot exchanged with plot 4 block C Sabzazar.
+ Litigation titled Shahzad Fakhar Ali vs LDA etc is pending in court of law for which Final Fate is not known.
+ Estate Site and Annual Commercial dues report is pending.
+ Provision of Certified of Sale Deed and its verification.
+ Lastly placement letter was issued in favour of Ijaz Ahmed dated 18-09-2009. Correction Rerquired in ownership information. Objection Conveyed",,,,,,,,,,,,,,
+108,19,D,Faisal Town,19Faisal TownD,FT15060,Abul Hassan Asfahani Road,Permitted,Approved,Clear,Challan Issued,07.11.2024,16520000,,3304000,FULL PAID,installments plan approved,15.01.2025,3304000,05.03.2025,3310000,30.04.2025,3310000,28.06.2025,3300000,,,,,,
+109,21,D,Faisal Town,21Faisal TownD,FT15059,Abul Hassan Asfahani Road,Permitted,Approved,Clear,Challan Issued,07.11.2024,16520000,,3304000,FULL PAID,installments plan approved,15.01.2025,3304000,05.03.2025,3304000,30.04.2025,3304000,28.06.2025,3290000,,,,,,
+110,61,D,Faisal Town,61Faisal TownD,FT12347,Internal Road,Permissible,under process,clear,25% CASE,,,,,,,,,,,,,,,,,,,,
+111,653,D,Faisal Town,653Faisal TownD,FT11570,Internal Road,Permissible,under process,clear,25% CASE,,,,,,,,,,,,,,,,,,,,
+112,854,D,Faisal Town,854Faisal TownD,FT15011,Abul Hassan Asfahani Road,Permitted,APPROVED,Clear,Challan Issued,,,,2000000,FULL PAID,installments plan approved,23.06.2025,895470,09.08.2025,895470,25.09.2025,895470,11.11.2025,895470,28.12.2025,895470,13.02.2026,895470,01.04.2026,895470
+113,231,HBFC,Faisal Town,231Faisal TownHBFC,#N/A,Internal Road,Permissible,Approved,Clear,Challan Issued,15.10.2024,3415500,28.11.2024,3246000,FULL PAID,,,,,,,,,,,,,,,
+,38,Abu Bakar,Garden Town,38Garden TownAbu Bakar,NGT8715,,Permissible,Approved but NOC TEPA Pending,Clear,Challan Issued,08.01.2025,17064265,,3412853,20%,installment issued,08.04.2025,1950202,24.05.2025,1950202,09.07.2025,1950202,24.08.2025,1950202,09.10.2025,1950000,24.11.2025,,15.01.2026,
+,41-A,Abu Bakar,Garden Town,41-AGarden TownAbu Bakar,NGT8809,,,,,Sifting pending,,,,,,,,,,,,,,,,,,,,
+,253,A1,Gulberg-III,253Gulberg-IIIA1,2392,Challan Issued,,,,Challan Issued,02.04.26,9215865,,,,,,,,,,,,,,,,,,
+,252,A1,Gulberg-III,252Gulberg-IIIA1,2395,Challan Issued,,,,Challan Issued,02.04.26,9215865,,,,,,,,,,,,,,,,,,
+,299,A1,Gulberg-III,299Gulberg-IIIA1,2383,Challan Issued,,,,Challan Issued,06.04.26,9486773,,,,,,,,,,,,,,,,,,
+,67,A2,Gulberg-III,67Gulberg-IIIA2,1749,,Permissible,,Clear,Challan Issued,03.02.26,13979250,,2794850,20%,Installment Plan Issued,24.07.26,1596414,25.10.25,1596414,26.01.27,1596414,29.04.27,1596414,31.07.27,1596414,01.11.27,1596414,02.02.28,1596414
+,47,A2,Gulberg-III,47Gulberg-IIIA2,1640,,,,,Challan Issued,03.02.26,28331147,,5666230,20%,installment plan issued,13.06.26,3236417,20.09.26,3236417,28.12.26,3236417,06.04.27,3236417,14.07.27,3236417,21.10.27,3236417,28.01.28,3236417
+,9,A2,Gulberg-III,9Gulberg-IIIA2,1659,Challan Issued,,,,Challan Issued,9.1.26,25894040,,,,,,,,,,,,,,,,,,
+,42,A3,Gulberg-III,42Gulberg-IIIA3,5655,,,,,Challan Issued,03.02.26,29120600,,,,,,,,,,,,,,,,,,
+,47,L,Model Town Extension,47Model Town ExtensionL,MTE17007,,Permissible,Approved but NOC TEPA Pending,Clear,Approved but NOC TEPA Pending,,,,,,,,,,,,,,,,,,,,
+,43,A3,Gulberg-III,43Gulberg-IIIA3,5656,,,,,Challan Issued,,,,,,,,,,,,,,,,,,,,
+,3,M,Model Town Extension,3Model Town ExtensionM,MTE18665,Abul Hassan Asfahani Road,Permitted,Approved,Clear,Challan Issued,14.10.2024,"82,55,870",27.11.2024,1651174,FULL PAID,installments plan approved/Annual Pending,30.12.2024,943528,20.02.2025,943528,05.04.2025,943528,20.05.2025,943528,05.07.2025,943528,20.08.2025,943528,30.10.2025,943528
+,"Khasra 61, Mauza Pindi Rajpootan",MAUZA PINDI RAJPOOTAN,Peco Road,"Khasra 61, Mauza Pindi RajpootanPeco RoadMAUZA PINDI RAJPOOTAN",#N/A,,Permitted,Approved,Clear,Challan Issued,21.10.2024,6017490,04.12.2024,5716700,FULL PAID,,,,,,,,,,,,,,,
+,"Khasra 1858,1298 Mauza Pindi Rajpootan",MAUZA PINDI RAJPOOTAN,Peco Road,"Khasra 1858,1298 Mauza Pindi RajpootanPeco RoadMAUZA PINDI RAJPOOTAN",#N/A,,Permitted (10%),Approved,Clear,Challan Issued,22.10.2024,7281560,05.12.2024,6918000,FULL PAID,,,,,,,,,,,,,,,
+,150A,Ahmed,Garden Town,150AGarden TownAhmed,#N/A,,,,,Challan Issued,3.02.26,32942806,,32942806,FULL PAID,,,,,,,,,,,,,,,
+,49,Albak,Garden Town,49Garden TownAlbak,NGT7452,,Permissible,Approved,Pending,Challan Issued,11.03.25,10142170,,,20%,Installment Plan Issued,20.06.25,1091739,20.09.25,1091739,20.12.25,1091739,20.03.26,1091739,20.06.26,1091739,20.09.26,1091739,20.12.26,1091739
+,7,Albak,Garden Town,7Garden TownAlbak,NGT7499,,,,,Sifting Pending,,,,,,,,,,,,,,,,,,,,
+,152,Ali,Garden Town,152Garden TownAli,NGT8085,,,,Pending,Sifting pending,,,,,,,,,,,,,,,,,,,,
+,31,Aurangzeb,Garden Town,31Garden TownAurangzeb,NGT6172,,,,,Sifting pending,,,,,,,,,,,,,,,,,,,,
+,4,M,Model Town Extension,4Model Town ExtensionM,MTE18661,Abul Hassan Asfahani Road,Permitted,Approved,Clear,Challan Issued,14.10.2024,"82,55,870",27.11.2024,1651174,FULL PAID,installments plan approved/Annual Pending,30.12.2024,943528,20.02.2025,943528,05.04.2025,943528,20.05.2025,943528,05.07.2025,943528,20.08.2025,943528,30.10.2025,943528
+,44,A3,Gulberg-III,44Gulberg-IIIA3,2754,,,,,Challan Issued,03.02.26,29120600,,5824120,20%,installment plan issued,13.06.26,3325211,20.09.26,3325211,28.12.26,3325211,06.04.2027,3325211,14.07.27,3325211,21.10.27,3325211,28.01.28,3325211
+,235,A3,Gulberg-III,235Gulberg-IIIA3,3957,,,,,CHALLAN ISSUED,24.09.25,35921470,,,,,,,,,,,,,,,,,,
+,21,Babar,Garden Town,21Garden TownBabar,NGT7572,,Permissible,Approved,Clear,Challan Issued,15.10.2024,17256190,28.11.2024,,,Time Barred,,,,,,,,,,,,,,
+,5,M,Model Town Extension,5Model Town ExtensionM,MTE18664,Abul Hassan Asfahani Road,Permitted,Approved,Clear,Challan Issued,14.10.2024,"82,55,870",27.11.2024,1651174,FULL PAID,installments plan approved/Annual Pending,30.12.2024,943528,20.02.2025,943528,05.04.2025,943528,20.05.2025,943528,05.07.2025,943528,20.08.2025,943528,30.10.2025,943528
+,43,B,Gulberg-II,43Gulberg-IIB,1164,,,,,,,,,,,,,,,,,,,,,,,,,
+,34A,B1,Gulberg-III,34AGulberg-IIIB1,#N/A,,Permitted,Approved,Clear,challan issued,09.12.2024,2337501,,,20%,installment issued,16.06.25,1335715,2.8.25,1335715,18.09.25,1335715,4.11.25,1335715,21.12.25,1335715,6.2.26,,25.03.26,
+,10,M,Model Town Extension,10Model Town ExtensionM,MTE18660,Abul Hassan Asfahani Road,Permitted,Approved,Clear,Challan Issued,13.11.2024,16511740,,3302348,FULL PAID,installments plan approved,18.03.2025,1887056,02.05.2025,1887056,16.06.2025,1887056,31.07.2025,1887056,14.09.2025,1887056,29.10.2025,1887056,15.12.2025,1887056
+,123,Babar,Garden Town,123Garden TownBabar,NGT8931,,Permissible,Under Process,Pending,Sifting Pending,,,,,,,,,,,,,,,,,,,,
+,8--24,M,Model Town Extension,8--24Model Town ExtensionM,#N/A,Abul Hassan Asfahani Road,Permitted,Under Process,Pending,Challan Issued,,15512280,,3107500,20%,installments plan approved,16.12.25,,06.05.26,,24.09.26,,12.02.27,,03.7.27,,21.11.27,,15.04.28,
+,16,B1,Gulberg-III,16Gulberg-IIIB1,291,,Permitted,Approved,,challan Issued,10.09.25,27948500,,5591700,20%,installment issued,16.12.25,3193830,21.03.26,3193830,24.6.26,,27.9.26,,31.12.26,,5.4.27,,10.7.27,
+,15--31,M,Model Town Extension,15--31Model Town ExtensionM,#N/A,Abul Hassan Asfahani Road,Permitted,FOR APPROVAL,Clear,Challan Issued,30.06.25,30958480,,6200000,FULL PAID,installments plan approved,5.12.25,2629170,7.03.26,2629170,7.06.26,2629170,7.09.26,2629170,8.12.26,2629170,10.03.27,2629170,15.06.27,2629170
+,60-A,B1,Gulberg-III,60-AGulberg-IIIB1,269,,Permitted,Approved,Clear,challan issued,11.02.2025,25253880,,5050710,20%,installment issued,27.06.25,2886160,12.08.25,,27.09.25,,12.11.25,,28.12.25,,12.2.26,,1.04.26,
+,14--30,M,Model Town Extension,14--30Model Town ExtensionM,#N/A,Abul Hassan Asfahani Road,Permitted,FOR APPROVAL,Clear,,,,,,FULL PAID,,,,,,,,,,,,,,,
+,16,M,Model Town Extension,16Model Town ExtensionM,MTE18354,Abul Hassan Asfahani Road,Permitted,Under Process,Pending,Challan Issued,30.06.25,16784320,,3356864,20%,installments plan approved,2.11.25,,7.2.26,,15.05.26,,20.08.26,,25.11.26,,2.3.27,,13.06.27,
+,1--17,M,Model Town Extension,1--17Model Town ExtensionM,#N/A,Abul Hassan Asfahani Road,Permitted,FOR APPROVAL,Clear,Challan Issued,30.06.25,16569560,,15753000,FULL PAID,Annual LPS Pending,,,,,,,,,,,,,,
+,79,B1,Gulberg-III,79Gulberg-IIIB1,178,,,,,challan issued,30.06.25,46695560,,9344668,20%,installment plan issued,14.05.26,,20.09.26,,27.01.27,,05.06.27,,12.10.27,,18.02.28,,26.06.28,
+,57-B,B3,Gulberg-III,57-BGulberg-IIIB3,1060,,,,Pending,Challan Issued,26.03.2025,39485160,,7898000,20%,installment plan issued,45823,4512452,46239,4512452,45925,4512452,45976,4512452,46027,4512452,46078,,46127,
+,3,B3,Gulberg-III,3Gulberg-IIIB3,863,,,,,challan issued,24.04.24,38506110,,7701222,20%,installment plan issued,15.7.24,4400699,29.10.24,4400699,12.02.25,4400699,29.5.25,4400699,12.09.25,4400699,27.12.25,4400699,17.04.26,
+,56-B,B3,Gulberg-III,56-BGulberg-IIIB3,1069,,,,,Challan Issued,,,,29056744,FULL PAID,,,,,,,,,,,,,,,
+,79-A,C1,Gulberg-III,79-AGulberg-IIIC1,397,Challan Issued,,,,Challan Issued,27.1.26,35335078,,7070000,20%,installment plan issued,05.07.26,4036440,08.10.26,4036440,11.01.27,4036440,16.04.27,4036440,20.07.27,4036440,23.10.27,4036440,26.01.28,4036440
+,59-A,C1,Gulberg-III,59-AGulberg-IIIC1,377,Challan Issued,,,,Challan Issued,2.2.26,25274593,,24011000,FULL PAID,,,,,,,,,,,,,,,
+,37-B,C1,Gulberg-III,37-BGulberg-IIIC1,387,Challan Issued,,,,Challan Issued,5.3.26,250281214,,,,,,,,,,,,,,,,,,
+,16-A,C1,Gulberg-III,16-AGulberg-IIIC1,341,Challan Issued,,,,Challan Issued,,,,,20%,installment plan issued,,,,,,,,,,,,,,
+,22-A,C2,Gulberg-III,22-AGulberg-IIIC2,498,,,,Pending,Challan Issued,45768,44497710,,8399542,20%,Installment Plan Issued,25.08.25,5085453,30.11.25,5085453,05.03.26,,10.06.26,,15.09.26,,20.12.26,,25.03.27,
+,49,C2,Gulberg-III,49Gulberg-IIIC2,476,,,,,challan issued,30.06.25,25740000,,,,Time Barred,,,,,,,,,,,,,,
+,31,BABAR,Garden Town,31Garden TownBABAR,NGT7623,Sifting pending,,,,Sifting pending,,,,,,,,,,,,,,,,,,,,
+,79,Babar,Garden Town,79Garden TownBabar,NGT7655,,,,,Sifting Pending,,,,,,,,,,,,,,,,,,,,
+,75,C2,Gulberg-III,75Gulberg-IIIC2,506,,,,,CHALLAN ISSUED,01.01.26,77398994,,15479799,20%,installment plan issued,09.06.26,8842743,12.09.26,8842743,16.12.26,8842743,21.03.27,8842743,24.06.27,8842743,27.09.27,8842743,31.12.27,8842743
+,39,C3,Gulberg-III,39Gulberg-IIIC3,1025,,Permissible,Approved but NOC TEPA Pending,Clear,NOC TEPA Pending,,,,,,Approved but Challan not issued as NOC TEPA is pending,,,,,,,,,,,,,,
+,54-A,C3,Gulberg-III,54-AGulberg-IIIC3,1015,,,,,NOC TEPA PENDING,,,,,,,,,,,,,,,,,,,,
+,14,C3,Gulberg-III,14Gulberg-IIIC3,959,,,,,Challan Issued,,46740783,,9348157,20%,installment plan issued,15.06.25,,15.08.25,,15.10.25,,15.12.25,,15.02.26,,15.04.26,,05.06.26,
+,62,D,Gulberg-II,62Gulberg-IID,3014,,Permitted,Approved,Clear,Challan Issued,13.11.2024,8635800,,8640800,FULL PAID,Full paid,,,,,,,,,,,,,,
+,82-A,GARDEN Block,Garden Town,82-AGarden TownGARDEN Block,NGT9129,,,,,Challan Issued,11.11.25,,,,,,,,,,,,,,,,,,,
+,129,D,Gulberg-II,129Gulberg-IID,3005,,,,objection,Challan Issued,45740,33294800,,6660000,20%,installment plan issued,10.09.25,,09.12.25,,09.03.26,,07.06.26,,05.09.26,,04.12.26,,05.03.27,
+,121,D,Gulberg-II,121Gulberg-IID,3009,,,,,Sifting pending,,,,,,Objection from sifting,,,,,,,,,,,,,,
+,112,D,Gulberg-II,112Gulberg-IID,5006,,,,,Ownership Dispute,,,,,,,,,,,,,,,,,,,,
+,113,D,Gulberg-II,113Gulberg-IID,#N/A,,,,,Challan Issued,27.6.25,31402800,,6281000,20%,installment plan issued,29.11.25,3588892,2.3.26,,3.6.26,,4.9.26,,6.12.26,,9.3.27,,11.6.27,
+,123,D,Gulberg-II,123Gulberg-IID,3007,,Permitted,Approved,Clear,challan Issued,,,,,20%,Payment Pending,,,,,,,,,,,,,,
+,122,D,Gulberg-II,122Gulberg-IID,4989,,,,,Challan Issued,2.10.25,29886947,,,20%,installment plan issued,5.2.26,,16.05.26,,24.08.26,,2.12.26,,12.3.27,,2.06.27,,28.09.27,
+,48,D1,Gulberg-III,48Gulberg-IIID1,3169,,Permitted,Approved,Clear,Challan Issued,25.10.2024,61244160,08.12.2024,,,Time Barred,,,,,,,,,,,,,,
+,71,GARDEN Block,Garden Town,71Garden TownGARDEN Block,NGT8176,,Permissible,Under Process,Pending,Sifting pending,,,,,,,,,,,,,,,,,,,,
+,123-A,E1,Gulberg-III,123-AGulberg-IIIE1,2565,,,,,Challan issued,,38749668,,38749668,FULL PAID,,,,,,,,,,,,,,,
+,35,Tariq,Garden Town,35Garden TownTariq,NGT6368,,Permissile,,,,,,,,,,,,,,,,,,,,,,,
+,17,E2,Gulberg-III,17Gulberg-IIIE2,1866,,Approved,,Pending,challan Issued,31.01.2025,97312703,,,,Stay Order,,,,,,,,,,,,,,
+,18,E2,Gulberg-III,18Gulberg-IIIE2,1869,,Approved,,Clear,challan issued,16.12.2024,31711410,,,,Stay Order,,,,,,,,,,,,,,
+,12,E2,Gulberg-III,12Gulberg-IIIE2,1872,,,,,CHALLAN ISSUED,16.09.25,200820600,,,20%,installment plan issued,27.12.25,,9.4.26,,21.7.26,,1.11.26,,12.02.27,,26.05.27,,8.09.27,
+,24-B,E2,Gulberg-III,24-BGulberg-IIIE2,#N/A,CHALLAN ISSUED,,,,challan issued,8.12.23,35687625,,7150000,20%,installment plan issued,1.5.24,4076804,6.8.24,4076804,11.11.24,4076804,16.2.25,4076804,24.5.25,4076804,29.8.25,4076804,6.12.25,4076804
+,50,F,Gulberg-II,50Gulberg-IIF,1497,,,,,Challan Issued,2.12.25,55907000,,,,Full paid,,,,,,,,,,,,,,
+,8,Tariq,Garden Town,8Garden TownTariq,NGT6371,,,,,Challan Issued,29.5.25,27760000,,7770000,20%,installment plan issued,21.09.25,2855715,2.12.25,2855715,12.2.26,2855715,25.4.26,,6.7.26,,16.9.26,,3.12.26,
+,7,Tipu,Garden Town,7Garden TownTipu,NGT7615,,,,,challan issued,20.06.25,77209910,,8821704,20%,installment plan issued,29.10.25,8821704,3.02.26,8821704,11.05.26,,16.8.26,,21.11.26,,26.2.27,,4.06.27,
+,52-B,TIPU,Garden Town,52-BGarden TownTIPU,NGT9024,,,,,Sifting pending,,,,,,,,,,,,,,,,,,,,
+,17-A,FCC,Gulberg-IV,17-AGulberg-IVFCC,6105,,,,,Challan Issued,05.06.25,22751290,,4600000,20%,installment plan issued,31.10.25,2591615,3.2.26,2591615,9.5.26,,12.8.26,,15.11.26,,18.2.27,,26.5.27,
+,58,TIPU,Garden Town,58Garden TownTIPU,NGT7806,,,,,NOC TEPA PENDING,,,,,,,,,,,,,,,,,,,,
+,24-A,G,Gulberg-III,24-AGulberg-IIIG,5449,,,,Clear,Challan Issued,04.03.2025,81016650,,,,Time Barred,,,,,,,,,,,,,,
+,Kh. 502,Pindi Rajputan,Peco Road,Kh. 502Peco RoadPindi Rajputan,#N/A,,,,,Challan Issued,2.10.25,2938747,,,,,,,,,,,,,,,,,,
+,96-A,G,Gulberg-III,96-AGulberg-IIIG,2722,Challan Issued,,,,Challan Issued,3.2.26,50228401,,47697990,FULL PAID,,,,,,,,,,,,,,,
+,7A,Gulberg V,Gulberg-V,7AGulberg-VGulberg V,#N/A,,,,Pending,challan issued,45842,43010000,,8650000,20%,installment plan issued,9.11.25,,11.02.26,,16.05.26,,11.08.26,,20.11.26,,22.02.27,,1.06.27,
+,40-B,Gulberg V,Gulberg-V,40-BGulberg-VGulberg V,#N/A,,Permissible,Approved,Clear,Challan Issued,16.12.25,12505089,,2505000,20%,,,,,,,,,,,,,,,
+,13,H,Gulberg-III,13Gulberg-IIIH,6086,,Permitted,Approved,Clear,Challan Issued,16.12.2024,24551840,,5000000,20%,Installment Plan Issued,18.03.2025,,04.05.2025,,20.06.2025,,06.08.2025,,22.09.2025,,08.11.2025,,25.12.2025,
+,5--64,USMAN,Garden Town,5--64Garden TownUSMAN,NGT7933,Campus Bridge Road,Permitted,Under Process,Pending,Sifting Pending,,,,,,Litigation,,,,,,,,,,,,,,
+,6 G,H,Gulberg-II,6 GGulberg-IIH,#N/A,,Permitted,Approved,Clear,challan Issued,05.03.2025,37351360,,,,Time Barred,,,,,,,,,,,,,,
+,57,H,Gulberg-III,57Gulberg-IIIH,6002,,,,Pending,,,,,,,"Status not clear, pending in sifting cell for DLA Report",,,,,,,,,,,,,,
+,5--72,USMAN,Garden Town,5--72Garden TownUSMAN,#N/A,Campus Bridge Road,Permitted,Under Process,Pending,Sifting Pending,,,,,,Litigation,,,,,,,,,,,,,,
+,5--68,Usman,Garden Town,5--68Garden TownUsman,#N/A,Campus Bridge Road,Permitted,Under Process,Pending,Sifting Pending,,,,,,Litigation,,,,,,,,,,,,,,
+,7-A,H,Gulberg-II,7-AGulberg-IIH,#N/A,,,,,Challan Issued,3.12.25,62241250,,12448250,20%,,,,,,,,,,,,,,,
+,7-A,H,Gulberg-III,7-AGulberg-IIIH,#N/A,Challan Issued,,,,Challan Issued,3.12.25,62241250,,12448250,20%,Installment plan issued,6.03.26,7110429,7.03.26,,,,,,,,,,,
+,47,H,Gulberg-III,47Gulberg-IIIH,6087,Challan Issued,,,,Challan Issued,20.02.26,24680035,,,20%,Installment plan issued,12.07.26,2819291,17.10.26,2819291,,2819291,29.04.27,2819291,04.08.27,2819291,09.11.27,2819291,14.02.28,2819291
+,103,J,Gulberg-III,103Gulberg-IIIJ,2723,,Permitted,Under Process,Objection,challan issued,30.06.25,16606410,,3321382,20%,installment plan issued,28.12.25,,27.3.26,,24.6.26,,21.9.26,,19.12.26,,18.3.27,,15.06.27,
+,5,J,Gulberg-III,5Gulberg-IIIJ,3298,,,,,Sifting Pending,,,,,,,,,,,,,,,,,,,,
+,65,L,Gulberg-III,65Gulberg-IIIL,5719,,Permitted,Under Process,Pending,Sifting Pending,,,,,,,,,,,,,,,,,,,,
+,14D,L,Gulberg-III,14DGulberg-IIIL,2884,,permitted,,Pending,Challan Issued,16.6.25,,,,,Time Barred,,,,,,,,,,,,,,
+,12A2,L,Gulberg-III,12A2Gulberg-IIIL,#N/A,,,,,Challan Issued,30.06.25,34558933,,,,Time Barred,,,,,,,,,,,,,,
+,47,L,Gulberg-III,47Gulberg-IIIL,5465,Challan Issued,,,,Challan Issued,26.1.26,49787000,,10000000,20%,,,,,,,,,,,,,,,
+,2B,L,Gulberg-III,2BGulberg-IIIL,2867,Challan Issued,,,,Challan Issued,16.03.26,47193586,,,,,,,,,,,,,,,,,,
+,177,M,Gulberg-III,177Gulberg-IIIM,2898,,Permissible(25%),Under Process,Pending,sifting done,,,,,,,,,,,,,,,,,,,,
+,65,M,Gulberg-III,65Gulberg-IIIM,2901,,Permissible,,Pending,NOC TEPA PENDING,,,,,,,,,,,,,,,,,,,,
+,71 B/I,I,Gulberg-I,71 B/IGulberg-II,#N/A,,,,Pending,Challan Issued,45813,50562392,,10122478,20%,installment plan issued,20.09.25,,30.12.25,,10.4.26,,20.7.26,,30.10.26,,10.2.27,,20.5.27,
+,159(7-A),C,GECHS,159(7-A)GECHSC,#N/A,,,,,Challan Issued,,36850000,,7370000,20%,installment plan issued,2.2.26,4211430,25.06.26,,15.11.26,,7.4.27,,28.08.27,,18.01.28,,15.06.28,
+,37-D,I,Gulberg-I,37-DGulberg-II,#N/A,,,,,Challan Issued,30.05.25,82368000,,,,Time Barred,,,,,,,,,,,,,,
+,71-B,I,Gulberg-I,71-BGulberg-II,#N/A,Sifting pending,,,,Challan Issued,30.6.25,49902444,,,,Time Barred,,,,,,,,,,,,,,
+,71-C,I,Gulberg-I,71-CGulberg-II,#N/A,,,,,challan issued,27.06.24,51388155,,10290000,20%,installment plan issued,45682,5871165,45741,5871165,45833,5871165,45925,5871165,46016,5871165,46106,,46198,
+,32-B,I,Gulberg-I,32-BGulberg-II,760,,,,,Sifting Pending,,,,,,,,,,,,,,,,,,,,
+,2-B,I,Gulberg-I,2-BGulberg-II,1906,,,,,Challan Issued,9.1.26,37165535,,35307260,FULL PAID,,,,,,,,,,,,,,,
+,4-A,P,Gulberg-II,4-AGulberg-IIP,#N/A,,,Approved,Clear,challan issued,10.02.2025,31711680,,6400000,20%,installment plan issued,04.06.2025,3615955,12.09.2025,3615955,21.12.2025,3615955,31.03.2026,,09.07.2026,,17.10.2026,,25.01.2027,
+,1-A-1,P,Model Town Extension,1-A-1Model Town ExtensionP,MTE18563,,Permissible,Approved,,Challan Issued,3.02.26,7360250,,6992250,FULL PAID,,,,,,,,,,,,,,,
+,44,P,Gulberg-II,44Gulberg-IIP,5214,,,,,Challan issued,24.02.25,13898970,,,,Time Barred,,,,,,,,,,,,,,
+,"34, 35",P,Gulberg-II,"34, 35Gulberg-IIP",#N/A,,,,,Sifting pending,,,,,,Amount Paid,,,,,,,,,,,,,,
+,146,P,Gulberg-II,146Gulberg-IIP,5175,,,,,Challan Issued,28.10.25,24893500,,,,,,,,,,,,,,,,,,
+,23,P,Gulberg-II,23Gulberg-IIP,5813,,,,,challan issued,,26904689,,,20%,Time Barred,23.07.24,3072099,22.11.24,3072099,6.3.25,3072099,16.02.25,,09.05.25,,30.07.25,,25.10.25,
+,8-A,R,Gulberg-II,8-AGulberg-IIR,#N/A,,,,,challan Issued,,180705600,,,20%,installment plan issued,10.10.24,,17.01.25,,26.04.25,,02.08.25,,08.11.25,,16.02.26,,25.05.26,
+,29,S,Gulberg-II,29Gulberg-IIS,5109,,,,,Challan Issued,19.02.26,55907000,,,,,,,,,,,,,,,,,,
+,57,T,Gulberg-II,57Gulberg-IIT,2985,,Permissible,Approved,Clear,,,,16.12.2024,,,,,,,,,,,,,,,,,
+,16,T,Gulberg-II,16Gulberg-IIT,5144,,,,,Sifting Pending,,,,,,,,,,,,,,,,,,,,
+,,,,,#N/A,,,,,,,4253293064,,,,,,,,,,,,,,,,,,
+,,,,,#N/A,,,,,,,,,986805085,,,,,,,,,,,,,,,,
